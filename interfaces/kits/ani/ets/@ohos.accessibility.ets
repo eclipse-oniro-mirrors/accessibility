@@ -123,7 +123,8 @@ export enum AccessibilityEventType {
   TYPE_PAGE_ACTIVE = 69,
   TYPE_NOTIFICATION_UPDATE_EVENT = 70,
   TYPE_FOCUS_INVISIBLE = 71,
-  TYPE_ONE_FINGER_DOUBLE_TAP = 72
+  TYPE_ONE_FINGER_DOUBLE_TAP = 72,
+  TYPE_TOUCH_GUIDE_GESTURE = 73
 }
 
 namespace accessibility {
@@ -384,7 +385,7 @@ namespace accessibility {
 
     export native function offSeniorModeStateChangeForSelfSync(callback?: Callback<boolean>): void;
 
-    export function offSeniorModeStateChangeForSelf(callback: Callback<boolean>): void {
+    export function offSeniorModeStateChangeForSelf(callback?: Callback<boolean>): void {
         offSeniorModeStateChangeForSelfSync(callback);
     }
 
@@ -441,10 +442,10 @@ namespace accessibility {
             return this.getStyle();
         }
         set enabled(value: boolean) {
-            return this.setEnabled(value);
+            this.setEnabled(value);
         }
         set style(value: CaptionsStyle) {
-            return this.setStyle(value);
+            this.setStyle(value);
         }
 
         native onEnableChange(callback: Callback<boolean>): void;
@@ -608,4 +609,21 @@ export enum InjectActionType {
   CLICK = 1,
   DOUBLE_CLICK = 2,
   LONG_CLICK = 3
+}
+
+export enum OperateVirtualNodeResult {
+  SUCCESS = 0,
+  ACCESSIBILITY_ELEMENT_NOT_EXIST = 1,
+  CANNOT_MODIFY_ROOT_NODE = 2,
+  ACCESSIBILITY_PROPERTY_EMPTY = 3,
+  ALLOCATE_ID_FAILED = 4,
+  ADD_NODE_IS_EMPTY = 5,
+  INTERNAL_ERROR = 6,
+  VIRTUAL_NODE_NOT_SUPPORT = 7,
+}
+
+export enum AccessibilitySourceType {
+  DEFAULT = 1,
+  ADDED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 2,
+  UPDATED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 3
 }

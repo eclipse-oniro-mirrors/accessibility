@@ -235,6 +235,42 @@ static napi_value CreateFocusRuleType(napi_env env)
     return objValue;
 }
 
+static napi_value CreateSourceType(napi_env env)
+{
+    napi_value objValue = nullptr;
+    napi_create_object(env, &objValue);
+    napi_set_named_property(env, objValue, "DEFAULT",
+        CreateIntObject(env, OHOS::Accessibility::AccessibilitySourceType::DEFAULT_NODE));
+    napi_set_named_property(env, objValue, "ADDED_FROM_ACCESSIBILITY_VIRTUAL_NODE",
+        CreateIntObject(env, OHOS::Accessibility::AccessibilitySourceType::ADDED_FROM_ACCESSIBILITY_VIRTUAL_NODE));
+    napi_set_named_property(env, objValue, "UPDATED_FROM_ACCESSIBILITY_VIRTUAL_NODE",
+        CreateIntObject(env, OHOS::Accessibility::AccessibilitySourceType::UPDATED_FROM_ACCESSIBILITY_VIRTUAL_NODE));
+    return objValue;
+}
+
+static napi_value CreateVirtualNodeResult(napi_env env)
+{
+    napi_value objValue = nullptr;
+    napi_create_object(env, &objValue);
+    napi_set_named_property(env, objValue, "SUCCESS",
+        CreateIntObject(env, OHOS::Accessibility::OperateVirtualNodeResult::SUCCESS));
+    napi_set_named_property(env, objValue, "ACCESSIBILITY_ELEMENT_NOT_EXIST",
+        CreateIntObject(env, OHOS::Accessibility::OperateVirtualNodeResult::ACCESSIBILITY_ELEMENT_NOT_EXIST));
+    napi_set_named_property(env, objValue, "CANNOT_MODIFY_ROOT_NODE",
+        CreateIntObject(env, OHOS::Accessibility::OperateVirtualNodeResult::CANNOT_MODIFY_ROOT_NODE));
+    napi_set_named_property(env, objValue, "ACCESSIBILITY_PROPERTY_IS_EMPTY",
+        CreateIntObject(env, OHOS::Accessibility::OperateVirtualNodeResult::ACCESSIBILITY_PROPERTY_EMPTY));
+    napi_set_named_property(env, objValue, "ALLOCATE_ID_FAILED",
+        CreateIntObject(env, OHOS::Accessibility::OperateVirtualNodeResult::ALLOCATE_ID_FAILED));
+    napi_set_named_property(env, objValue, "VIRTUAL_NODE_PARAMETER_IS_EMPTY",
+        CreateIntObject(env, OHOS::Accessibility::OperateVirtualNodeResult::ADD_NODE_IS_EMPTY));
+    napi_set_named_property(env, objValue, "INTERNAL_ERROR",
+        CreateIntObject(env, OHOS::Accessibility::OperateVirtualNodeResult::INTERNAL_ERROR));
+    napi_set_named_property(env, objValue, "VIRTUAL_NODE_NOT_SUPPORTED",
+        CreateIntObject(env, OHOS::Accessibility::OperateVirtualNodeResult::VIRTUAL_NODE_NOT_SUPPORT));
+    return objValue;
+}
+
 static napi_value CreateAccessibilityAction(napi_env env)
 {
     napi_value objValue = nullptr;
@@ -322,6 +358,8 @@ static napi_value Init(napi_env env, napi_value exports)
     napi_set_named_property(env, exports, "InjectActionType", CreateInjectActionType(env));
     napi_set_named_property(env, exports, "AccessibilityFocusScene", CreateAccessibilityFocusScene(env));
     napi_set_named_property(env, exports, "FocusRuleType", CreateFocusRuleType(env));
+    napi_set_named_property(env, exports, "AccessibilitySourceType", CreateSourceType(env));
+    napi_set_named_property(env, exports, "OperateVirtualNodeResult", CreateVirtualNodeResult(env));
 
     auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
     (void)instance.InitializeContext();

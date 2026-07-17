@@ -19,7 +19,6 @@
 #include "hilog_wrapper.h"
 #include "ipc_skeleton.h"
 #include "accessibility_utils.h"
-#include "tokenid_kit.h"
 #include "accesstoken_kit.h"
 #include "api_reporter_helper.h"
 
@@ -480,7 +479,7 @@ bool NAccessibilityConfig::CheckReadPermission(const std::string &permission)
 bool NAccessibilityConfig::IsAvailable(napi_env env, napi_callback_info info)
 {
     HILOG_DEBUG();
-    if (!Security::AccessToken::TokenIdKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
+    if (!AccessTokenKit::IsSystemAppByFullTokenID(IPCSkeleton::GetCallingFullTokenID())) {
         napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NOT_SYSTEM_APP);
         napi_throw(env, err);
         HILOG_ERROR("is not system app");
@@ -1308,7 +1307,7 @@ void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string&
     callbackInfo->ref_ = notifyCallback_;
 
     int ret = OnEnableAbilityListsRemoteDiedWork(callbackInfo);
-    if (ret != 0) {
+    if (ret != RET_OK && ret != RET_ERR_TIME_OUT) {
         HILOG_ERROR("Failed to execute OnEnableAbilityListsStateChanged work queue");
         delete callbackInfo;
         callbackInfo = nullptr;
@@ -1344,12 +1343,13 @@ int EnableAbilityCallbackObserver::OnEnableAbilityListsRemoteDiedWork(
     };
     int ret = napi_send_event(env_, task, napi_eprio_high, "OnEnableAbilityListsRemoteDiedWork");
     if (ret != napi_status::napi_ok) {
+        HILOG_ERROR("failed to send event");
+    } else {
         ffrt::future_status wait = syncFuture.wait_for(std::chrono::milliseconds(ENABLE_ABILITY_CALLBACK_TIMEOUT));
         if (wait != ffrt::future_status::ready) {
             HILOG_ERROR("Failed to wait result");
             return RET_ERR_TIME_OUT;
         }
-    } else {
         syncFuture.get();
     }
     return ret;
@@ -1539,6 +1539,12 @@ void EnableAbilityListsObserverImpl::UnsubscribeInstallObservers()
 napi_value NAccessibilityConfig::SubscribeSelfSeniorMode(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.SubscribeSelfSeniorMode");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
+    if (!IsAvailable(env, info)) {
+        return nullptr;
+    }
     size_t argc = ARGS_SIZE_ONE;
     napi_value parameters[ARGS_SIZE_ONE] = {0};
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
@@ -1559,9 +1565,6 @@ napi_value NAccessibilityConfig::SubscribeSelfSeniorMode(napi_env env, napi_call
         return nullptr;
     }
 
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    Accessibility::ApiReportHelper reporter("AccessibilityConfig.SubscribeSelfSeniorMode");
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
     seniorModeStateObservers_->SubscribeObserver(env, parameters[PARAM0]);
     return nullptr;
 }
@@ -1569,12 +1572,15 @@ napi_value NAccessibilityConfig::SubscribeSelfSeniorMode(napi_env env, napi_call
 napi_value NAccessibilityConfig::UnsubscribeSelfSeniorMode(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
-    size_t argc = ARGS_SIZE_ONE;
-    napi_value parameters[ARGS_SIZE_ONE] = {0};
-    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     Accessibility::ApiReportHelper reporter("AccessibilityConfig.UnsubscribeSelfSeniorMode");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
+    if (!IsAvailable(env, info)) {
+        return nullptr;
+    }
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value parameters[ARGS_SIZE_ONE] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
 
     if (argc < ARGS_SIZE_ONE) {
         seniorModeStateObservers_->UnsubscribeObservers();
@@ -1620,6 +1626,9 @@ bool NAccessibilityConfig::ParseGetSeniorModeParam(napi_env env, napi_callback_i
 napi_value NAccessibilityConfig::GetSeniorModeStateForApp(napi_env env, napi_callback_info info)
 {
     HILOG_INFO();
+#ifdef ACCESSIBILITY_EMULATOR_DEFINED
+    Accessibility::ApiReportHelper reporter("AccessibilityConfig.GetSeniorModeStateForApp");
+#endif // ACCESSIBILITY_EMULATOR_DEFINED
     NAccessibilityConfigData* callbackInfo = new(std::nothrow) NAccessibilityConfigData();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("Failed to create callbackInfo.");
@@ -1691,7 +1700,7 @@ void NAccessibilityConfig::GetSeniorModeStateComplete(napi_env env, napi_status 
 }
 
 
-bool NAccessibilityConfig::ParseSeniorModeInfos(napi_env env, napi_callback_info info,
+OHOS::Accessibility::RetError NAccessibilityConfig::ParseSeniorModeInfos(napi_env env, napi_callback_info info,
     std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> &seniorModeInfos)
 {
     size_t argc = ARGS_SIZE_TWO;
@@ -1699,48 +1708,44 @@ bool NAccessibilityConfig::ParseSeniorModeInfos(napi_env env, napi_callback_info
     napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
     if (argc < ARGS_SIZE_ONE) {
         HILOG_ERROR("SetSeniorModeStateForApp argc is invalid: %{public}zu", argc);
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
-        napi_throw(env, err);
-        return false;
+        return OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
     bool isArray = false;
     if (napi_is_array(env, parameters[PARAM0], &isArray) != napi_ok || isArray == false) {
         HILOG_ERROR("parameter is not an array.");
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
-        napi_throw(env, err);
-        return false;
+        return OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
     uint32_t arrayLength = 0;
     if (napi_get_array_length(env, parameters[PARAM0], &arrayLength) != napi_ok) {
         HILOG_ERROR("get array length failed.");
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
-        napi_throw(env, err);
-        return false;
+        return OHOS::Accessibility::RET_ERR_INVALID_PARAM;
     }
     for (uint32_t i = 0; i < arrayLength; i++) {
         napi_value element = nullptr;
         if (napi_get_element(env, parameters[PARAM0], i, &element) != napi_ok) {
             HILOG_ERROR("get element failed at index: %{public}u", i);
-            napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
-            napi_throw(env, err);
-            return false;
+            return OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
         OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo modeInfo;
         if (ParseResourceBundleNameFromNAPI(env, element, modeInfo.bundleName_) != napi_ok) {
             HILOG_ERROR("parse bundleName failed.");
-            return false;
+            return OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
         if (ParseSeniorModeStateFromNAPI(env, element, modeInfo.seniorModeState_) != napi_ok) {
             HILOG_ERROR("parse senior mode state failed.");
-            return false;
+            return OHOS::Accessibility::RET_ERR_INVALID_PARAM;
         }
         if (ParseAppIndexFromNAPI(env, element, modeInfo.appIndex_) != napi_ok) {
             HILOG_ERROR("parse appIndex failed.");
-            return false;
+            return OHOS::Accessibility::RET_ERR_INVALID_PARAM;
+        }
+        if (modeInfo.appIndex_ < 0) {
+            HILOG_ERROR("appIndex < 0");
+            return OHOS::Accessibility::RET_ERR_INVILID_APPINDEX;
         }
         seniorModeInfos.push_back(modeInfo);
     }
-    return true;
+    return OHOS::Accessibility::RET_OK;
 }
 
 napi_value NAccessibilityConfig::SetSeniorModeStateForApp(napi_env env, napi_callback_info info)
@@ -1753,11 +1758,12 @@ napi_value NAccessibilityConfig::SetSeniorModeStateForApp(napi_env env, napi_cal
         napi_throw(env, err);
         return nullptr;
     }
-    if (!ParseSeniorModeInfos(env, info, callbackInfo->seniorModeInfos_)) {
+    auto retCode = ParseSeniorModeInfos(env, info, callbackInfo->seniorModeInfos_);
+    if (retCode != OHOS::Accessibility::RET_OK) {
         HILOG_ERROR("Failed to parse seniorModeInfo");
         delete callbackInfo;
         callbackInfo = nullptr;
-        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_NULLPTR);
+        napi_value err = CreateBusinessError(env, retCode);
         napi_throw(env, err);
         return nullptr;
     }

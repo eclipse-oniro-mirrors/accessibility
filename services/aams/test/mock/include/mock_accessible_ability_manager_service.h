@@ -90,9 +90,9 @@ public:
     MOCK_METHOD1(AddedUser, void(int32_t accountId));
     MOCK_METHOD1(RemovedUser, void(int32_t accountId));
     MOCK_METHOD1(SwitchedUser, void(int32_t accountId));
-    MOCK_METHOD1(PackageChanged, void(const std::string& bundleName));
-    MOCK_METHOD1(PackageRemoved, void(const std::string& bundleName));
-    MOCK_METHOD1(PackageAdd, void(const std::string& bundleName));
+    MOCK_METHOD2(PackageChanged, void(const std::string& bundleName, int32_t userId));
+    MOCK_METHOD2(PackageRemoved, void(const std::string& bundleName, int32_t userId));
+    MOCK_METHOD2(PackageAdd, void(const std::string& bundleName, int32_t userId));
     MOCK_METHOD0(UpdateAccessibilityManagerService, void());
     MOCK_METHOD2(GetCaptionState, ErrCode(bool &state, bool isPermissionRequired));
     MOCK_METHOD1(GetScreenReaderState, ErrCode(bool &state));

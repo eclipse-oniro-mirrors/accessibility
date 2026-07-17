@@ -193,6 +193,7 @@ bool AccessibilityElementInfoParcel::ReadFromParcelFourthPart(Parcel &parcel)
     int32_t sourceType = AccessibilitySourceType::DEFAULT_NODE;
     READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, sourceType);
     sourceType_ = static_cast<AccessibilitySourceType>(sourceType);
+    READ_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint64, parcel, virtualSupportAction_);
     return true;
 }
 
@@ -326,6 +327,7 @@ bool AccessibilityElementInfoParcel::MarshallingThirdPart(Parcel &parcel) const
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int64, parcel, uniqueId_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(String, parcel, originalText_);
     WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Int32, parcel, static_cast<int32_t>(sourceType_));
+    WRITE_PARCEL_AND_RETURN_FALSE_IF_FAIL(Uint64, parcel, virtualSupportAction_);
     return true;
 }
 

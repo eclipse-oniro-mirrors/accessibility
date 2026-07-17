@@ -25,7 +25,6 @@
 #include <dlfcn.h>
 #include <shared_mutex>
 
-
 namespace OHOS {
 namespace Accessibility {
 namespace {
@@ -273,7 +272,7 @@ bool ExtendManagerServiceProxy::SetGetAccessibilityWindowCallback()
     return true;
 }
 
-static void SendPointerEventForHover(const std::shared_ptr<MMI::PointerEvent>& pointerEvent, uint64_t displayId)
+static void SendPointerEventForHover(const std::shared_ptr<MMI::PointerEvent> &pointerEvent, uint64_t displayId)
 {
     int userId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetUserIdByDisplayId(displayId);
     sptr<AccessibilityAccountData> accountData =
@@ -324,31 +323,15 @@ bool ExtendManagerServiceProxy::SetCheckDisplayIdCallback()
 static bool NotifyZoomGesutureConflictDialog()
 {
     std::shared_ptr<AccessibilityShortkeyDialog> shortkeyDialog = std::make_shared<AccessibilityShortkeyDialog>();
-    if (!shortkeyDialog) {
-        HILOG_DEBUG("shortDialog is null");
-        return false;
+    if (shortkeyDialog) {
+        if (shortkeyDialog->ConnectDialog(ShortKeyDialogType::ZOOM_GESTURE_CONFLICT)) {
+            Singleton<AccessibleAbilityManagerService>::GetInstance()
+                .GetCurrentAccountData()->GetConfig()->
+                    GetDbHandle()->PutBoolValue(ZOOM_GESTURE_CONFLICT_DIALOG_OPEN, true);
+            return true;
+        }
     }
-    if (!shortkeyDialog->ConnectDialog(ShortKeyDialogType::ZOOM_GESTURE_CONFLICT)) {
-        HILOG_ERROR("connect dialog zoom gesture conflict failed");
-        return false;
-    }
-    auto account = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    if (!account) {
-        HILOG_DEBUG("account is null");
-        return false;
-    }
-    auto config = account->GetConfig();
-    if (!config) {
-        HILOG_DEBUG("config is null");
-        return false;
-    }
-    auto dbHandler = config->GetDbHandle();
-    if (!dbHandler) {
-        HILOG_DEBUG("dbHandler is null");
-        return false;
-    }
-    dbHandler->PutBoolValue(ZOOM_GESTURE_CONFLICT_DIALOG_OPEN, true);
-    return true;
+    return false;
 }
 
 bool ExtendManagerServiceProxy::SetNotifyZoomGesutureConflictDialogCallback()
@@ -383,7 +366,7 @@ static bool GetNotifyZoomGestureConflict()
     }
     return accountData->GetConfig()->GetDbHandle()->GetBoolValue(ZOOM_GESTURE_CONFLICT_DIALOG_OPEN, false);
 }
- 
+
 bool ExtendManagerServiceProxy::SetGetNotifyZoomGestureConflictCallback()
 {
     if (!handle_) {
@@ -409,6 +392,7 @@ void *ExtendManagerServiceProxy::GetFunc(const std::string &funcName)
             HILOG_ERROR("GetFunc %{public}s failed", funcName.c_str());
         }
     }
+
     HILOG_DEBUG("Get func end, %{public}s", funcName.c_str());
     return func;
 }
@@ -520,7 +504,7 @@ RetError ExtendManagerServiceProxy::SetMouseAutoClick(int32_t time)
 }
 
 RetError ExtendManagerServiceProxy::SetClickConfig(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME clickTime, bool state,
-    AccessibilityConfig::CLICK_RESPONSE_TIME responseTime)
+        AccessibilityConfig::CLICK_RESPONSE_TIME responseTime)
 {
     std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
     using SetClickConfig = RetError(*)(AccessibilityConfig::IGNORE_REPEAT_CLICK_TIME clickTime, bool state,
@@ -706,10 +690,10 @@ void ExtendManagerServiceProxy::CancelNotification()
         HILOG_ERROR("handle is null");
         return;
     }
-    if (!func || readyFunc_.find(ExtMethod::CANCEL_NOTIFICATION) == readyFunc_.end()) {
+    if (!func || readyFunc_.find(ExtMethod::CANCEl_NOTIFICATION) == readyFunc_.end()) {
         func = (CancelNotification)GetFunc("CancelNotification");
         if (func) {
-            readyFunc_.insert(ExtMethod::CANCEL_NOTIFICATION);
+            readyFunc_.insert(ExtMethod::CANCEl_NOTIFICATION);
             return func();
         } else {
             HILOG_ERROR("get CancelNotification func failed");
@@ -990,6 +974,29 @@ bool ExtendManagerServiceProxy::CheckExtProxyStatus()
     return true;
 }
 
+bool ExtendManagerServiceProxy::IsMagnificationWindowActivate()
+{
+    std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+    using IsMagnificationWindowActivate = bool (*)();
+    static IsMagnificationWindowActivate func = nullptr;
+ 
+    if (!handle_) {
+        HILOG_ERROR("handle is null");
+        return false;
+    }
+ 
+    if (!func || readyFunc_.find(ExtMethod::IS_MAGNIFICATION_WINDOW_ACTIVATE) == readyFunc_.end()) {
+        func = (IsMagnificationWindowActivate)GetFunc("IsMagnificationWindowActivate");
+        if (func) {
+            readyFunc_.insert(ExtMethod::IS_MAGNIFICATION_WINDOW_ACTIVATE);
+        } else {
+            HILOG_ERROR("IsMagnificationWindowActivate func failed");
+            return false;
+        }
+    }
+    return func();
+}
+
 static int32_t GetMagnificationTriggerMethodCallback()
 {
     return Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationTriggerMethod();
@@ -1008,13 +1015,11 @@ bool ExtendManagerServiceProxy::ExtendGetMagnificationTriggerMethodCallback()
     return true;
 }
 
-static uint32_t GetMagnificationModeCallback()
-{
+static uint32_t GetMagnificationModeCallback() {
     return Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationMode();
 }
 
-bool ExtendManagerServiceProxy::ExtendGetMagnificationModeCallback()
-{
+bool ExtendManagerServiceProxy::ExtendGetMagnificationModeCallback() {
     using GetMagnificationMode = uint32_t(*)();
     using SetCallback = void(*)(GetMagnificationMode cb);
     SetCallback setCallbackFun = (SetCallback)GetFunc("ExtendGetMagnificationModeCallback");
@@ -1026,13 +1031,11 @@ bool ExtendManagerServiceProxy::ExtendGetMagnificationModeCallback()
     return true;
 }
 
-static float GetMagnificationScaleCallback()
-{
+static float GetMagnificationScaleCallback() {
     return Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationScale();
 }
 
-bool ExtendManagerServiceProxy::ExtendGetMagnificationScaleCallback()
-{
+bool ExtendManagerServiceProxy::ExtendGetMagnificationScaleCallback() {
     using GetMagnificationScale = float(*)();
     using SetCallback = void(*)(GetMagnificationScale cb);
     SetCallback setCallbackFun = (SetCallback)GetFunc("ExtendGetMagnificationScaleCallback");
@@ -1044,13 +1047,11 @@ bool ExtendManagerServiceProxy::ExtendGetMagnificationScaleCallback()
     return true;
 }
 
-static void UpdateInputFilterCallback()
-{
+static void UpdateInputFilterCallback() {
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
 }
 
-bool ExtendManagerServiceProxy::ExtendUpdateInputFilterCallback()
-{
+bool ExtendManagerServiceProxy::ExtendUpdateInputFilterCallback() {
     using UpdateInputFilter = void(*)();
     using SetCallback = void(*)(UpdateInputFilter);
     SetCallback setCallbackFun = (SetCallback)GetFunc("ExtendUpdateInputFilterCallback");
@@ -1062,13 +1063,11 @@ bool ExtendManagerServiceProxy::ExtendUpdateInputFilterCallback()
     return true;
 }
 
-static void MagnificationModeCallback(int32_t mode)
-{
+static void MagnificationModeCallback(int32_t mode) {
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationMode(mode);
 }
 
-bool ExtendManagerServiceProxy::SetMagnificationModeCallback()
-{
+bool ExtendManagerServiceProxy::SetMagnificationModeCallback() {
     using SetMagnificationMode = void(*)(int32_t mode);
     using SetCallback = void(*)(SetMagnificationMode cb);
     SetCallback setCallbackFun = (SetCallback)GetFunc("SetMagnificationModeCallback");
@@ -1080,13 +1079,11 @@ bool ExtendManagerServiceProxy::SetMagnificationModeCallback()
     return true;
 }
 
-static uint32_t MagnificationTypeCallback()
-{
+static uint32_t MagnificationTypeCallback() {
     return Singleton<AccessibleAbilityManagerService>::GetInstance().GetMagnificationType();
 }
 
-bool ExtendManagerServiceProxy::GetMagnificationTypeCallback()
-{
+bool ExtendManagerServiceProxy::GetMagnificationTypeCallback() {
     using GetMagnificationType = uint32_t(*)();
     using SetCallback = void(*)(GetMagnificationType cb);
     SetCallback setCallbackFun = (SetCallback)GetFunc("GetMagnificationTypeCallback");
@@ -1098,14 +1095,12 @@ bool ExtendManagerServiceProxy::GetMagnificationTypeCallback()
     return true;
 }
 
-static void AnnouncedForMagnificationCallback(AnnounceType announceType)
-{
+static void AnnouncedForMagnificationCallback(AnnounceType announceType) {
     HILOG_INFO("AnnouncedForMagnificationCallback start");
     Singleton<AccessibleAbilityManagerService>::GetInstance().AnnouncedForMagnification(announceType);
 }
 
-bool ExtendManagerServiceProxy::ExtendAnnouncedForMagnificationCallback()
-{
+bool ExtendManagerServiceProxy::ExtendAnnouncedForMagnificationCallback() {
     using AnnouncedForMagnification = void(*)(AnnounceType announceType);
     using SetCallback = void(*)(AnnouncedForMagnification cb);
     SetCallback setCallbackFun = (SetCallback)GetFunc("ExtendAnnouncedForMagnificationCallback");
@@ -1139,13 +1134,11 @@ bool ExtendManagerServiceProxy::DiscountBrightness(const float discount)
     return func(discount);
 }
 
-static void MagnificationScaleCallback(float scale)
-{
+static void MagnificationScaleCallback(float scale) {
     Singleton<AccessibleAbilityManagerService>::GetInstance().SetMagnificationScale(scale);
 }
 
-bool ExtendManagerServiceProxy::SetMagnificationScaleCallback()
-{
+bool ExtendManagerServiceProxy::SetMagnificationScaleCallback() {
     using SetMagnificationScale = void(*)(float scale);
     using SetCallback = void(*)(SetMagnificationScale cb);
     SetCallback setCallbackFun = (SetCallback)GetFunc("SetMagnificationScaleCallback");
@@ -1157,14 +1150,12 @@ bool ExtendManagerServiceProxy::SetMagnificationScaleCallback()
     return true;
 }
 
-static std::vector<AccessibilityWindowInfo> GetAccessibilityWindowsCallback(uint64_t displayId)
-{
+static std::vector<AccessibilityWindowInfo> GetAccessibilityWindowsCallback(uint64_t displayId) {
     int userId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetUserIdByDisplayId(displayId);
     return Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccessibilityWindows(userId);
 }
 
-bool ExtendManagerServiceProxy::ExtendGetAccessibilityWindowsCallback()
-{
+bool ExtendManagerServiceProxy::ExtendGetAccessibilityWindowsCallback() {
     using GetAccessibilityWindows = std::vector<AccessibilityWindowInfo>(*)(uint64_t displayId);
     using SetCallback = void(*)(GetAccessibilityWindows cb);
     SetCallback setCallbackFun = (SetCallback)GetFunc("ExtendGetAccessibilityWindowsCallback");
@@ -1220,13 +1211,11 @@ void ExtendManagerServiceProxy::OffZoomGesture()
     return func();
 }
 
-static void SubscribeOsAccountCallback()
-{
+static void SubscribeOsAccountCallback() {
     Singleton<AccessibleAbilityManagerService>::GetInstance().SubscribeOsAccount();
 }
 
-bool ExtendManagerServiceProxy::ExtendSubscribeOsAccountCallback()
-{
+bool ExtendManagerServiceProxy::ExtendSubscribeOsAccountCallback() {
     using SubscribeOsAccount = void(*)();
     using SetCallback = void(*)(SubscribeOsAccount cb);
     SetCallback setCallbackFun = (SetCallback)GetFunc("ExtendSubscribeOsAccountCallback");

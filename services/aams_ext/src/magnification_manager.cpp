@@ -23,8 +23,51 @@
 
 namespace OHOS {
 namespace Accessibility {
+std::shared_ptr<MagnificationManager> MagnificationManager::instance_ = nullptr;
+ffrt::mutex MagnificationManager::instanceMutex_;
+std::shared_ptr<MagnificationManager> MagnificationManager::GetInstance()
+{
+    if (!instance_) {
+        std::lock_guard<ffrt::mutex> lock(instanceMutex_);
+        if (!instance_) {
+            HILOG_INFO("Create MagnificationManager instance.");
+            instance_ = std::make_shared<MagnificationManager>();
+        }
+    }
+    return instance_;
+}
 MagnificationManager::MagnificationManager()
 {
+    EventFwk::MatchingSkills matchingSkills;
+    matchingSkills.AddEvent("usual.event.SCREEN_OFF");
+    EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
+    subscriber_ = std::make_shared<SystemEventSubscriber>(
+        subscribeInfo, std::bind(&MagnificationManager::OnReceiveEvent, this, std::placeholders::_1));
+}
+
+void MagnificationManager::SubscribeCommonEvent()
+{
+    if (subscriber_ != nullptr) {
+        HILOG_INFO("subscribe screen off event");
+        EventFwk::CommonEventManager::SubscribeCommonEvent(subscriber_);
+    }
+}
+ 
+void MagnificationManager::UnSubscribeCommonEvent()
+{
+    if (subscriber_ != nullptr) {
+        bool unSubscribeResult = EventFwk::CommonEventManager::UnSubscribeCommonEvent(subscriber_);
+        HILOG_INFO("unSubscribeResult = %{public}d", unSubscribeResult);
+    }
+}
+
+void MagnificationManager::OnReceiveEvent(const EventFwk::CommonEventData &data)
+{
+    std::string action = data.GetWant().GetAction();
+    if (action == "usual.event.SCREEN_OFF") {
+        HILOG_INFO("screen off received");
+        DisableMagnification();
+    }
 }
 
 std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagnificationManager()

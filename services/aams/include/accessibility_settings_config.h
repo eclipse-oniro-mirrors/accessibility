@@ -138,6 +138,7 @@ public:
     }
 
     void Init();
+    void ClearData();
     bool GetInitializeState();
     void SetInitializeState(bool isInitialized);
 private:

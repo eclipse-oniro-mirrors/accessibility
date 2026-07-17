@@ -389,7 +389,9 @@ private:
     void NotifyDefaultShortKeyConfigs();
     void NotifyDefaultShortKeyMultiConfigs();
     void NotifyImmediately(const CONFIG_ID id, const std::shared_ptr<AccessibilityConfigObserver> &observer);
-    void InitConfigValues();
+    void InitConfigValues(bool reInit = false);
+    void OnApplicationUpdate();
+    void OnApplicationPreAbilityCreate();
     uint32_t InvertDaltonizationColorInAtoHos(uint32_t filter);
     static void OnParameterChanged(const char *key, const char *value, void *context);
     void OnSeniorModeStateChanged(const std::string& bundleName, int32_t appIndex, bool state);
@@ -405,6 +407,7 @@ private:
     sptr<AccessibilityEnableAbilityCallbackObserverImpl> enableAbilityCallbackObserver_ = nullptr;
 
     std::atomic<bool> isInitialized_ {false};
+    bool isConfigInit_ = false;
     bool shortkey_ = false;
     bool highContrastText_ = false;
     bool screenMagnifier_ = false;
@@ -445,6 +448,8 @@ private:
 
     std::shared_ptr<AppExecFwk::EventRunner> runner_;
     std::shared_ptr<AppExecFwk::EventHandler> handler_;
+
+    ffrt::mutex imgShotMutex_;
 };
 } // namespace AccessibilityConfig
 } // namespace OHOS

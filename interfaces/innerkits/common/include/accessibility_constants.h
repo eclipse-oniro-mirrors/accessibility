@@ -126,6 +126,7 @@ extern const uint32_t STATE_INPUT_INTERCEPTOR_ENABLED;
 extern const uint32_t STATE_FLASH_REMINDER_ENABLED;
 extern const uint32_t STATE_ELDER_CARE_ENABLED;
 extern const uint32_t STATE_SELF_SENIOR_MODE_STATE_ENABLED;
+extern const uint32_t STATE_SELF_SENIOR_MODE_STATE_DISABLED;
 extern const int32_t INVALID_CHANNEL_ID;
 extern const int32_t MAX_ALLOW_SIZE;
 } // namespace Accessibility

@@ -19,7 +19,7 @@
 #include "extend_service_manager.h"
 #include "accessibility_extend_power_manager.h"
 #include "magnification_manager.h"
- 
+
 OHOS::Accessibility::ExtendServiceManager &serviceManagerInstance =
   OHOS::Singleton<OHOS::Accessibility::ExtendServiceManager>::GetInstance();
 
@@ -256,7 +256,7 @@ API_EXPORT void ExtendGetAccessibilityWindowsCallback(OHOS::Accessibility::GetAc
 API_EXPORT void FollowFocuseElement(const int32_t centerX, const int32_t centerY)
 {
     HILOG_INFO();
-    OHOS::Singleton<OHOS::Accessibility::MagnificationManager>::GetInstance().FollowFocuseElement(centerX, centerY);
+    OHOS::Accessibility::MagnificationManager::GetInstance()->FollowFocuseElement(centerX, centerY);
 }
 API_EXPORT void OffZoomGesture()
 {
@@ -272,6 +272,11 @@ API_EXPORT void SetMagnificationState(bool state, uint32_t type, uint32_t mode)
 {
     HILOG_INFO();
     serviceManagerInstance.SetMagnificationState(state, type, mode);
+}
+API_EXPORT bool IsMagnificationWindowActivate()
+{
+    HILOG_INFO();
+    return serviceManagerInstance.IsMagnificationWindowActivate();
 }
 API_EXPORT void SetCurrentAccountId(int32_t accountId)
 {

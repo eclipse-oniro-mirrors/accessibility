@@ -18,7 +18,6 @@
 
 #include <atomic>
 #include "iaccessible_ability_channel.h"
-#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -104,14 +103,12 @@ public:
 
     /**
      * @brief Hold running lock to prevent screen turning off automatically.
-     * @param null.
      * @return Return RET_OK if hold running lock successfully, otherwise refer to the RetError for the failure.
      */
     RetError HoldRunningLock();
  
     /**
      * @brief Unhold running lock to prevent screen turning off automatically
-     * @param null.
      * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
      */
     RetError UnholdRunningLock();
@@ -221,13 +218,6 @@ public:
      */
     RetError NotifyDisconnect();
 
-    /**
-     * @brief Config need events.
-     * @param needEvents The need events.
-     * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
-     */
-    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents);
-
     /*
      * @brief Search element infos by specific property.
      * @param accessibilityWindowId The window id that the component belongs to.
@@ -245,6 +235,13 @@ public:
     
     RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info, AccessibilityFocusMoveParam param,
         std::vector<AccessibilityElementInfo> &infos, FocusMoveResult &result);
+
+    /**
+     * @brief Config need events.
+     * @param needEvents The need events.
+     * @return Return RET_OK if config need events successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents);
     
     /**
      * @brief Update accessibility element info attributes.

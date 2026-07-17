@@ -31,14 +31,13 @@
 
 namespace OHOS {
 namespace Accessibility {
-
 class AccessibilityAccountData;
-
 class AccessibleAbilityManager {
 public:
     AccessibleAbilityManager() = default;
     ~AccessibleAbilityManager();
 
+    void SetAccountData(int32_t accountId, const wptr<AccessibilityAccountData>& accountData);
     void AddConnectedAbility(sptr<AccessibleAbilityConnection>& connection);
     void RemoveConnectedAbility(const AppExecFwk::ElementName &element);
     void RemoveConnectedAbilityByUri(const std::string &uri);
@@ -95,12 +94,8 @@ public:
         std::function<sptr<AccessibleAbilityConnection>(
             int32_t, int32_t, AccessibilityAbilityInfo&)> connectionCreator);
     bool RemoveAbility(const std::string &bundleName);
-    void AddAbility(const std::string &bundleName,
-        const std::vector<AccessibilityAbilityInfo>& abilityInfos,
-        std::function<bool(const std::string&)> autoStartChecker);
-    void ChangeAbility(const std::string &bundleName,
-        std::function<bool(const std::string&)> autoStartChecker,
-        std::function<void(const std::string&, bool)> autoStartSetter);
+    void AddAbility(const std::string &bundleName, const std::vector<AccessibilityAbilityInfo> &abilityInfos);
+    void ChangeAbility(const std::string &bundleName);
 
     void AddUITestClient(const sptr<IRemoteObject> &obj,
         const std::string &bundleName, const std::string &abilityName);
@@ -108,7 +103,7 @@ public:
 
     void GetImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities) const;
     void UpdateImportantEnabledAbilities(std::map<std::string, uint32_t> &importantEnabledAbilities);
-    void UpdateAutoStartEnabledAbilities(std::function<bool(const std::string&)> autoStartChecker);
+    void UpdateAutoStartEnabledAbilities();
     void Clear();
 
     bool IsExistCapability(Capability capability);
@@ -148,7 +143,8 @@ private:
         const std::string& uri);
 
 private:
-    int32_t accountId_;
+    int32_t accountId_ = 0;
+    wptr<AccessibilityAccountData> accountData_;
     AccessibilityAbility connectedA11yAbilities_;
     AccessibilityAbility connectingA11yAbilities_;
     AccessibilityAbility waitDisconnectA11yAbilities_;

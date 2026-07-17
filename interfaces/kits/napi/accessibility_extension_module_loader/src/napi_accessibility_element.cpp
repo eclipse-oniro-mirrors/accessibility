@@ -2465,7 +2465,7 @@ napi_value NAccessibilityElement::FindElement(napi_env env, napi_callback_info i
         return nullptr;
     }
     callbackInfo->env_ = env;
-    FindElementConstructCallbackInfo(env, argc, argv, callbackInfo, accessibilityElement);
+    FindElementConstructCallbackInfo(env, argc, argv, callbackInfo);
     if (callbackInfo == nullptr) {
         return nullptr;
     }
@@ -3002,8 +3002,8 @@ napi_value NAccessibilityElement::FindElementAsync(napi_env env, size_t argc, na
     return promise;
 }
 
-void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_t argc, napi_value* argv,
-    NAccessibilityElementData* callbackInfo, AccessibilityElement* accessibilityElement)
+NAccessibilityErrorCode NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_t argc,
+    napi_value* argv, NAccessibilityElementData* callbackInfo)
 {
     NAccessibilityErrorCode errCode = NAccessibilityErrorCode::ACCESSIBILITY_OK;
     if (argc < ARGS_SIZE_THREE - 1) {
@@ -3045,15 +3045,7 @@ void NAccessibilityElement::FindElementConstructCallbackInfo(napi_env env, size_
         }
     }
 
-    if (errCode == NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVALID_PARAM) {
-        delete callbackInfo;
-        callbackInfo = nullptr;
-        delete accessibilityElement;
-        accessibilityElement = nullptr;
-        napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
-        HILOG_ERROR("invalid param");
-        napi_throw(env, err);
-    }
+    return errCode;
 }
 
 void NAccessibilityElement::FindElementByText(NAccessibilityElementData *callbackInfo)
@@ -3127,14 +3119,20 @@ void NAccessibilityElement::FindElementExecute(napi_env env, void* data)
             {
                 FocusMoveDirection direction = ConvertStringToDirection(callbackInfo->condition_);
                 HILOG_DEBUG("direction is %{public}d", direction);
-                AccessibilityFocusMoveParam param;
-                param.direction = direction;
-                param.type = callbackInfo->focusRuleType_;
-                callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
-                    *(callbackInfo->accessibilityElement_.elementInfo_), param, callbackInfo->nodeInfos_,
-                    callbackInfo->moveSearchResult_);
-                if (callbackInfo->ret_ == RET_OK && !callbackInfo->nodeInfos_.empty()) {
-                    callbackInfo->nodeInfo_ = callbackInfo->nodeInfos_[0];
+                if (systemApi) {
+                    AccessibilityFocusMoveParam param;
+                    param.direction = direction;
+                    param.type = callbackInfo->focusRuleType_;
+                    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->FocusMoveSearchWithCondition(
+                        *(callbackInfo->accessibilityElement_.elementInfo_), param, callbackInfo->nodeInfos_,
+                        callbackInfo->moveSearchResult_);
+                    if (callbackInfo->ret_ == RET_OK && !callbackInfo->nodeInfos_.empty()) {
+                        callbackInfo->nodeInfo_ = callbackInfo->nodeInfos_[0];
+                    }
+                } else {
+                    callbackInfo->ret_ = AccessibleAbilityClient::GetInstance()->GetNext(
+                        *(callbackInfo->accessibilityElement_.elementInfo_), direction,
+                        callbackInfo->nodeInfo_, systemApi);
                 }
             }
             break;

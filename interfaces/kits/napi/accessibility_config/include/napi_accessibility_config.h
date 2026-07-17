@@ -220,7 +220,7 @@ private:
         NAccessibilityConfigData* callbackInfo, napi_value* parameters, size_t argc);
     static void EnableAbilityWithCallbackExecute(napi_env env, void* data);
     static void EnableAbilityWithCallbackComplete(napi_env env, napi_status status, void* data);
-    static bool ParseSeniorModeInfos(napi_env env, napi_callback_info info,
+    static OHOS::Accessibility::RetError ParseSeniorModeInfos(napi_env env, napi_callback_info info,
         std::vector<OHOS::AccessibilityConfig::AccessibilityBundleSeniorModeInfo> &seniorModeInfos);
     static void SetSeniorModeStateComplete(napi_env env, napi_status status, void* data);
     static void GetSeniorModeStateComplete(napi_env env, napi_status status, void* data);

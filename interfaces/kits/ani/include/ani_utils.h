@@ -110,7 +110,7 @@ public:
     static T *Unwrap(ani_env *env, ani_object object, const char *propName = "nativePtr")
     {
         ani_long nativePtr;
-        if (ANI_OK != env->Object_GetFieldByName_Long(object, propName, &nativePtr)) {
+        if (env->Object_GetFieldByName_Long(object, propName, &nativePtr) != ANI_OK) {
             return nullptr;
         }
         return reinterpret_cast<T *>(nativePtr);
@@ -123,7 +123,7 @@ public:
         if constexpr (std::is_enum<T>::value || std::is_integral<T>::value) {
             ani_int intValue{};
             status = env->EnumItem_GetValue_Int(enumItem, &intValue);
-            if (ANI_OK != status) {
+            if (status != ANI_OK) {
                 HILOG_ERROR("EnumConvert_EtsToNative failed, status : %{public}d", status);
                 return false;
             }
@@ -132,7 +132,7 @@ public:
         } else if constexpr (std::is_same<T, std::string>::value) {
             ani_string strValue{};
             status = env->EnumItem_GetValue_String(enumItem, &strValue);
-            if (ANI_OK != status) {
+            if (status != ANI_OK) {
                 HILOG_ERROR("EnumItem_GetValue_String failed, status : %{public}d", status);
                 return false;
             }
@@ -155,7 +155,7 @@ public:
     {
         ani_enum aniEnum{};
         ani_status status = env->FindEnum(enumName, &aniEnum);
-        if (ANI_OK != status) {
+        if (status != ANI_OK) {
             HILOG_ERROR("Enum convert FindEnum failed: %{public}s status: %{public}d", enumName, status);
             return false;
         }
@@ -163,7 +163,7 @@ public:
         for (int32_t index = 0U; index < loopMaxNum; index++) {
             ani_enum_item enumItem{};
             status = env->Enum_GetEnumItemByIndex(aniEnum, index, &enumItem);
-            if (ANI_OK != status) {
+            if (status != ANI_OK) {
                 HILOG_ERROR(
                     "Enum_GetEnumItemByIndex failed: enumName:%{public}s index:%{public}d status:%{public}d",
                     enumName, index, status);

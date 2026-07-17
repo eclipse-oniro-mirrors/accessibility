@@ -71,7 +71,7 @@ class AccessibilityExtensionContext extends ExtensionContext {
   }
 
   holdRunningLockSync() {
-    console.log('HoldRunningLock');
+    console.log('holdRunningLockSync');
     return this.__context_impl__.holdRunningLockSync();
   }
 

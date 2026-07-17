@@ -64,6 +64,7 @@ namespace Accessibility {
         FIND_FOCUSED_ELEMENTINFO,
         FOCUS_MOVE_SEARCH,
         PERFORM_ACTION,
+        PERFORM_ACTION_WITH_PERMISSION,
         SET_CURTAIN_SCREEN,
         GET_WINDOW,
         GET_WINDOWS,

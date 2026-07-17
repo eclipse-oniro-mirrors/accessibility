@@ -52,7 +52,6 @@ AccessibleAbilityConnection::~AccessibleAbilityConnection()
     }
 }
 
-// LCOV_EXCL_START
 sptr<AppExecFwk::IBundleMgr> AccessibleAbilityConnection::GetBundleMgrProxy()
 {
     HILOG_DEBUG("GetBundleMgrProxy called");
@@ -97,7 +96,7 @@ sptr<AppExecFwk::IAppMgr> AccessibleAbilityConnection::GetAppMgrProxy()
 
     sptr<AppExecFwk::IAppMgr> abilityMgr = iface_cast<AppExecFwk::IAppMgr>(abilityMgrSa);
     if (!abilityMgr) {
-        HILOG_ERROR("Failed to get app manager service");
+        HILOG_ERROR("Failed to get app manager proxy");
         return nullptr;
     }
 
@@ -123,20 +122,23 @@ bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
         HILOG_ERROR("Account data is nullptr!");
         return false;
     }
-
     auto appStateObserver = sptr<AccessibleAppStateObserver>(
         new (std::nothrow) AccessibleAppStateObserver());
     if (!appStateObserver) {
         HILOG_ERROR("Failed to create app state observer");
         return false;
     }
-
     wptr<AccessibleAbilityConnection> weakPtr = this;
     appStateObserver->SetStateChangeCallback(
         [appBundleName, abilityName, appStateObserver, accountData, weakPtr](const AppExecFwk::ProcessData& appData) {
-            HILOG_INFO("OnProcessDied: bundleName=%{public}s, state=%{public}d",
-                appData.bundleName.c_str(), appData.state);
+            HILOG_INFO("OnProcessDied: bundleName=%{public}s, state=%{public}d, extensionType=%{public}d",
+                appData.bundleName.c_str(), appData.state, appData.extensionType);
             if (appData.bundleName != appBundleName) {
+                return;
+            }
+            if (appData.extensionType != AppExecFwk::ExtensionAbilityType::ACCESSIBILITY &&
+                appData.extensionType != AppExecFwk::ExtensionAbilityType::SERVICE) {
+                HILOG_INFO("invilid extensionTyep");
                 return;
             }
             
@@ -168,6 +170,7 @@ bool AccessibleAbilityConnection::RegisterAppStateObserverToAMS(
         HILOG_ERROR("Failed to get app manager proxy");
         return false;
     }
+
     auto ret = abilityManagerClient->RegisterApplicationStateObserver(appStateObserver);
     if (ret != ERR_OK) {
         accountData->RemoveAppStateObserverAbility(uri);
@@ -200,6 +203,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
             HILOG_ERROR("Failed to promote weak pointer!");
             return;
         }
+
         std::string bundleName = element.GetBundleName();
         std::string abilityName = element.GetAbilityName();
         auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
@@ -258,6 +262,7 @@ void AccessibleAbilityConnection::OnAbilityConnectDone(const AppExecFwk::Element
         }
 
         if (!connection->GetConnectionKey().empty()) {
+            HILOG_INFO("Register to AMS");
             if (!obj->RegisterAppStateObserverToAMS(appBundleName, abilityName, accountData)) {
                 HILOG_ERROR("Failed to register app state observer for %{public}s", bundleName.c_str());
             }
@@ -291,7 +296,6 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDone(const AppExecFwk::Elem
         }, "OnAbilityDisconnectDone");
 }
 
-// LCOV_EXCL_STOP
 void AccessibleAbilityConnection::OnAccessibilityEvent(AccessibilityEventInfo &eventInfo)
 {
     HILOG_DEBUG();
@@ -358,18 +362,15 @@ void AccessibleAbilityConnection::Disconnect()
         Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateAccessibilityManagerService();
     }
 
-    // LCOV_EXCL_BR_START
     if (!abilityClient_) {
         HILOG_ERROR("abilityClient is nullptr");
         return;
     }
-    // LCOV_EXCL_BR_STOP
     abilityClient_->Disconnect(connectionId_);
 
     if (isRegisterDisconnectCallback_) {
         int32_t accountId = accountId_;
         std::string clientName = Utils::GetUri(elementName_);
-        // LCOV_EXCL_BR_START
         if (!eventHandler_) {
             HILOG_ERROR("eventHanlder_ is nullptr");
             auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
@@ -378,7 +379,6 @@ void AccessibleAbilityConnection::Disconnect()
             }
             return;
         }
-        // LCOV_EXCL_BR_STOP
         eventHandler_->PostTask([this, accountId, clientName]() {
             DisconnectAbility();
             auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId);
@@ -470,7 +470,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDoneSync(const AppExecFwk::Ele
 {
     HILOG_DEBUG();
     auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(accountId_);
-    // LCOV_EXCL_BR_START
     if (!accountData) {
         HILOG_ERROR("accountData is nullptr.");
         return;
@@ -479,7 +478,6 @@ void AccessibleAbilityConnection::OnAbilityConnectDoneSync(const AppExecFwk::Ele
         HILOG_ERROR("AccessibleAbilityConnection::OnAbilityConnectDone get remoteObject failed");
         return;
     }
-    // LCOV_EXCL_BR_STOP
     elementName_ = element;
 
     sptr<AccessibleAbilityConnection> pointer = this;
@@ -546,7 +544,6 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
     Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
         A11yError::ERROR_A11Y_APPLICATION_DISCONNECT_ABNORMALLY,
         recipientElementName_.GetBundleName(), recipientElementName_.GetAbilityName());
-    // LCOV_EXCL_BR_START
     if (!handler_) {
         HILOG_ERROR("handler_ is nullptr");
         return;
@@ -558,19 +555,16 @@ void AccessibleAbilityConnection::AccessibleAbilityConnectionDeathRecipient::OnR
         HILOG_ERROR("sharedElementName is nullptr");
         return;
     }
-    // LCOV_EXCL_BR_STOP
     int32_t accountId = accountId_;
     handler_->PostTask([accountId, sharedElementName]() {
         HILOG_DEBUG();
 
         auto &aams = Singleton<AccessibleAbilityManagerService>::GetInstance();
         auto accountData = aams.GetAccountData(accountId);
-        // LCOV_EXCL_BR_START
         if (!accountData) {
             HILOG_ERROR("accountData is null.");
             return;
         }
-        // LCOV_EXCL_BR_STOP
 
         std::string uri = Utils::GetUri(*sharedElementName);
         if (!uri.empty()) {

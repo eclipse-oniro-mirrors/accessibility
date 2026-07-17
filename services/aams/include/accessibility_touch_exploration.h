@@ -245,6 +245,7 @@ public:
     bool SendDoubleTapAndLongPressDownEvent();
     void ProcessMultiFingerGesture(TouchExplorationMsg msg, uint64_t displayId);
     void CancelPostEvent(TouchExplorationMsg msg);
+    uint64_t GetCurrentDisplayId();
 
     /**
      * @brief Handle pointer events from previous event stream node.
@@ -351,7 +352,7 @@ private:
     void SendTouchEventToAA(MMI::PointerEvent &event);
     void SendGestureEventToAA(GestureType gestureId, uint64_t displayId);
     void SendEventToMultimodal(MMI::PointerEvent event, ChangeAction action);
-    void SendScreenWakeUpEvent(MMI::PointerEvent &event);
+    void SendScreenWakeUpEvent();
     void SendDragDownEventToMultimodal(MMI::PointerEvent event);
     void SendUpForDragDownEvent();
     bool GetPointerItemWithFingerNum(uint32_t fingerNum, std::vector<MMI::PointerEvent::PointerItem> &curPoints,
@@ -385,6 +386,7 @@ private:
     std::map<TouchExplorationState, std::map<int32_t, HandleEventFunc>> handleEventFuncMap_ {};
 
     TouchExplorationState currentState_ = TouchExplorationState::TOUCH_INIT;
+    std::atomic<uint64_t> currentDisplayId_ = 0;
     std::list<MMI::PointerEvent> receivedPointerEvents_ {};
 
     // single-finger gesture

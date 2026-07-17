@@ -71,7 +71,9 @@ public:
     RetError GetFlashReminderSwitch(bool &state);
     RetError GetSeniorModeState(bool &state);
     RetError GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, bool &state);
+    RetError SetAppSeniorModeState(const std::string &bundleName, int32_t appIndex, const bool state, bool isSystem);
     RetError SetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, const bool state);
+    RetError SetSeniorModeStateForApps(const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos);
 
     void UpdateConfigState();
     void UpdateAudioBalance();

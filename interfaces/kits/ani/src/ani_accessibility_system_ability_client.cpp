@@ -15,6 +15,7 @@
 
 #include <array>
 #include <iostream>
+#include "accessibility_def.h"
 #include "ani_accessibility_system_ability_client.h"
 #include "ani_utils.h"
 #include "hilog_wrapper.h"
@@ -149,7 +150,6 @@ void StateListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
-            HILOG_INFO("UnsubscribeObserver Observer exist");
             observers_.erase(iter);
             break;
         }
@@ -196,7 +196,6 @@ void AccessibilityCaptionsObserverImpl::UnsubscribeObserver(ani_env *env, OHOS::
     env->GlobalReference_Create(observer, &fnRef);
     for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
         if (((*iter)->configId_ == id) && (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_))) {
-            HILOG_INFO("UnsubscribeObserver Observer exist");
             observers_.erase(iter);
             break;
         }
@@ -209,12 +208,14 @@ void AccessibilityCaptionsObserverImpl::UnsubscribeObservers(OHOS::Accessibility
 {
     HILOG_INFO();
     std::lock_guard<ffrt::mutex> lock(mutex_);
-    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+    for (auto iter = observers_.begin(); iter != observers_.end();) {
         if ((*iter)->configId_ == id) {
             (*iter)->env_->GlobalReference_Delete((*iter)->fnRef_);
+            iter = observers_.erase(iter);
+        } else {
+            iter++;
         }
     }
-    observers_.clear();
 }
 
 void StateListener::NotifyETS(ani_env *env, bool state, ani_ref fnRef)
@@ -263,7 +264,7 @@ void StateListener::NotifyETS(ani_env *env, std::string mode, ani_ref fnRef)
     callbackInfo->env_ = env;
     callbackInfo->fnRef_ = fnRef;
     auto task = [callbackInfo]() {
-        HILOG_INFO("notify state changed to ets");
+        HILOG_INFO("notify mode changed to ets");
         ani_env *tmpEnv = callbackInfo->env_;
         ani_size nr_refs = ANI_SCOPE_SIZE;
         tmpEnv->CreateLocalScope(nr_refs);
@@ -662,7 +663,7 @@ ani_object ANIAccessibilityClient::ConvertAccessibleAbilityInfosToJs(ani_env *en
         return nullptr;
     }
     ani_ref undefinedRef = nullptr;
-    if (ANI_OK != env->GetUndefined(&undefinedRef)) {
+    if (env->GetUndefined(&undefinedRef) != ANI_OK) {
         HILOG_ERROR("GetUndefined Failed.");
     }
     ani_array aniArray;
@@ -679,7 +680,7 @@ ani_object ANIAccessibilityClient::ConvertAccessibleAbilityInfosToJs(ani_env *en
             return nullptr;
         }
         auto status = env->Array_Set(aniArray, index, ani_info);
-        if (ANI_OK != status) {
+        if (status != ANI_OK) {
             HILOG_ERROR("Object_CallMethodByName_Void failed  --%{public}d ", status);
             return nullptr;
         }
@@ -712,7 +713,6 @@ ani_object ANIAccessibilityClient::GetAccessibilityExtensionListSync(ani_env *en
     }
 
     // parse ability state
-    HILOG_INFO("stateTypeStr = %{public}s", stateTypeStr.c_str());
     if (CheckStateType(stateTypeStr)) {
         stateTypes = ConvertStringToAbilityStateType(stateTypeStr);
     } else {
@@ -885,18 +885,18 @@ ani_object ANIAccessibilityClient::CreateAccessibilityCaptionProperty(ani_env *e
         arkts::ani_signature::Builder::BuildClass("@ohos.accessibility.accessibility.CaptionsStyleImpl");
     ani_class cls;
     if (env->FindClass(className.Descriptor().c_str(), &cls) != ANI_OK) {
-        HILOG_ERROR(" not found class");
+        HILOG_ERROR("Class CaptionsStyleImpl not found");
         return nullptr;
     }
     ani_method ctor;
     if (env->Class_FindMethod(cls, "<ctor>", nullptr, &ctor) != ANI_OK) {
-        HILOG_ERROR(" Find method '<ctor>' failed");
+        HILOG_ERROR("Find method '<ctor>' failed");
         return nullptr;
     }
 
     ani_object object;
     if (env->Object_New(cls, ctor, &object) != ANI_OK) {
-        HILOG_ERROR(" New object fail");
+        HILOG_ERROR("New object fail");
         return nullptr;
     }
 
@@ -907,7 +907,7 @@ ani_object ANIAccessibilityClient::CreateCaptionPropertyInfoInner(ani_env *env, 
     ani_object &object, OHOS::AccessibilityConfig::CaptionProperty &captionProperty)
 {
     if (env == nullptr || cls == nullptr || object == nullptr) {
-        HILOG_ERROR(" invalid args");
+        HILOG_ERROR("invalid args");
         return nullptr;
     }
 
@@ -918,22 +918,22 @@ ani_object ANIAccessibilityClient::CreateCaptionPropertyInfoInner(ani_env *env, 
         HILOG_ERROR("set fontEdgeType failed");
     }
     if (env->Object_SetPropertyByName_Int(object, "fontScale", captionProperty.GetFontScale()) != ANI_OK) {
-        HILOG_ERROR(" Set property fontScale failed");
+        HILOG_ERROR("Set property fontScale failed");
     }
 
     if (!ANIUtils::SetStringProperty(env, object, "fontColor",
         ConvertColorToString(captionProperty.GetFontColor()))) {
-        HILOG_ERROR(" Set property fontColor failed");
+        HILOG_ERROR("Set property fontColor failed");
     }
 
     if (!ANIUtils::SetStringProperty(env, object, "backgroundColor",
         ConvertColorToString(captionProperty.GetBackgroundColor()))) {
-        HILOG_ERROR(" Set property backgroundColor failed");
+        HILOG_ERROR("Set property backgroundColor failed");
     }
 
     if (!ANIUtils::SetStringProperty(env, object, "windowColor",
         ConvertColorToString(captionProperty.GetWindowColor()))) {
-        HILOG_ERROR(" Set property windowColor failed");
+        HILOG_ERROR("Set property windowColor failed");
     }
 
     return object;
@@ -950,16 +950,16 @@ void ANIAccessibilityClient::SetStyle(ani_env *env, ani_object object, ani_objec
     uint32_t windowColor = DEFAULT_COLOR;
     ani_boolean isUndefined = true;
     if (env->Reference_IsUndefined(style, &isUndefined) != ANI_OK) {
-        HILOG_ERROR(" SetSyncCaptionsStyle Reference_IsUndefined");
+        HILOG_ERROR("SetSyncCaptionsStyle Reference_IsUndefined");
         return;
     }
 
     if (!isUndefined) {
-        ANIUtils::GetStringMember(env, style, "fontFamily", fontFamily);
-        ANIUtils::GetColorMember(env, style, "fontColor", fontColor);
-        ANIUtils::GetStringMember(env, style, "fontEdgeType", fontEdgeType);
-        ANIUtils::GetColorMember(env, style, "backgroundColor", backgroundColor);
-        ANIUtils::GetColorMember(env, style, "windowColor", windowColor);
+        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, style, "fontFamily", fontFamily));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "fontColor", fontColor));
+        RETURN_IF_FALSE(ANIUtils::GetStringMember(env, style, "fontEdgeType", fontEdgeType));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "backgroundColor", backgroundColor));
+        RETURN_IF_FALSE(ANIUtils::GetColorMember(env, style, "windowColor", windowColor));
         int styleValue = 0;
         if ((env->Object_GetPropertyByName_Int(style, "fontScale", &styleValue) != ANI_OK) || (styleValue < 0)) {
             HILOG_ERROR("Get property failed");

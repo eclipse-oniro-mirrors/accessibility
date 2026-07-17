@@ -96,7 +96,7 @@ public:
     void SetMagnificationTriggerMethod(int32_t screenMagnificationTriggerMethod);
     void InitInputManagerHandler();
     void SetServiceOnKeyEventResult(int32_t connectionId, bool isHandled, uint32_t sequenceNum);
-    inline void ReSetScreenShotUid()
+    inline void ResetScreenShotUid()
     {
         screenShotUid_ = INVALID_UID;
     }
@@ -108,6 +108,11 @@ public:
     inline std::shared_ptr<AppExecFwk::EventRunner> &GetInputManagerRunner()
     {
         return inputManagerRunner_;
+    }
+
+    inline bool IsZoomGestureEnabled()
+    {
+        return availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION;
     }
 
 private:
@@ -142,7 +147,7 @@ private:
     sptr<AccessibilityZoomGesture> zoomGesture_ = nullptr;
     bool needInteractMagnification_ = false;
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
-    int32_t screenShotUid_ = -2;
+    int32_t screenShotUid_ = INVALID_UID;
     sptr<AccessibilityScreenTouch> screenTouch_ = nullptr;
 };
 } // namespace Accessibility

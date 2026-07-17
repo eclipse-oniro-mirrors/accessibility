@@ -29,7 +29,6 @@
 #include "system_ability_load_callback_stub.h"
 #include "system_ability_status_change_stub.h"
 #include "safe_map.h"
-#include "accessibility_def.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -286,14 +285,12 @@ public:
 
     /**
      * @brief Hold running lock to prevent screen turning off automatically.
-     * @param null.
      * @return Return RET_OK if hold running lock successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError HoldRunningLock() override;
  
     /**
      * @brief Unhold running lock to prevent screen turning off automatically
-     * @param null.
      * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError UnholdRunningLock() override;

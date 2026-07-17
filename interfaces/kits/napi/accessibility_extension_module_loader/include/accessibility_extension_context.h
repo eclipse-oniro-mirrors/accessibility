@@ -184,18 +184,15 @@ public:
 
     /**
     * @brief Hold running lock to prevent screen turning off automatically.
-    * @param null.
     * @return RetError ERR_OK on success, others on failure.
     */
     RetError HoldRunningLock();
 
     /**
     * @brief Unhold running lock.
-    * @param null.
     * @return RetError ERR_OK on success, others on failure.
     */
     RetError UnholdRunningLock();
-
     /**
     * @brief Register Disconnect Callback.
     * @param callback.

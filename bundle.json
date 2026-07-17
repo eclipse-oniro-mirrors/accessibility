@@ -37,6 +37,7 @@
         "graphic_2d",
         "samgr",
         "napi",
+        "node",
         "window_manager",
         "eventhandler",
         "input",
@@ -64,6 +65,7 @@
         "hiappevent",
         "e2fsprogs",
         "resource_schedule_service",
+        "json",
         "cJSON",
         "selinux_adapter",
         "runtime_core",
@@ -73,7 +75,9 @@
         "time_service",
         "json",
         "ets_frontend",
-        "image_framework"
+        "image_framework",
+        "node",
+        "libuv"
       ],
       "third_party": []
     },

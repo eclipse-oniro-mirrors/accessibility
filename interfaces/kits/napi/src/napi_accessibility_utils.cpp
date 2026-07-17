@@ -44,7 +44,6 @@ napi_status ParseResourceIdFromNAPI(napi_env env, napi_value value, uint32_t &id
     napi_value propertyName = nullptr;
     status = napi_create_string_utf8(env, "id", NAPI_AUTO_LENGTH, &propertyName);
     if (status != napi_ok) {
-
         HILOG_ERROR("napi create resource id failed");
         return status;
     }
@@ -67,7 +66,6 @@ napi_status ParseResourceBundleNameFromNAPI(napi_env env, napi_value value,
     napi_value propertyName = nullptr;
     status = napi_create_string_utf8(env, "bundleName", NAPI_AUTO_LENGTH, &propertyName);
     if (status != napi_ok) {
-
         HILOG_ERROR("napi create bundleName failed");
         return status;
     }
@@ -117,18 +115,18 @@ napi_status ParseAppIndexFromNAPI(napi_env env, napi_value value, int32_t &appIn
     napi_value propertyName = nullptr;
     status = napi_create_string_utf8(env, "appIndex", NAPI_AUTO_LENGTH, &propertyName);
     if (status != napi_ok) {
-        HILOG_ERROR("napi create bundleName failed");
+        HILOG_ERROR("napi create appIndex failed");
         return status;
     }
     status = napi_has_property(env, value, propertyName, &hasProperty);
     if (!hasProperty) {
-        HILOG_ERROR("property is null");
-        return status;
+        appIndex = 0;
+        return napi_ok;
     }
     napi_value itemValue = nullptr;
     status = napi_get_property(env, value, propertyName, &itemValue);
     if (status != napi_ok) {
-        HILOG_ERROR("get bundleName from napi failed");
+        HILOG_ERROR("get appIndex from napi failed");
         return status;
     }
     ParseInt32(env, appIndex, itemValue);
@@ -398,6 +396,9 @@ NAccessibilityErrMsg QueryRetMsg(OHOS::Accessibility::RetError errorCode)
         case OHOS::Accessibility::RetError::RET_ERR_MAGNIFICATION_NOT_SUPPORT:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_CAPABILITY_NOT_SUPPORT,
                     ERROR_MESSAGE_CAPABILITY_NOT_SUPPORT };
+        case OHOS::Accessibility::RetError::RET_ERR_INVILID_APPINDEX:
+            return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_INVILID_APPINDEX,
+                    ERROR_MESSAGE_INVILID_APPINDEX };
         default:
             return { NAccessibilityErrorCode::ACCESSIBILITY_ERROR_SYSTEM_ABNORMALITY,
                      ERROR_MESSAGE_SYSTEM_ABNORMALITY };
@@ -461,6 +462,17 @@ bool CheckObserverEqual(napi_env env, napi_value observer, napi_env iterEnv, nap
     return false;
 }
 
+static int32_t SafeSubtract(int32_t minuend, int32_t subtrahend)
+{
+    if (subtrahend > 0 && minuend < INT32_MIN + subtrahend) {
+        return 0;
+    }
+    if (subtrahend < 0 && minuend > INT32_MAX + subtrahend) {
+        return 0;
+    }
+    return minuend - subtrahend;
+}
+
 /**********************************************************
  * Convert native object to js object
  *********************************************************/
@@ -475,12 +487,12 @@ void ConvertRectToJS(napi_env env, napi_value result, const Accessibility::Rect&
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "top", nLeftTopY));
 
     napi_value nWidth = nullptr;
-    int32_t width = rect.GetRightBottomXScreenPostion() - rect.GetLeftTopXScreenPostion();
+    int32_t width = SafeSubtract(rect.GetRightBottomXScreenPostion(), rect.GetLeftTopXScreenPostion());
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, width, &nWidth));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "width", nWidth));
 
     napi_value nHeight = nullptr;
-    int32_t height = rect.GetRightBottomYScreenPostion() - rect.GetLeftTopYScreenPostion();
+    int32_t height = SafeSubtract(rect.GetRightBottomYScreenPostion(), rect.GetLeftTopYScreenPostion());
     NAPI_CALL_RETURN_VOID(env, napi_create_int32(env, height, &nHeight));
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, result, "height", nHeight));
 }
@@ -1093,7 +1105,6 @@ bool ConvertActionArgsJSToNAPI(
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_SELECTION:
             ret = SetSelectionParam(env, object, args);
-            SetSelectionParam(env, object, args);
             break;
         case ActionType::ACCESSIBILITY_ACTION_SET_CURSOR_POSITION:
             napi_create_string_utf8(env, "offset", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1118,6 +1129,13 @@ bool ConvertActionArgsJSToNAPI(
                 args.insert(std::pair<std::string, std::string>("spanId", str.c_str()));
             }
             break;
+        case ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION:
+            napi_create_string_utf8(env, "injectActionType", NAPI_AUTO_LENGTH, &propertyNameValue);
+            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
+            if (hasProperty) {
+                args.insert(std::pair<std::string, std::string>("injectActionType", str.c_str()));
+            }
+            break;
         case ActionType::ACCESSIBILITY_ACTION_CUSTOM:
             napi_create_string_utf8(env, "customAction", NAPI_AUTO_LENGTH, &propertyNameValue);
             str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
@@ -1128,13 +1146,6 @@ bool ConvertActionArgsJSToNAPI(
                 napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
                 napi_throw(env, err);
                 ret = false;
-            }
-            break;
-        case ActionType::ACCESSIBILITY_ACTION_INJECT_ACTION:
-            napi_create_string_utf8(env, "injectActionType", NAPI_AUTO_LENGTH, &propertyNameValue);
-            str = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
-            if (hasProperty) {
-                args.insert(std::pair<std::string, std::string>("injectActionType", str.c_str()));
             }
             break;
         case ActionType::ACCESSIBILITY_ACTION_SCROLL_FORWARD:
@@ -1161,7 +1172,7 @@ bool CheckNumber(napi_env env, std::string value)
         HILOG_ERROR("check number failed!");
         napi_value err = CreateBusinessError(env, RetError::RET_ERR_INVALID_PARAM);
         napi_throw(env, err);
-        return false;   
+        return false;
     }
     return true;
 }
@@ -1241,7 +1252,10 @@ bool SetAccessibilityFocusSceneParam(napi_env env, napi_value object, std::map<s
     static const std::map<std::string, std::string> focusSceneMap = {
         {"HOVER_FOCUS", "1"},
         {"SWIPE_FOCUS", "2"},
-        {"SCROLL_FOCUS", "3"}
+        {"SCROLL_FOCUS", "3"},
+        {"1", "1"},
+        {"2", "2"},
+        {"3", "3"},
     };
 
     napi_create_string_utf8(env, "accessibilityFocusScene", NAPI_AUTO_LENGTH, &propertyNameValue);
@@ -1500,6 +1514,7 @@ bool ConvertEventInfoJSToNAPIPart3(
             eventInfo.AddContent(str);
         }
     }
+
     napi_create_string_utf8(env, "lastContent", NAPI_AUTO_LENGTH, &propertyNameValue);
     std::string strNapi = ConvertStringJSToNAPI(env, object, propertyNameValue, hasProperty);
     if (hasProperty) {

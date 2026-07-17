@@ -26,7 +26,6 @@
 #include "app_event_processor_mgr.h"
 #include "hilog_wrapper.h"
 #include "api_event_reporter.h"
-#include "uuid.h"
 #include <sys/stat.h>
 
 namespace OHOS {
@@ -36,7 +35,6 @@ std::string ApiEventReporter::g_fileContent = "";
 int64_t ApiEventReporter::g_processorId = -1;
 std::mutex ApiEventReporter::g_apiOperationMutex;
 std::mutex ApiEventReporter::g_apiExpandableDataMutex;
-constexpr size_t UUID_CHAR_ARRAY_LENGTH = 37;
 
 ApiEventReporter::ApiEventReporter()
 {
@@ -266,14 +264,6 @@ int64_t ApiEventReporter::AddProcessor()
     return g_processorId;
 }
 
-std::string RandomUuid()
-{
-    uuid_t uuid;
-    uuid_generate_random(uuid);
-    char uuidChars[UUID_CHAR_ARRAY_LENGTH] = {'\0'};
-    uuid_unparse(uuid, uuidChars);
-    return std::string(uuidChars);
-}
 // LCOV_EXCL_STOP
 int64_t ApiEventReporter::GetCurrentTime()
 {
@@ -291,10 +281,10 @@ void ApiEventReporter::ThresholdWriteEndEvent(int result, std::string apiName, i
         return;
     }
     if (thresholdValue <= 0) {
-        uint32_t dataCount = expandableData->runTime.size();
+        HILOG_ERROR("ApiEventReporter thresholdValue invalid!");
         return;
     }
-    int32_t dataCount = static_cast<int32_t>(expandableData->runTime.size());
+    uint32_t dataCount = expandableData->runTime.size();
     HILOG_DEBUG("ThresholdWriteEndEvent apiName: %{public}s, dataCount: %{public}d, thresholdValue: %{public}d",
         apiName.c_str(), dataCount, thresholdValue);
     if (dataCount % static_cast<uint32_t>(thresholdValue) != 0) {
@@ -326,6 +316,7 @@ std::shared_ptr<EventPeriodExpandableData> ApiEventReporter::CacheEventInfo(std:
     return expandableData;
 }
 
+// LCOV_EXCL_START
 void ApiEventReporter::ExecuteThresholdWriteEndEvent(std::string apiName,
     std::shared_ptr<EventPeriodExpandableData> expandableData, int32_t dataCount)
 {
@@ -334,8 +325,8 @@ void ApiEventReporter::ExecuteThresholdWriteEndEvent(std::string apiName,
     event.AddParam("trans_id", std::string(""));
     event.AddParam("api_name", apiName);
     event.AddParam("sdk_name", std::string("AccessibilityKit"));
-    event.AddParam("call_times", dataCount);
     event.AddParam("call_times", static_cast<int32_t>(expandableData->runTime.size()));
+    event.AddParam("success_times", expandableData->successCount);
     int64_t maxElement = 0;
     int64_t minElement = 0;
     if (!expandableData->runTime.empty()) {
@@ -379,5 +370,6 @@ bool ApiEventReporter::IsReal(const std::string& file, std::string& realFile)
     realFile = std::string(realPath);
     return true;
 }
+// LCOV_EXCL_STOP
 }  // namespace Accessibility
 }  // namespace OHOS

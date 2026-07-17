@@ -389,7 +389,7 @@ void TouchExploration::HandleTwoFingersDownStateMove(MMI::PointerEvent &event)
         CancelPostEvent(TouchExplorationMsg::TWO_FINGER_LONG_PRESS_MSG);
         if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_2)) {
             Clear();
-            SendScreenWakeUpEvent(event);
+            SendScreenWakeUpEvent();
             SetCurrentState(TouchExplorationState::INVALID);
             return;
         }
@@ -695,7 +695,7 @@ void TouchExploration::HandleMultiFingersTapStateMove(MMI::PointerEvent &event, 
         SetCurrentState(TouchExplorationState::INVALID);
     }
 
-    SendScreenWakeUpEvent(event);
+    SendScreenWakeUpEvent();
 }
 
 void TouchExploration::HandleTwoFingersTapStateMove(MMI::PointerEvent &event)
@@ -759,7 +759,7 @@ void TouchExploration::HandleMultiFingersContinueDownStateMove(MMI::PointerEvent
         SetCurrentState(TouchExplorationState::INVALID);
     }
 
-    SendScreenWakeUpEvent(event);
+    SendScreenWakeUpEvent();
 }
 
 void TouchExploration::HandleTwoFingersContinueDownStateMove(MMI::PointerEvent &event)
@@ -893,7 +893,7 @@ void TouchExploration::HandleThreeFingersDownStateMove(MMI::PointerEvent &event)
         CancelPostEvent(TouchExplorationMsg::THREE_FINGER_LONG_PRESS_MSG);
         if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_3)) {
             Clear();
-            SendScreenWakeUpEvent(event);
+            SendScreenWakeUpEvent();
             SetCurrentState(TouchExplorationState::INVALID);
             return;
         }
@@ -902,7 +902,7 @@ void TouchExploration::HandleThreeFingersDownStateMove(MMI::PointerEvent &event)
         SetCurrentState(TouchExplorationState::THREE_FINGERS_SWIPE);
     }
 
-    SendScreenWakeUpEvent(event);
+    SendScreenWakeUpEvent();
 }
 
 void TouchExploration::HandleThreeFingersSwipeStateDown(MMI::PointerEvent &event)
@@ -1057,7 +1057,7 @@ void TouchExploration::HandleThreeFingersSwipeStateMove(MMI::PointerEvent &event
 {
     receivedPointerEvents_.push_back(event);
     SaveMultiFingerSwipeGesturePointerInfo(event);
-    SendScreenWakeUpEvent(event);
+    SendScreenWakeUpEvent();
 }
 
 void TouchExploration::HandleThreeFingersTapStateDown(MMI::PointerEvent &event)
@@ -1122,7 +1122,7 @@ void TouchExploration::HandleFourFingersDownStateMove(MMI::PointerEvent &event)
         CancelPostEvent(TouchExplorationMsg::FOUR_FINGER_LONG_PRESS_MSG);
         if (event.GetPointerIds().size() != static_cast<uint32_t>(PointerCount::POINTER_COUNT_4)) {
             Clear();
-            SendScreenWakeUpEvent(event);
+            SendScreenWakeUpEvent();
             SetCurrentState(TouchExplorationState::INVALID);
             return;
         }
@@ -1131,7 +1131,7 @@ void TouchExploration::HandleFourFingersDownStateMove(MMI::PointerEvent &event)
         SetCurrentState(TouchExplorationState::FOUR_FINGERS_SWIPE);
     }
 
-    SendScreenWakeUpEvent(event);
+    SendScreenWakeUpEvent();
 }
 
 void TouchExploration::HandleFourFingersSwipeStateDown(MMI::PointerEvent &event)
@@ -1149,7 +1149,7 @@ void TouchExploration::HandleFourFingersSwipeStateMove(MMI::PointerEvent &event)
 {
     receivedPointerEvents_.push_back(event);
     SaveMultiFingerSwipeGesturePointerInfo(event);
-    SendScreenWakeUpEvent(event);
+    SendScreenWakeUpEvent();
 }
 
 void TouchExploration::HandleFourFingersTapStateDown(MMI::PointerEvent &event)

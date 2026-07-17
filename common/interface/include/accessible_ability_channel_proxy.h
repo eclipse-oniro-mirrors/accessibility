@@ -158,14 +158,12 @@ public:
 
     /**
      * @brief Hold running lock to prevent screen turning off automatically.
-     * @param null.
      * @return Return RET_OK if hold running lock successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError HoldRunningLock() override;
  
     /**
      * @brief Unhold running lock to prevent screen turning off automatically
-     * @param null.
      * @return Return RET_OK if Unhold running lock successfully, otherwise refer to the RetError for the failure.
      */
     virtual RetError UnholdRunningLock() override;
@@ -214,12 +212,6 @@ public:
     virtual RetError NotifyDisconnect() override;
 
     /**
-     * @brief Configure events.
-     * @return Return RET_OK if ConfigureEvents successfully, otherwise refer to the RetError for the failure.
-     */
-    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
-
-    /**
      * @brief Search element infos by specific property.
      * @param elementBasicInfo The basic info of the element.
      * @param param The specific property parameters.
@@ -230,6 +222,12 @@ public:
     virtual void SearchElementInfoBySpecificProperty(const ElementBasicInfo elementBasicInfo,
         const SpecificPropertyParam& param, const int32_t requestId,
         const sptr<IAccessibilityElementOperatorCallback> &callback) override;
+
+    /**
+     * @brief Configure events.
+     * @return Return RET_OK if ConfigureEvents successfully, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError ConfigureEvents(const std::vector<uint32_t> needEvents) override;
 
     virtual RetError FocusMoveSearchWithCondition(const AccessibilityElementInfo &info,
         const AccessibilityFocusMoveParam& param,
@@ -299,60 +297,6 @@ private:
      */
     bool WriteActionArguments(MessageParcel &data,
         const std::map<std::string, std::string> &actionArguments);
-
-    /**
-     * @brief Write accessibility virtual node properties to message parcel.
-     * @param data The message parcel to write to.
-     * @param accessibilityVirtualNode The virtual node to write.
-     * @return true: Write successfully; otherwise is not.
-     */
-    bool WriteAccessibilityVirtualNode(MessageParcel &data,
-        const AccessibilityVirtualNode& accessibilityVirtualNode);
-
-    /**
-     * @brief Write virtual node basic properties to message parcel.
-     * @param data The message parcel to write to.
-     * @param accessibilityVirtualNode The virtual node to write.
-     * @return true: Write successfully; otherwise is not.
-     */
-    bool WriteVirtualNodeBasicProperties(MessageParcel &data,
-        const AccessibilityVirtualNode& accessibilityVirtualNode);
-
-    /**
-     * @brief Write virtual node rectangle properties to message parcel.
-     * @param data The message parcel to write to.
-     * @param accessibilityVirtualNode The virtual node to write.
-     * @return true: Write successfully; otherwise is not.
-     */
-    bool WriteVirtualNodeRectProperties(MessageParcel &data,
-        const AccessibilityVirtualNode& accessibilityVirtualNode);
-
-    /**
-     * @brief Write virtual node boolean properties to message parcel.
-     * @param data The message parcel to write to.
-     * @param accessibilityVirtualNode The virtual node to write.
-     * @return true: Write successfully; otherwise is not.
-     */
-    bool WriteVirtualNodeBoolProperties(MessageParcel &data,
-        const AccessibilityVirtualNode& accessibilityVirtualNode);
-
-    /**
-     * @brief Write virtual node other properties to message parcel.
-     * @param data The message parcel to write to.
-     * @param accessibilityVirtualNode The virtual node to write.
-     * @return true: Write successfully; otherwise is not.
-     */
-    bool WriteVirtualNodeOtherProperties(MessageParcel &data,
-        const AccessibilityVirtualNode& accessibilityVirtualNode);
-
-    /**
-     * @brief Write virtual node relation properties to message parcel.
-     * @param data The message parcel to write to.
-     * @param accessibilityVirtualNode The virtual node to write.
-     * @return true: Write successfully; otherwise is not.
-     */
-    bool WriteVirtualNodeRelationProperties(MessageParcel &data,
-        const AccessibilityVirtualNode& accessibilityVirtualNode);
 
     static inline BrokerDelegator<AccessibleAbilityChannelProxy> delegator;
 };

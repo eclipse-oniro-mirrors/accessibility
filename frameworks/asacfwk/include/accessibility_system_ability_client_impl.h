@@ -186,6 +186,8 @@ public:
      */
     void SetAccessibilityState(const uint32_t stateType);
 
+    void OnApplicationUpdate();
+
     /**
      * @brief Set the element information by accessibility id to AA.
      * @param infos The element info searched by accessibility id.
@@ -451,6 +453,7 @@ private:
     uint32_t state_{0};
     ffrt::mutex mutex_;
     StateArrayHandler stateHandler_;
+    ffrt::mutex observersArrayMutex_;
     StateObserversArray stateObserversArray_;
 
     std::map<std::pair<int32_t, uint64_t>, sptr<AccessibilityElementOperatorImpl>> elementOperators_;

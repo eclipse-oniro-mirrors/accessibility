@@ -50,7 +50,7 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void DisableAbility([in] String name);
     void SetMagnificationState([in] boolean state);
     void GetActiveWindow([out] int windowId);
-    void GetActiveWindow([out] int windowId, [in] boolean systemApi);
+    void GetActiveWindowEx([out] int windowId);
     void CheckExtensionAbilityPermission([inout] String processName);
     void EnableUITestAbility([in] IRemoteObject obj, [in] int userId, [out] int actualUserId);
     void DisableUITestAbility([in] int userId);
@@ -97,8 +97,9 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void RegisterConfigObserver([in] IAccessibleAbilityManagerConfigObserver observer);
     void RemoveRequestId([in] int requestId);
     void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId);
-    void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId, [in] boolean systemApi);
+    void GetRootParentIdEx([in] int windowsId, [in] int treeId, [out] long parentId);
     void GetScreenReaderState([out] boolean state);
+    void GetAccessibilityState([out] unsigned int state);
     void SetEnhanceConfig([in] AccessibilitySecCompRawdata rawData);
     void SearchNeedEvents([out] unsigned int[] needEvents);
     void GetReadableRules([out] String name);
@@ -107,6 +108,8 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void DeRegisterEnableAbilityCallbackObserver([in] IRemoteObject obj);
     void DeRegisterConfigObserver([in] IRemoteObject obj);
     void IsInnerWindowRootElement([in] long elementId, [out] boolean state);
+    void GetAnimationOffStateWithPermission([out] boolean state);
+    void GetAudioMonoStateWithPermission([out] boolean state);
     void GetSeniorModeStateForApp([out] boolean state);
     void SetSeniorModeStateForApp([in] boolean state);
     void GetSeniorModeStateForApp([in] String name, [in] int appIndex, [out] boolean state);

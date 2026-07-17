@@ -1812,7 +1812,7 @@ public:
      * @sysCap Accessibility
      */
     bool GetClip() const;
-
+ 
     /**
      * @brief Set the clip to the element info.
      * @param clip The clip of node.
@@ -1939,11 +1939,11 @@ public:
      */
     const std::string &GetOriginalText() const;
 
-     /**
-      * @brief Set the accessibilityOriginalText to the element info.
-      * @param accessibilityScrollable The accessibilityOriginalText of node.
-      * @sysCap Accessibility
-      */
+    /**
+    * @brief Set the accessibilityOriginalText to the element info.
+    * @param accessibilityScrollable The accessibilityOriginalText of node.
+    * @sysCap Accessibility
+    */
     void SetOriginalText(const std::string &originalText);
 
     /*
@@ -1959,6 +1959,20 @@ public:
     * @sysCap Accessibility
     */
     void SetSourceType(const AccessibilitySourceType &sourceType);
+
+    /**
+     * @brief Get the virtual node supportAction.
+     * @return The virtual node supportAction.
+     * @sysCap Accessibility
+     */
+    uint64_t GetVirtualSupportAction() const;
+
+    /**
+     * @brief Set the virtual node supportAction.
+     * @param virtualSupportAction The virtual node supportAction.
+     * @sysCap Accessibility
+     */
+    void SetVirtualSupportAction(const uint64_t virtualSupportAction);
 
 protected:
     int32_t pageId_ = -1;
@@ -2051,6 +2065,7 @@ protected:
     int64_t uniqueId_ = -1;
     std::string originalText_ = "";
     AccessibilitySourceType sourceType_ = DEFAULT_NODE;
+    uint64_t virtualSupportAction_ = 0;
 };
 
 /**
@@ -2384,6 +2399,16 @@ public:
     {
         windowId_ = windowId;
     }
+
+    uint64_t GetSupportAction() const
+    {
+        return supportAction_;
+    }
+
+    void SetSupportAction(uint64_t supportAction)
+    {
+        supportAction_ = supportAction;
+    }
  
 protected:
     int64_t id_ = -1;
@@ -2404,6 +2429,7 @@ protected:
     std::vector<int64_t> childNodeIds_;
     int64_t elementId_ = -1;
     int32_t windowId_ = -1;
+    uint64_t supportAction_ = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS
