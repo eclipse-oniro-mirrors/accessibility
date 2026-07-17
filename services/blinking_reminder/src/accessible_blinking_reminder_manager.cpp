@@ -79,6 +79,7 @@ constexpr int32_t BLINKING_SCENARIO_IDLE = 0;
 constexpr int64_t PROXIMITY_SENSOR_SAMPLING_PERIOD_NS = 100000000;
 constexpr float PROXIMITY_THRESHOLD = 1.0f;
 constexpr int64_t DISPLAY_BUSY_THRESHOLD_MS = 1000;
+constexpr int32_t BLINK_CYCLE_STEP = 2;
 
 AccessibleBlinkingReminderManager::AccessibleBlinkingReminderManager() {}
 
@@ -111,9 +112,8 @@ int64_t AccessibleBlinkingReminderManager::GetCurrentTimeMs()
         std::chrono::steady_clock::now().time_since_epoch()).count();
 }
 
-AccessibleBlinkingReminderManager::ScenarioState
-    AccessibleBlinkingReminderManager::MakeScenarioState(
-        int32_t scenario, int32_t mode, bool displayBlocked)
+AccessibleBlinkingReminderManager::ScenarioState AccessibleBlinkingReminderManager::MakeScenarioState(
+    int32_t scenario, int32_t mode, bool displayBlocked)
 {
     ScenarioState scenarioState;
     scenarioState.scenario = scenario;
@@ -306,7 +306,7 @@ void AccessibleBlinkingReminderManager::BlinkingWorkSingle()
             return;
         }
         int32_t effectiveMode = ComputeEffectiveMode(state_);
-        ExecuteBlinkCycle(lock, effectiveMode, i % 2 == 0);
+        ExecuteBlinkCycle(lock, effectiveMode, i % BLINK_CYCLE_STEP == 0);
         if (cv_.wait_for(lock, std::chrono::milliseconds(BLINK_INTERVAL_MS),
             [this] { return !state_.isRunning; })) {
             return;
