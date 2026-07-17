@@ -193,7 +193,7 @@ public:
         ani_object &object, OHOS::AccessibilityConfig::CaptionProperty &captionProperty);
     static void OnSeniorModeStateChangeForApp(ani_env *env, ani_object observer);
     static void OffSeniorModeStateChangeForApp(ani_env *env, ani_object observer);
-    static void OffSeniorModeStateChangeForApps();
+    static void OffSeniorModeStateChangeForApps(ani_env *env);
     static ani_boolean GetSeniorModeStateForApp(ani_env *env, ani_string bundleName, ani_int appIndex);
     static void SetSeniorModeStateForApp(ani_env *env, ani_array seniorModeInfoArray);
 

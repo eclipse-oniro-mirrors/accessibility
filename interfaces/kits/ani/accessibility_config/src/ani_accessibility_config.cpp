@@ -1455,18 +1455,27 @@ void SeniorModeStateObserver::OnSeniorModeStateChanged(const std::string& bundle
 void ANIAccessibilityConfig::OnSeniorModeStateChangeForApp(ani_env *env, ani_object observer)
 {
     HILOG_INFO("onSeniorModeStateChangeForApp");
+    if (!IsAvailable(env)) {
+        return;
+    }
     seniorModeStateObservers_->SubscribeObserver(env, observer);
 }
 
 void ANIAccessibilityConfig::OffSeniorModeStateChangeForApp(ani_env *env, ani_object observer)
 {
     HILOG_INFO("offSeniorModeStateChangeForApp");
+    if (!IsAvailable(env)) {
+        return;
+    }
     seniorModeStateObservers_->UnsubscribeObserver(env, observer);
 }
 
-void ANIAccessibilityConfig::OffSeniorModeStateChangeForApps()
+void ANIAccessibilityConfig::OffSeniorModeStateChangeForApps(ani_env *env)
 {
     HILOG_INFO("offSeniorModeStateChangeForApp");
+    if (!IsAvailable(env)) {
+        return;
+    }
     seniorModeStateObservers_->UnsubscribeObservers();
 }
 
@@ -1480,6 +1489,7 @@ ani_boolean ANIAccessibilityConfig::GetSeniorModeStateForApp(ani_env *env, ani_s
     OHOS::Accessibility::RetError ret = instance.GetSeniorModeStateForApp(bundleNameStr, appIndexInt, state);
     if (ret != OHOS::Accessibility::RET_OK) {
         HILOG_ERROR("GetSeniorModeStateForApp failed: %{public}d", ret);
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
         return static_cast<ani_boolean>(false);
     }
     return static_cast<ani_boolean>(state);
@@ -1537,5 +1547,6 @@ void ANIAccessibilityConfig::SetSeniorModeStateForApp(ani_env *env, ani_array se
     OHOS::Accessibility::RetError ret = instance.SetSeniorModeStateForApp(infos);
     if (ret != OHOS::Accessibility::RET_OK) {
         HILOG_ERROR("SetSeniorModeStateForApp failed: %{public}d", ret);
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
 }
