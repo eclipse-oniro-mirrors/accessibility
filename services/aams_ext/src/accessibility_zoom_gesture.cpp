@@ -633,6 +633,9 @@ bool AccessibilityZoomGesture::IsKnuckles(MMI::PointerEvent &event)
 
 float AccessibilityZoomGesture::CalcSeparationDistance(MMI::PointerEvent &event)
 {
+    if (event == nullptr) {
+        return 0.0;
+    }
     std::vector<int32_t> pointerIdList = event.GetPointerIds();
     size_t count = pointerIdList.size();
     if (count != POINTER_COUNT_2) {
@@ -654,6 +657,9 @@ float AccessibilityZoomGesture::CalcSeparationDistance(MMI::PointerEvent &firstE
     MMI::PointerEvent &secondEvent)
 {
     HILOG_DEBUG();
+    if (firstEvent == nullptr || secondEvent == nullptr) {
+        return 0.0;
+    }
 
     MMI::PointerEvent::PointerItem firstItem;
     MMI::PointerEvent::PointerItem secondItem;
