@@ -57,9 +57,6 @@
 #include "mem_mgr_proxy.h"
 #include "common_event_manager.h"
 #include "accessibility_notification_helper.h"
-#ifdef OHOS_BUILD_ENABLE_SCREENLOCK_MANAGER
-#include "screenlock_manager.h"
-#endif
 #include "accessibility_blinking_reminder_proxy.h"
 
 #undef LOG_DOMAIN
