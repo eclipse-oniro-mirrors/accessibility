@@ -66,12 +66,14 @@ declare_args() {
   }
 
   if (defined(global_parts_info) &&
-    defined(global_parts_info.theme_screenlock_mgr)) {
+      defined(global_parts_info.theme_screenlock_mgr) &&
+      global_parts_info.theme_screenlock_mgr) {
     accessibility_screenlock_manager = true
   }
 
   if (defined(global_parts_info) &&
-    defined(global_parts_info.sensors_sensor)) {
+      defined(global_parts_info.sensors_sensor) &&
+      global_parts_info.sensors_sensor) {
     accessibility_sensor_support = true
   }
 }
