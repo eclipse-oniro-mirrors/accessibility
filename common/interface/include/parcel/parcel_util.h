@@ -45,19 +45,24 @@ inline bool IsContainerSizeValid(int readContainerSize)
     return true;
 }
 
-inline bool ContainerSecurityVerify(Parcel &parcel, int readContainerSize, size_t val_size)
+inline bool IsReadSizeValid(size_t readSize, size_t readAbleDataSize, size_t val_size)
 {
-    if (!IsContainerSizeValid(readContainerSize)) {
-        return false;
-    }
-    size_t readAbleDataSize = (parcel).GetReadableBytes();
-    size_t readSize = static_cast<size_t>(readContainerSize);
     if ((readSize > readAbleDataSize) || (val_size < readSize)) {
         HILOG_ERROR("Failed to read container, readSize = %{public}zu, readAbleDataSize = %{public}zu",
             readSize, readAbleDataSize);
         return false;
     }
     return true;
+}
+
+inline bool ContainerSecurityVerify(Parcel &parcel, int readContainerSize, size_t val_size)
+{
+    if (!IsContainerSizeValid(readContainerSize)) {
+        return false;
+    }
+    size_t readSize = static_cast<size_t>(readContainerSize);
+    size_t readAbleDataSize = (parcel).GetReadableBytes();
+    return IsReadSizeValid(readSize, readAbleDataSize, val_size);
 }
 } // namespace Accessibility
 } // namespace OHOS
