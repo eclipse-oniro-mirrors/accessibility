@@ -61,7 +61,7 @@ public:
         OHOS::Accessibility::AccessibilityEventInfo &eventInfo);
     static void ConvertEventInfoRefFields(ani_env *env, ani_object eventObject,
         OHOS::Accessibility::AccessibilityEventInfo &eventInfo);
-    static bool SendEventToMainThread(const std::function<void()> func);
+    static bool SendEventToMainThread(const std::function<void()> &func);
     static bool ParseStringArray(ani_env *env, ani_object array, std::vector<std::string>& outValue);
     static ani_object CreateArray(ani_env *env, const std::vector<std::string> strs);
     static bool ParseString(ani_env *env, ani_ref ref, std::string& outValue);

@@ -709,9 +709,9 @@ void ANIUtils::ConvertEventInfoRefFields(ani_env *env, ani_object eventObject,
         id, bundleName.c_str(), moduleName.c_str());
 }
 
-bool ANIUtils::SendEventToMainThread(const std::function<void()> func)
+bool ANIUtils::SendEventToMainThread(const std::function<void()> &func)
 {
-    if (func == nullptr) {
+    if (!func) {
         HILOG_ERROR("func is nullptr!");
         return false;
     }

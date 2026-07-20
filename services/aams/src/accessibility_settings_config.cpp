@@ -362,6 +362,7 @@ RetError AccessibilitySettingsConfig::SetMouseAutoClick(const int32_t time)
 RetError AccessibilitySettingsConfig::SetShortkeyTarget(const std::string &name)
 {
     HILOG_DEBUG("name = [%{public}s]", name.c_str());
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     if (!datashare_) {
         HILOG_ERROR("helper is nullptr");
         return RET_ERR_NULLPTR;
@@ -787,8 +788,9 @@ int32_t AccessibilitySettingsConfig::GetMouseAutoClick() const
     return mouseAutoClick_.load();
 }
 
-const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
+std::string AccessibilitySettingsConfig::GetShortkeyTarget() const
 {
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     return shortkeyTarget_;
 }
 

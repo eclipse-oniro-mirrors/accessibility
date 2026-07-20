@@ -90,7 +90,7 @@ public:
     int32_t GetShortKeyTimeout() const;
     bool GetMouseKeyState() const;
     int32_t GetMouseAutoClick() const;
-    const std::string &GetShortkeyTarget() const;
+    std::string GetShortkeyTarget() const;
     const std::vector<std::string> GetShortkeyMultiTarget();
     bool GetHighContrastTextState() const;
     bool GetInvertColorState() const;
