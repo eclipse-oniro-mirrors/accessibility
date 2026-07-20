@@ -36,6 +36,8 @@ static void CreateAccessibilityEventTypePartTwo(napi_env env, napi_value objValu
 {
     napi_set_named_property(env, objValue, "TYPE_WINDOW_LAYER",
         CreateIntObject(env, AccessibilityEventType::TYPE_WINDOW_LAYER));
+    napi_set_named_property(env, objValue, "TYPE_TOUCH_GUIDE_GESTURE",
+        CreateIntObject(env, AccessibilityEventType::TYPE_TOUCH_GUIDE_GESTURE));
     napi_set_named_property(env, objValue, "TYPE_TOUCH_BEGIN",
         CreateIntObject(env, AccessibilityEventType::TYPE_TOUCH_BEGIN));
     napi_set_named_property(env, objValue, "TYPE_TOUCH_END",

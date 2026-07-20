@@ -202,6 +202,7 @@ void ConvertEventTypes(const uint32_t value, std::string &eventTypes)
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT, "accessibilityFocus"},
         {EventType::TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED_EVENT, "accessibilityFocusClear"},
         {EventType::TYPE_VIEW_TEXT_MOVE_UNIT_EVENT, "textMoveUnit"},
+        {EventType::TYPE_TOUCH_GUIDE_GESTURE, "touchGuideGesture"},
         {EventType::TYPE_TOUCH_GUIDE_BEGIN, "touchGuideBegin"},
         {EventType::TYPE_TOUCH_GUIDE_END, "touchGuideEnd"},
         {EventType::TYPE_TOUCH_BEGIN, "touchBegin"},

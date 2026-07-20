@@ -47,6 +47,12 @@ static void SendAccessibilityEventToAA(EventType eventType, GestureType gestureI
         eventType, gestureId, displayId);
 }
 
+static void SendTouchGuideGestureToAA(uint64_t displayId, const std::string gestureType)
+{
+    Singleton<AccessibleAbilityManagerService>::GetInstance().SendTouchGuideGestureToAA(
+        displayId, gestureType);
+}
+
 static std::vector<int32_t> DispatchKeyEvent(MMI::KeyEvent &event, uint32_t sequenceNum)
 {
     sptr<AccessibilityAccountData> accountData =
@@ -72,6 +78,7 @@ bool ExtendManagerServiceProxy::LoadExtProxy()
         if (!handle_) {
             handle_ = dlopen(extendServiceName_.c_str(), RTLD_LAZY);
             SetSendAccessibilityEventToAACallback();
+            SetSendTouchGuideGestureToAACallback();
             SetFindFocusedElementCallback();
             SetExecuteActionOnAccessibilityFocusedCallback();
             SetGetFocusedWindowIdCallback();
@@ -400,6 +407,19 @@ bool ExtendManagerServiceProxy::SetSendAccessibilityEventToAACallback()
     using SetCallback = void (*)(SendAccessibilityEventToAACallback cb);
     SetCallback setCallback = (SetCallback)GetFunc("SetSendAccessibilityEventToAACallback");
     setCallback(SendAccessibilityEventToAA);
+    return true;
+}
+
+bool ExtendManagerServiceProxy::SetSendTouchGuideGestureToAACallback()
+{
+    if (!handle_) {
+        HILOG_ERROR("Extension Proxy is not load");
+        return false;
+    }
+    using SendTouchGuideGestureToAACallback = void (*)(uint64_t displayId, const std::string gestureType);
+    using SetCallback = void (*)(SendTouchGuideGestureToAACallback cb);
+    SetCallback setCallback = (SetCallback)GetFunc("SetSendTouchGuideGestureToAACallback");
+    setCallback(SendTouchGuideGestureToAA);
     return true;
 }
 

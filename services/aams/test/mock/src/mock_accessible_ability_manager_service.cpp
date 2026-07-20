@@ -796,6 +796,12 @@ ErrCode AccessibleAbilityManagerService::IsInnerWindowRootElement(int64_t elemen
     return NO_ERROR;
 }
 
+void AccessibleAbilityManagerService::SendTouchGuideGestureToAA(uint64_t displayId, const std::string gestureType)
+{
+    (void)displayId;
+    (void)gestureType;
+}
+
 void AccessibleAbilityManagerService::SendAccessibilityEventToAA(
     EventType eventType, GestureType gestureId, uint64_t displayId)
 {

@@ -532,6 +532,23 @@ void AccessibleAbilityManagerService::SendAccessibilityEventToAA(
     InnerSendEvent(eventInfoParcel, 0, userId);
 }
 
+void AccessibleAbilityManagerService::SendTouchGuideGestureToAA(uint64_t displayId, const std::string gestureType)
+{
+    HILOG_INFO("gestureType is %{public}s.", gestureType.c_str());
+    int32_t userId = GetUserIdByDisplayId(displayId);
+    sptr<AccessibilityAccountData> accountData = GetAccountData(userId);
+    RETURN_IF_NULL(accountData);
+    AccessibilityEventInfo eventInfo {};
+    int32_t windowId = accountData->GetWindowManager().GetActiveWindowId();
+    eventInfo.SetWindowId(windowId);
+    eventInfo.SetEventType(EventType::TYPE_TOUCH_GUIDE_GESTURE);
+    ExtraEventInfo extraEventInfo {};
+    extraEventInfo.SetExtraEventInfo("touchGuideGestureType", gestureType);
+    eventInfo.SetExtraEvent(extraEventInfo);
+    AccessibilityEventInfoParcel eventInfoParcel(eventInfo);
+    InnerSendEvent(eventInfoParcel, 0, userId);
+}
+
 ErrCode AccessibleAbilityManagerService::SendEvent(
     const AccessibilityEventInfoParcel &eventInfoParcel, int32_t flag)
 {
