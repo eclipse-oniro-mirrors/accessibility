@@ -13,17 +13,14 @@
  * limitations under the License.
  */
 
-#ifndef private
-#define private public
-#endif
-#ifndef protected
-#define protected public
-#endif
-
 #include <gtest/gtest.h>
 #include <chrono>
 #include <thread>
+#define private public
+#define protected public
 #include "accessible_blinking_reminder_manager.h"
+#undef private
+#undef protected
 #include "accessibility_def.h"
 
 using namespace testing;
