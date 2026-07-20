@@ -63,7 +63,10 @@ void MagnificationManager::UnSubscribeCommonEvent()
 
 void MagnificationManager::OnReceiveEvent(const EventFwk::CommonEventData &data)
 {
-    DisableMagnification();
+    std::string action = data.GetWant().GetAction();
+    if (action == "usual.event.SCREEN_LOCKED") {
+        DisableMagnification();
+    }
 }
 
 std::shared_ptr<WindowMagnificationManager> MagnificationManager::GetWindowMagnificationManager()
