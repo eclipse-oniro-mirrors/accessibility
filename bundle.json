@@ -78,6 +78,7 @@
         "sensor",
         "camera_framework",
         "screenlock_mgr",
+        "graphic_surface",
         "image_framework",
         "node",
         "libuv",
