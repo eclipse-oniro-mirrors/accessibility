@@ -13,8 +13,12 @@
  * limitations under the License.
  */
 
+#ifndef private
 #define private public
+#endif
+#ifndef protected
 #define protected public
+#endif
 
 #include <gtest/gtest.h>
 #include <chrono>
