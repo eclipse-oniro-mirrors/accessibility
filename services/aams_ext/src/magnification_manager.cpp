@@ -39,7 +39,7 @@ std::shared_ptr<MagnificationManager> MagnificationManager::GetInstance()
 MagnificationManager::MagnificationManager()
 {
     EventFwk::MatchingSkills matchingSkills;
-    matchingSkills.AddEvent("usual.event.SCREEN_OFF");
+    matchingSkills.AddEvent("usual.event.SCREEN_LOCKED");
     EventFwk::CommonEventSubscribeInfo subscribeInfo(matchingSkills);
     subscriber_ = std::make_shared<SystemEventSubscriber>(
         subscribeInfo, std::bind(&MagnificationManager::OnReceiveEvent, this, std::placeholders::_1));
@@ -48,7 +48,7 @@ MagnificationManager::MagnificationManager()
 void MagnificationManager::SubscribeCommonEvent()
 {
     if (subscriber_ != nullptr) {
-        HILOG_INFO("subscribe screen off event");
+        HILOG_INFO("subscribe screen lock event");
         EventFwk::CommonEventManager::SubscribeCommonEvent(subscriber_);
     }
 }
@@ -64,8 +64,7 @@ void MagnificationManager::UnSubscribeCommonEvent()
 void MagnificationManager::OnReceiveEvent(const EventFwk::CommonEventData &data)
 {
     std::string action = data.GetWant().GetAction();
-    if (action == "usual.event.SCREEN_OFF") {
-        HILOG_INFO("screen off received");
+    if (action == "usual.event.SCREEN_LOCKED") {
         DisableMagnification();
     }
 }
