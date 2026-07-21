@@ -196,7 +196,7 @@ private:
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
     std::shared_ptr<AccessibilityDatashareHelper> systemDatashare_ = nullptr;
     std::shared_ptr<AccessibilityDatashareHelper> globalDatashare_ = nullptr;
-    ffrt::mutex interfaceMutex_;
+    mutable ffrt::mutex interfaceMutex_;
     bool isInitialized_ = false;
     mutable ffrt::mutex seniorModeStateForAppMapMutex_;
     std::map<std::string, bool> seniorModeStateForAppMap_;
