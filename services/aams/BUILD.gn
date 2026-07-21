@@ -69,7 +69,8 @@ accessibleabilityms_files = [
   "${services_path}/src/accessible_extend_manager_service_proxy.cpp",
   "${services_path}/src/accessibility_element_operator_manager.cpp",
   "${services_path}/src/accessible_ability_manager.cpp",
-  "${services_path}/src/element_operator_callback_impl.cpp"
+  "${services_path}/src/element_operator_callback_impl.cpp",
+  "${services_path}/src/accessibility_blinking_reminder_proxy.cpp"
 ]
 
 ohos_shared_library("accessibleabilityms") {
@@ -147,6 +148,22 @@ ohos_shared_library("accessibleabilityms") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (accessibility_camera_support) {
+    external_deps += [ "camera_framework:camera_framework" ]
+  }
+
+  if (accessibility_screenlock_manager) {
+    external_deps += [ "screenlock_mgr:screenlock_client" ]
+  }
+
+  if (accessibility_sensor_support) {
+    external_deps += [ "sensor:sensor_interface_native" ]
+  }
+
+  if (accessibility_feature_display_manager) {
+    external_deps += [ "display_manager:displaymgr" ]
   }
 
   install_enable = true

@@ -30,6 +30,7 @@ using CONFIG_ID = OHOS::AccessibilityConfig::CONFIG_ID;
 using ConfigValue = OHOS::AccessibilityConfig::ConfigValue;
 
 constexpr int32_t ANI_SCOPE_SIZE = 16;
+constexpr const char *BLINK_RESULT_CODE = "@ohos.accessibility.config.config.BlinkResultCode";
 const std::string DEFAULT_FONT_FAMILY = "default";
 constexpr uint32_t DEFAULT_FONT_SCALE = 75;
 constexpr uint32_t DEFAULT_COLOR = 0xff000000;
@@ -1549,4 +1550,68 @@ void ANIAccessibilityConfig::SetSeniorModeStateForApp(ani_env *env, ani_array se
         HILOG_ERROR("SetSeniorModeStateForApp failed: %{public}d", ret);
         ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
     }
+}
+
+ani_enum_item ANIAccessibilityConfig::StartBlinking(ani_env *env, ani_enum_item mode, ani_enum_item scenario)
+{
+    HILOG_INFO();
+    ani_int modeValue = 0;
+    ani_int scenarioValue = 0;
+    if (ANI_OK != env->EnumItem_GetValue_Int(mode, &modeValue)) {
+        HILOG_ERROR("Failed to get mode enum value");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(OHOS::Accessibility::RET_ERR_INVALID_PARAM));
+        return nullptr;
+    }
+    if (ANI_OK != env->EnumItem_GetValue_Int(scenario, &scenarioValue)) {
+        HILOG_ERROR("Failed to get scenario enum value");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(OHOS::Accessibility::RET_ERR_INVALID_PARAM));
+        return nullptr;
+    }
+
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    OHOS::Accessibility::BlinkResultCode blinkResult = OHOS::Accessibility::BlinkResultCode::BLINK_SUCCESS;
+    OHOS::Accessibility::RetError ret = instance.StartBlinking(modeValue, scenarioValue, blinkResult);
+    if (ret != OHOS::Accessibility::RET_OK) {
+        HILOG_ERROR("StartBlinking failed, ret=%{public}d", static_cast<int32_t>(ret));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        return nullptr;
+    }
+    ani_enum_item result = nullptr;
+    if (!ANIUtils::EnumConvert_NativeToEts(env, BLINK_RESULT_CODE, blinkResult, result)) {
+        HILOG_ERROR("EnumConvert_NativeToEts BlinkResultCode failed");
+        return nullptr;
+    }
+    return result;
+}
+
+ani_enum_item ANIAccessibilityConfig::StopBlinking(ani_env *env, ani_enum_item mode, ani_enum_item scenario)
+{
+    HILOG_INFO();
+    ani_int modeValue = 0;
+    ani_int scenarioValue = 0;
+    if (ANI_OK != env->EnumItem_GetValue_Int(mode, &modeValue)) {
+        HILOG_ERROR("Failed to get mode enum value");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(OHOS::Accessibility::RET_ERR_INVALID_PARAM));
+        return nullptr;
+    }
+    if (ANI_OK != env->EnumItem_GetValue_Int(scenario, &scenarioValue)) {
+        HILOG_ERROR("Failed to get scenario enum value");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(OHOS::Accessibility::RET_ERR_INVALID_PARAM));
+        return nullptr;
+    }
+
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    OHOS::Accessibility::BlinkResultCode blinkResult = OHOS::Accessibility::BlinkResultCode::BLINK_SUCCESS;
+    OHOS::Accessibility::RetError ret = instance.StopBlinking(modeValue, scenarioValue, blinkResult);
+    if (ret != OHOS::Accessibility::RET_OK) {
+        HILOG_ERROR("StopBlinking failed, ret=%{public}d", static_cast<int32_t>(ret));
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(ret));
+        return nullptr;
+    }
+    ani_enum_item result = nullptr;
+    if (!ANIUtils::EnumConvert_NativeToEts(env, BLINK_RESULT_CODE, blinkResult, result)) {
+        HILOG_ERROR("EnumConvert_NativeToEts BlinkResultCode failed");
+        return nullptr;
+    }
+    return result;
 }

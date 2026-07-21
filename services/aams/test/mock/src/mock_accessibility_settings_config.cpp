@@ -588,5 +588,44 @@ std::map<std::string, bool> AccessibilitySettingsConfig::GetSeniorModeStateForAp
     std::map<std::string, bool> ret;
     return ret;
 }
+
+RetError AccessibilitySettingsConfig::SetFlashReminderMode(const int32_t mode)
+{
+    HILOG_DEBUG("start.");
+    flashReminderMode_ = mode;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetFlashReminderFunctionEnabled(const std::string &enabled)
+{
+    HILOG_DEBUG("start.");
+    flashReminderFunctionEnabled_ = enabled;
+    return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetFlashReminderUnlock(const bool state)
+{
+    HILOG_DEBUG("start.");
+    flashReminderUnlock_ = state;
+    return RET_OK;
+}
+
+int32_t AccessibilitySettingsConfig::GetFlashReminderMode() const
+{
+    HILOG_DEBUG("start.");
+    return flashReminderMode_;
+}
+
+const std::string &AccessibilitySettingsConfig::GetFlashReminderFunctionEnabled() const
+{
+    HILOG_DEBUG("start.");
+    return flashReminderFunctionEnabled_;
+}
+
+bool AccessibilitySettingsConfig::GetFlashReminderUnlock() const
+{
+    HILOG_DEBUG("start.");
+    return flashReminderUnlock_;
+}
 } // namespace Accessibility
 } // namespace OHOS

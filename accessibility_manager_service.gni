@@ -22,6 +22,9 @@ declare_args() {
   accessibility_feature_hiviewdfx_hitrace = true
   accessibility_feature_hiviewdfx_hisysevent = true
   accessibility_dynamic_support = false
+  accessibility_camera_support = false
+  accessibility_screenlock_manager = false
+  accessibility_sensor_support = false
   security_component_enable = false
   if (defined(global_parts_info) &&
       !defined(global_parts_info.powermgr_display_manager)) {
@@ -54,6 +57,24 @@ declare_args() {
   if (!defined(global_parts_info) ||
       defined(global_parts_info.security_security_component_manager)) {
     security_component_enable = true
+  }
+
+  if (defined(global_parts_info) &&
+      defined(global_parts_info.multimedia_camera_framework) &&
+      global_parts_info.multimedia_camera_framework) {
+    accessibility_camera_support = true
+  }
+
+  if (defined(global_parts_info) &&
+      defined(global_parts_info.theme_screenlock_mgr) &&
+      global_parts_info.theme_screenlock_mgr) {
+    accessibility_screenlock_manager = true
+  }
+
+  if (defined(global_parts_info) &&
+      defined(global_parts_info.sensors_sensor) &&
+      global_parts_info.sensors_sensor) {
+    accessibility_sensor_support = true
   }
 }
 
@@ -104,4 +125,16 @@ if (product_name != "qemu-arm-linux-min") {
 
 if (security_component_enable) {
   accessibility_default_defines += [ "ACCESSIBILITY_SECURITY_COMPONENT" ]
+}
+
+if (accessibility_camera_support) {
+  accessibility_default_defines += [ "OHOS_BUILD_ENABLE_CAMERA" ]
+}
+
+if (accessibility_screenlock_manager) {
+  accessibility_default_defines += [ "OHOS_BUILD_ENABLE_SCREENLOCK_MANAGER" ]
+}
+
+if (accessibility_sensor_support) {
+  accessibility_default_defines += [ "OHOS_BUILD_ENABLE_SENSOR" ]
 }

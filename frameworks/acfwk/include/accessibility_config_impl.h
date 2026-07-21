@@ -109,6 +109,8 @@ public:
     Accessibility::RetError SetEnhanceConfig(uint8_t *cfg, uint32_t cfgLen);
     Accessibility::RetError GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, bool &state);
     Accessibility::RetError SetSeniorModeStateForApp(const std::vector<AccessibilityBundleSeniorModeInfo> &infos);
+    Accessibility::RetError StartBlinking(int32_t mode, int32_t scenario, Accessibility::BlinkResultCode &blinkResult);
+    Accessibility::RetError StopBlinking(int32_t mode, int32_t scenario, Accessibility::BlinkResultCode &blinkResult);
 
     void ResetService(const wptr<IRemoteObject> &remote);
     void OnAccessibleAbilityManagerCaptionPropertyChanged(const CaptionProperty &property);

@@ -133,6 +133,7 @@ ohos_unittest("accessible_ability_test") {
     "../../../services/aams/src/accessible_ability_manager.cpp",
     "../../../services/aams/src/accessibility_element_operator_manager.cpp",
     "../../../services/aams/src/element_operator_callback_impl.cpp",
+    "../../../services/aams/src/accessibility_blinking_reminder_proxy.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_account_data.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_common_event.cpp",
     "../../../services/aams/test/mock/src/mock_accessibility_event_transmission.cpp",
@@ -234,6 +235,18 @@ ohos_unittest("accessible_ability_test") {
 
   if (security_component_enable) {
     external_deps += [ "security_component_manager:libsecurity_component_sdk" ]
+  }
+
+  if (accessibility_camera_support) {
+    external_deps += [ "camera_framework:camera_framework" ]
+  }
+
+  if (accessibility_screenlock_manager) {
+    external_deps += [ "screenlock_mgr:screenlock_client" ]
+  }
+
+  if (accessibility_sensor_support) {
+    external_deps += [ "sensor:sensor_interface_native" ]
   }
 }
 

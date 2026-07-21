@@ -539,6 +539,25 @@ public:
     Accessibility::RetError UnsubscribeAppSeniorModeStateObserver(
         const std::shared_ptr<AccessibilityAppSeniorModeStateObserver> &observer);
 
+    /**
+    * @brief Start blinking with specified mode and scenario
+    * @param mode Indicates the blinking mode (SINGLE_BLINK or CONTINUOUS_BLINK)
+    * @param scenario Indicates the scenario (ALARM, NOTIFICATION, CALL, or TESTING)
+    * @param blinkResult Indicates the BlinkResultCode result of the blinking operation.
+    * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+    */
+    Accessibility::RetError StartBlinking(int32_t mode, int32_t scenario,
+        Accessibility::BlinkResultCode &blinkResult);
+
+    /**
+    * @brief Stop blinking with specified mode and scenario
+    * @param mode Indicates the blinking mode (SINGLE_BLINK or CONTINUOUS_BLINK)
+    * @param scenario Indicates the scenario (ALARM, NOTIFICATION, CALL, or TESTING)
+    * @param blinkResult Indicates the BlinkResultCode result of the blinking operation.
+    * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+    */
+    Accessibility::RetError StopBlinking(int32_t mode, int32_t scenario,
+        Accessibility::BlinkResultCode &blinkResult);
 private:
     class Impl;
     std::unique_ptr<Impl> pImpl_;

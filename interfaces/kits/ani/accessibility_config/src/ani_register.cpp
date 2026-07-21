@@ -59,7 +59,11 @@ static bool NamespaceBindMethod(ani_env *env, ani_namespace ns, ani_module mod)
         ani_native_function{"offSeniorModeStateChangeForAppObserver", nullptr, reinterpret_cast<void *>(
             ANIAccessibilityConfig::OffSeniorModeStateChangeForApp)},
         ani_native_function{"offSeniorModeStateChangeForAppObservers", nullptr, reinterpret_cast<void *>(
-            ANIAccessibilityConfig::OffSeniorModeStateChangeForApps)}
+            ANIAccessibilityConfig::OffSeniorModeStateChangeForApps)},
+        ani_native_function{"startBlinkingSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityConfig::StartBlinking)},
+        ani_native_function{"stopBlinkingSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityConfig::StopBlinking)}
     };
 
     if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {

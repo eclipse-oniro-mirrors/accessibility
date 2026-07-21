@@ -1976,3 +1976,89 @@ void SeniorModeStateObserverImpl::UnsubscribeObservers()
     std::lock_guard<ffrt::mutex> lock(mutex_);
     observers_.clear();
 }
+
+napi_value NAccessibilityConfig::StartBlinking(napi_env env, napi_callback_info info)
+{
+    HILOG_DEBUG();
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value parameters[ARGS_SIZE_TWO] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
+
+    int32_t mode = 0;
+    int32_t scenario = 0;
+    if (argc < ARGS_SIZE_TWO) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    if (!ParseInt32(env, mode, parameters[PARAM0])) {
+        HILOG_ERROR("blinkingMode parse failed");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    if (!ParseInt32(env, scenario, parameters[PARAM1])) {
+        HILOG_ERROR("scenario parse failed");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    OHOS::Accessibility::BlinkResultCode blinkResult = OHOS::Accessibility::BlinkResultCode::BLINK_SUCCESS;
+    OHOS::Accessibility::RetError ret = instance.StartBlinking(mode, scenario, blinkResult);
+    if (ret != OHOS::Accessibility::RET_OK) {
+        napi_value err = CreateBusinessError(env, ret);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    napi_value result = nullptr;
+    napi_create_int32(env, static_cast<int32_t>(blinkResult), &result);
+    return result;
+}
+
+napi_value NAccessibilityConfig::StopBlinking(napi_env env, napi_callback_info info)
+{
+    HILOG_DEBUG();
+    size_t argc = ARGS_SIZE_TWO;
+    napi_value parameters[ARGS_SIZE_TWO] = {0};
+    napi_get_cb_info(env, info, &argc, parameters, nullptr, nullptr);
+
+    int32_t mode = 0;
+    int32_t scenario = 0;
+    if (argc < ARGS_SIZE_TWO) {
+        HILOG_ERROR("argc is invalid: %{public}zu", argc);
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    if (!ParseInt32(env, mode, parameters[PARAM0])) {
+        HILOG_ERROR("blinkingMode parse failed");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    if (!ParseInt32(env, scenario, parameters[PARAM1])) {
+        HILOG_ERROR("scenario parse failed");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+
+    auto &instance = OHOS::AccessibilityConfig::AccessibilityConfig::GetInstance();
+    OHOS::Accessibility::BlinkResultCode blinkResult = OHOS::Accessibility::BlinkResultCode::BLINK_SUCCESS;
+    OHOS::Accessibility::RetError ret = instance.StopBlinking(mode, scenario, blinkResult);
+    if (ret != OHOS::Accessibility::RET_OK) {
+        napi_value err = CreateBusinessError(env, ret);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    napi_value result = nullptr;
+    napi_create_int32(env, static_cast<int32_t>(blinkResult), &result);
+    return result;
+}

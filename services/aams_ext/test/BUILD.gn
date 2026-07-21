@@ -104,6 +104,10 @@ if (security_component_enable) {
       [ "security_component_manager:libsecurity_component_sdk" ]
 }
 
+if (accessibility_sensor_support) {
+  test_external_deps += [ "sensor:sensor_interface_native" ]
+}
+
 ################################################################################
 ohos_unittest("accessibility_display_manager_test") {
   module_out_path = module_output_path
@@ -183,6 +187,10 @@ ohos_unittest("accessibility_input_interceptor_test") {
   ]
 
   external_deps = test_external_deps
+
+  if (accessibility_screenlock_manager) {
+    external_deps += [ "screenlock_mgr:screenlock_client" ]
+  }
 }
 
 ################################################################################
@@ -402,6 +410,10 @@ ohos_unittest("accessibility_touchevent_injector_test") {
   ]
 
   external_deps = test_external_deps
+
+  if (accessibility_screenlock_manager) {
+    external_deps += [ "screenlock_mgr:screenlock_client" ]
+  }
 }
 
 ################################################################################

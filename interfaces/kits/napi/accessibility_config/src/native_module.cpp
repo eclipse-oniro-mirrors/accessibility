@@ -616,6 +616,94 @@ static napi_value InitIgnoreRepeatClickTime(napi_env env)
     return ignoreRepeatClickTimeValue;
 }
 
+static napi_value InitBlinkingMode(napi_env env)
+{
+    napi_value blinkingModeValue = nullptr;
+    napi_create_object(env, &blinkingModeValue);
+    if (blinkingModeValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return blinkingModeValue;
+    }
+ 
+    napi_value singleBlink = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::SINGLE_BLINK, &singleBlink);
+    napi_set_named_property(env, blinkingModeValue, "SINGLE_BLINK", singleBlink);
+ 
+    napi_value continuousBlink = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::CONTINUOUS_BLINK, &continuousBlink);
+    napi_set_named_property(env, blinkingModeValue, "CONTINUOUS_BLINK", continuousBlink);
+ 
+    return blinkingModeValue;
+}
+
+static napi_value InitBlinkingScenario(napi_env env)
+{
+    napi_value blinkingScenarioValue = nullptr;
+    napi_create_object(env, &blinkingScenarioValue);
+    if (blinkingScenarioValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return blinkingScenarioValue;
+    }
+
+    napi_value alarm = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::ALARM, &alarm);
+    napi_set_named_property(env, blinkingScenarioValue, "ALARM", alarm);
+
+    napi_value notification = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::NOTIFICATION, &notification);
+    napi_set_named_property(env, blinkingScenarioValue, "NOTIFICATION", notification);
+
+    napi_value call = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::CALL, &call);
+    napi_set_named_property(env, blinkingScenarioValue, "CALL", call);
+
+    napi_value testing = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::TESTING, &testing);
+    napi_set_named_property(env, blinkingScenarioValue, "TESTING", testing);
+
+    return blinkingScenarioValue;
+}
+
+static napi_value InitBlinkResultCode(napi_env env)
+{
+    napi_value blinkResultCodeValue = nullptr;
+    napi_create_object(env, &blinkResultCodeValue);
+    if (blinkResultCodeValue == nullptr) {
+        HILOG_ERROR("napi_create_object fail.");
+        return blinkResultCodeValue;
+    }
+
+    napi_value success = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::BlinkResultCode::BLINK_SUCCESS, &success);
+    napi_set_named_property(env, blinkResultCodeValue, "BLINK_SUCCESS", success);
+
+    napi_value alreadyFlashing = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::BlinkResultCode::ALREADY_FLASHING, &alreadyFlashing);
+    napi_set_named_property(env, blinkResultCodeValue, "ALREADY_FLASHING", alreadyFlashing);
+
+    napi_value deviceInUse = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::BlinkResultCode::DEVICE_IN_USE, &deviceInUse);
+    napi_set_named_property(env, blinkResultCodeValue, "DEVICE_IN_USE", deviceInUse);
+
+    napi_value flashBlinkingUnsupported = nullptr;
+    napi_create_int32(env,
+        OHOS::Accessibility::BlinkResultCode::FLASH_BLINKING_UNSUPPORTED, &flashBlinkingUnsupported);
+    napi_set_named_property(env, blinkResultCodeValue,
+        "FLASH_BLINKING_UNSUPPORTED", flashBlinkingUnsupported);
+
+    napi_value screenBlinkingUnsupported = nullptr;
+    napi_create_int32(env,
+        OHOS::Accessibility::BlinkResultCode::SCREEN_BLINKING_UNSUPPORTED, &screenBlinkingUnsupported);
+    napi_set_named_property(env, blinkResultCodeValue,
+        "SCREEN_BLINKING_UNSUPPORTED", screenBlinkingUnsupported);
+
+    napi_value featureDisable = nullptr;
+    napi_create_int32(env, OHOS::Accessibility::BlinkResultCode::FEATURE_DISABLE, &featureDisable);
+    napi_set_named_property(env, blinkResultCodeValue, "FEATURE_DISABLE", featureDisable);
+
+    return blinkResultCodeValue;
+}
+
 static napi_value InitConfigModule(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
@@ -625,6 +713,8 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION(
             "enableAbilityWithCallback", NAccessibilityConfig::EnableAbilityWithCallback),
         DECLARE_NAPI_FUNCTION("disableAbility", NAccessibilityConfig::DisableAbility),
+        DECLARE_NAPI_FUNCTION("startBlinking", NAccessibilityConfig::StartBlinking),
+        DECLARE_NAPI_FUNCTION("stopBlinking", NAccessibilityConfig::StopBlinking),
         DECLARE_NAPI_FUNCTION("setMagnificationState", NAccessibilityConfig::SetMagnificationState),
         DECLARE_NAPI_FUNCTION("onSeniorModeStateChangeForApp", NAccessibilityConfig::SubscribeSelfSeniorMode),
         DECLARE_NAPI_FUNCTION("offSeniorModeStateChangeForApp", NAccessibilityConfig::UnsubscribeSelfSeniorMode),
@@ -650,6 +740,9 @@ static napi_value InitConfigModule(napi_env env, napi_value exports)
         DECLARE_NAPI_STATIC_PROPERTY("clickResponseTime", InitClickResponseTime(env)),
         DECLARE_NAPI_STATIC_PROPERTY("ignoreRepeatClick", InitIgnoreRepeatClickState(env)),
         DECLARE_NAPI_STATIC_PROPERTY("repeatClickInterval", InitIgnoreRepeatClickTime(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("BlinkingMode", InitBlinkingMode(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("BlinkingScenario", InitBlinkingScenario(env)),
+        DECLARE_NAPI_STATIC_PROPERTY("BlinkResultCode", InitBlinkResultCode(env)),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));

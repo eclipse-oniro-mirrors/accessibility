@@ -150,6 +150,8 @@ public:
     ErrCode SetSeniorModeStateForApp(const bool state) override;
     ErrCode GetSeniorModeStateForApp(const std::string &bundleName, int32_t appIndex, bool &state) override;
     ErrCode SetSeniorModeStateForApp(const std::vector<AccessibilityBundleSeniorModeInfoParcel> &infos) override;
+    ErrCode StartBlinking(int32_t mode, int32_t scenario, int32_t &funcResult) override;
+    ErrCode StopBlinking(int32_t mode, int32_t scenario, int32_t &funcResult) override;
 
 private:
     std::shared_ptr<AppExecFwk::EventRunner> runner_;

@@ -423,6 +423,14 @@ public:
     {
         return RET_OK;
     }
+    ErrCode StartBlinking(int32_t mode, int32_t scenario, int32_t& funcResult) override
+    {
+        return RET_OK;
+    }
+    ErrCode StopBlinking(int32_t mode, int32_t scenario, int32_t& funcResult) override
+    {
+        return RET_OK;
+    }
 };
 
 uint32_t GetU32Data(const uint8_t *ptr)

@@ -172,6 +172,8 @@ public:
     static napi_value DisableAbility(napi_env env, napi_callback_info info);
     static napi_value SubscribeState(napi_env env, napi_callback_info info);
     static napi_value UnsubscribeState(napi_env env, napi_callback_info info);
+    static napi_value StartBlinking(napi_env env, napi_callback_info info);
+    static napi_value StopBlinking(napi_env env, napi_callback_info info);
     static napi_value SetMagnificationState(napi_env env, napi_callback_info info);
     static napi_value SetConfig(napi_env env, napi_callback_info info);
     static napi_value GetConfig(napi_env env, napi_callback_info info);

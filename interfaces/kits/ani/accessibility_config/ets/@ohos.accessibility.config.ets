@@ -154,6 +154,39 @@ namespace config {
 
     native function setMagnificationState(state: boolean): void;
 
+    export enum BlinkingMode {
+        SINGLE_BLINK = 1,
+        CONTINUOUS_BLINK = 2,
+    }
+
+    export enum BlinkingScenario {
+        ALARM = 1,
+        NOTIFICATION = 2,
+        CALL = 3,
+        TESTING = 4,
+    }
+
+    export enum BlinkResultCode {
+        BLINK_SUCCESS = 0,
+        ALREADY_FLASHING = 1,
+        DEVICE_IN_USE = 2,
+        FLASH_BLINKING_UNSUPPORTED = 3,
+        SCREEN_BLINKING_UNSUPPORTED = 4,
+        FEATURE_DISABLE = 5,
+    }
+
+    native function startBlinkingSync(mode: BlinkingMode, scenario: BlinkingScenario): BlinkResultCode;
+
+    native function stopBlinkingSync(mode: BlinkingMode, scenario: BlinkingScenario): BlinkResultCode;
+
+    export function startBlinking(mode: BlinkingMode, scenario: BlinkingScenario): BlinkResultCode {
+        return startBlinkingSync(mode, scenario);
+    }
+
+    export function stopBlinking(mode: BlinkingMode, scenario: BlinkingScenario): BlinkResultCode {
+        return stopBlinkingSync(mode, scenario);
+    }
+
     native function setSeniorModeStateForAppSync(seniorModeInfoArray: Array<AppSeniorModeInfo>): void;
 
     native function getSeniorModeStateForAppSync(bundleName: string, appIndex: int): boolean;

@@ -42,6 +42,7 @@
 #include "accessibility_security_component_manager.h"
 #include "accessible_extend_manager_service_proxy.h"
 #include "element_operator_callback_impl.h"
+#include "accessibility_blinking_reminder_proxy.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -143,6 +144,8 @@ public:
 
     ErrCode EnableAbility(const std::string &name, const uint32_t capabilities,
         const bool connectCallBackFlag) override;
+    ErrCode StartBlinking(int32_t mode, int32_t scenario, int32_t& funcResult) override;
+    ErrCode StopBlinking(int32_t mode, int32_t scenario, int32_t& funcResult) override;
     ErrCode GetEnabledAbilities(std::vector<std::string> &enabledAbilities) override;
     RetError SetCurtainScreenUsingStatus(bool isEnable);
     ErrCode CheckExtensionAbilityPermission(std::string& processName) override;
@@ -413,6 +416,12 @@ private:
     void RegisterScreenMagnificationType();
     void OnFlashReminderSwitchChanged();
     void RegisterFlashReminderSwitch();
+    void OnFlashReminderModeChanged();
+    void RegisterFlashReminderMode();
+    void OnFlashReminderFunctionEnabledChanged();
+    void RegisterFlashReminderFunctionEnabled();
+    void OnFlashReminderUnlockChanged();
+    void RegisterFlashReminderUnlock();
     void OnSeniorModeStateChanged();
     void RegisterSeniorModeState();
 
