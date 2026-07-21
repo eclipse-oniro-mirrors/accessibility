@@ -719,6 +719,7 @@ RetError AccessibilitySettingsConfig::SetIgnoreRepeatClickTime(const uint32_t ti
 RetError AccessibilitySettingsConfig::SetCaptionProperty(const AccessibilityConfig::CaptionProperty& caption)
 {
     HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     captionProperty_ = caption;
     if (!datashare_) {
         return RET_ERR_NULLPTR;
@@ -866,8 +867,9 @@ bool AccessibilitySettingsConfig::GetKeyEventObserverState() const
     return filteringKeyEvents_.load();
 }
 
-const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCaptionProperty() const
+AccessibilityConfig::CaptionProperty AccessibilitySettingsConfig::GetCaptionProperty() const
 {
+    std::lock_guard<ffrt::mutex> lock(interfaceMutex_);
     return captionProperty_;
 };
 

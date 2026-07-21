@@ -101,7 +101,7 @@ public:
     uint32_t GetContentTimeout() const;
     float GetBrightnessDiscount() const;
     float GetAudioBalance() const;
-    const AccessibilityConfig::CaptionProperty &GetCaptionProperty() const;
+    AccessibilityConfig::CaptionProperty GetCaptionProperty() const;
     uint32_t GetClickResponseTime() const;
     bool GetIgnoreRepeatClickState() const;
     uint32_t GetIgnoreRepeatClickTime() const;

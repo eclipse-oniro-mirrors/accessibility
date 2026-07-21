@@ -437,7 +437,7 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
     return ignoreRepeatClickTime_;
 }
 
-const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCaptionProperty() const
+AccessibilityConfig::CaptionProperty AccessibilitySettingsConfig::GetCaptionProperty() const
 {
     HILOG_DEBUG("start.");
     return captionProperty_;
