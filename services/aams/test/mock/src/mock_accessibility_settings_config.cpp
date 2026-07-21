@@ -330,7 +330,7 @@ int32_t AccessibilitySettingsConfig::GetMouseAutoClick() const
     return mouseAutoClick_;
 }
 
-const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
+std::string AccessibilitySettingsConfig::GetShortkeyTarget() const
 {
     HILOG_DEBUG("start.");
     return shortkeyTarget_;
