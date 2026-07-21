@@ -90,6 +90,44 @@ bool FuzzHandleSearchElementInfosByText(const uint8_t *data, size_t size)
     return true;
 }
 
+bool FuzzHandleSearchElementInfosByTextWithPermission(const uint8_t *data, size_t size)
+{
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return false;
+    }
+
+    size_t position = 0;
+    int32_t accessibilityWindowId = 0;
+    int64_t elementId = 0;
+    int32_t requestId = 0;
+    MessageParcel mdata;
+    MessageParcel reply;
+    MessageOption option(MessageOption::TF_SYNC);
+
+    position += GetObject<int32_t>(accessibilityWindowId, &data[position], size - position);
+    position += GetObject<int64_t>(elementId, &data[position], size - position);
+    char name[LEN + 1];
+    name[LEN] = END_CHAR;
+    for (size_t i = 0; i < LEN; i++) {
+        position += GetObject<char>(name[i], data + position, size - position);
+    }
+    std::string text(name);
+    GetObject<int32_t>(requestId, &data[position], size - position);
+    std::shared_ptr<AbilityChannelImplFuzzTest> chanImp = std::make_shared<AbilityChannelImplFuzzTest>();
+    if (chanImp == nullptr) {
+        return false;
+    }
+    mdata.WriteInterfaceToken(AccessibleAbilityChannelStub::GetDescriptor());
+    mdata.WriteInt32(accessibilityWindowId);
+    mdata.WriteInt64(elementId);
+    mdata.WriteString(text);
+    mdata.WriteInt32(requestId);
+    chanImp->OnRemoteRequest(
+        static_cast<uint32_t>(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT_WITH_PERMISSION),
+        mdata, reply, option);
+    return true;
+}
+
 bool FuzzHandleFindFocusedElementInfo(const uint8_t *data, size_t size)
 {
     if (data == nullptr || size < DATA_MIN_SIZE) {
@@ -160,6 +198,7 @@ bool DoSomethingInterestingWithMyAPI(const uint8_t* data, size_t size)
 {
     FuzzHandleSearchElementInfoByAccessibilityId(data, size);
     FuzzHandleSearchElementInfosByText(data, size);
+    FuzzHandleSearchElementInfosByTextWithPermission(data, size);
     FuzzHandleFindFocusedElementInfo(data, size);
     FuzzHandleFocusMoveSearch(data, size);
     return true;

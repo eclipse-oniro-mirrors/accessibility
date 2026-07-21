@@ -231,15 +231,18 @@ RetError AccessibleAbilityChannelProxy::SearchElementInfosByText(const int32_t a
         HILOG_ERROR("callback write error");
         return RET_ERR_IPC_FAILED;
     }
-    if (!data.WriteBool(systemApi)) {
-        HILOG_ERROR("systemApi write error: %{public}d, ", systemApi);
-        return RET_ERR_IPC_FAILED;
-    }
-
-    if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT,
-        data, reply, option)) {
-        HILOG_ERROR("fail to find elementInfo by text");
-        return RET_ERR_IPC_FAILED;
+    if (systemApi) {
+        if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT_WITH_PERMISSION,
+            data, reply, option)) {
+            HILOG_ERROR("fail to find elementInfo by text with permission");
+            return RET_ERR_IPC_FAILED;
+        }
+    } else {
+        if (!SendTransactCmd(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT,
+            data, reply, option)) {
+            HILOG_ERROR("fail to find elementInfo by text");
+            return RET_ERR_IPC_FAILED;
+        }
     }
     return static_cast<RetError>(reply.ReadInt32());
 }
@@ -281,14 +284,18 @@ RetError AccessibleAbilityChannelProxy::FindFocusedElementInfo(const int32_t acc
         HILOG_ERROR("callback write error");
         return RET_ERR_IPC_FAILED;
     }
-    if (!data.WriteBool(systemApi)) {
-        HILOG_ERROR("systemApi write error: %{public}d, ", systemApi);
-        return RET_ERR_IPC_FAILED;
-    }
-
-    if (!SendTransactCmd(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO, data, reply, option)) {
-        HILOG_ERROR("fail to gain focus");
-        return RET_ERR_IPC_FAILED;
+    if (systemApi) {
+        if (!SendTransactCmd(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO_WITH_PERMISSION,
+            data, reply, option)) {
+            HILOG_ERROR("fail to gain focus with permission");
+            return RET_ERR_IPC_FAILED;
+        }
+    } else {
+        if (!SendTransactCmd(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO,
+            data, reply, option)) {
+            HILOG_ERROR("fail to gain focus");
+            return RET_ERR_IPC_FAILED;
+        }
     }
     return static_cast<RetError>(reply.ReadInt32());
 }
@@ -330,14 +337,18 @@ RetError AccessibleAbilityChannelProxy::FocusMoveSearch(const int32_t accessibil
         HILOG_ERROR("callback write error");
         return RET_ERR_IPC_FAILED;
     }
-    if (!data.WriteBool(systemApi)) {
-        HILOG_ERROR("systemApi write error: %{public}d, ", systemApi);
-        return RET_ERR_IPC_FAILED;
-    }
-
-    if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH, data, reply, option)) {
-        HILOG_ERROR("fail to search focus");
-        return RET_ERR_IPC_FAILED;
+    if (systemApi) {
+        if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_PERMISSION,
+            data, reply, option)) {
+            HILOG_ERROR("fail to search focus with permission");
+            return RET_ERR_IPC_FAILED;
+        }
+    } else {
+        if (!SendTransactCmd(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH,
+            data, reply, option)) {
+            HILOG_ERROR("fail to search focus");
+            return RET_ERR_IPC_FAILED;
+        }
     }
     return static_cast<RetError>(reply.ReadInt32());
 }

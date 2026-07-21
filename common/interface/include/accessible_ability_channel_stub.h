@@ -68,6 +68,8 @@ private:
      */
     ErrCode HandleSearchElementInfosByText(MessageParcel &data, MessageParcel &reply);
 
+    ErrCode HandleSearchElementInfosByTextWithPermission(MessageParcel &data, MessageParcel &reply);
+
     /**
      * @brief Handle the IPC request for the function:HandleFindFocusedElementInfo.
      * @param data The data of process communication
@@ -76,6 +78,8 @@ private:
      */
     ErrCode HandleFindFocusedElementInfo(MessageParcel &data, MessageParcel &reply);
 
+    ErrCode HandleFindFocusedElementInfoWithPermission(MessageParcel &data, MessageParcel &reply);
+
     /**
      * @brief Handle the IPC request for the function:HandleFocusMoveSearch.
      * @param data The data of process communication
@@ -83,6 +87,8 @@ private:
      * @return NO_ERROR: successful; otherwise is failed.
      */
     ErrCode HandleFocusMoveSearch(MessageParcel &data, MessageParcel &reply);
+
+    ErrCode HandleFocusMoveSearchWithPermission(MessageParcel &data, MessageParcel &reply);
 
     /**
      * @brief Handle the IPC request for the function:HandleExecuteAction.

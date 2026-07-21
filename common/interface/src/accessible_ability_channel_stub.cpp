@@ -42,8 +42,13 @@
     SWITCH_CASE(                                                                                                      \
         AccessibilityInterfaceCode::SEARCH_ELEMENTINFO_BY_ACCESSIBILITY_ID, HandleSearchElementInfoByAccessibilityId) \
     SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT, HandleSearchElementInfosByText)              \
+    SWITCH_CASE(AccessibilityInterfaceCode::SEARCH_ELEMENTINFOS_BY_TEXT_WITH_PERMISSION,                              \
+        HandleSearchElementInfosByTextWithPermission)                                                                 \
     SWITCH_CASE(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO, HandleFindFocusedElementInfo)                   \
+    SWITCH_CASE(AccessibilityInterfaceCode::FIND_FOCUSED_ELEMENTINFO_WITH_PERMISSION,                                 \
+        HandleFindFocusedElementInfoWithPermission)                                                                   \
     SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH, HandleFocusMoveSearch)                                 \
+    SWITCH_CASE(AccessibilityInterfaceCode::FOCUS_MOVE_SEARCH_WITH_PERMISSION, HandleFocusMoveSearchWithPermission)   \
     SWITCH_CASE(AccessibilityInterfaceCode::PERFORM_ACTION, HandleExecuteAction)                                      \
     SWITCH_CASE(AccessibilityInterfaceCode::SET_CURTAIN_SCREEN, HandleEnableScreenCurtain)                            \
     SWITCH_CASE(AccessibilityInterfaceCode::HOLD_RUNNING_LOCK, HandleHoldRunningLock)                                 \
@@ -201,6 +206,11 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParc
     MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
 
     int32_t accessibilityWindowId = data.ReadInt32();
     int64_t elementId = data.ReadInt64();
@@ -218,8 +228,7 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParc
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
-    bool systemApi = data.ReadBool();
-    RetError result = SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback, systemApi);
+    RetError result = SearchElementInfosByText(accessibilityWindowId, elementId, text, requestId, callback, false);
     HILOG_DEBUG("SearchElementInfosByText ret = %{public}d", result);
     reply.WriteInt32(result);
 
@@ -229,6 +238,11 @@ ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByText(MessageParc
 ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
 
     int32_t accessibilityWindowId = data.ReadInt32();
     int64_t elementId = data.ReadInt64();
@@ -246,10 +260,9 @@ ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
-    bool systemApi = data.ReadBool();
 
     RetError result =
-        FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback, systemApi);
+        FindFocusedElementInfo(accessibilityWindowId, elementId, focusType, requestId, callback, false);
     HILOG_DEBUG("FindFocusedElementInfo ret = %{public}d", result);
     reply.WriteInt32(result);
     return NO_ERROR;
@@ -258,6 +271,11 @@ ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfo(MessageParcel
 ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data, MessageParcel &reply)
 {
     HILOG_DEBUG();
+    if (!Permission::IsSystemApp()) {
+        HILOG_WARN("Not system app");
+        reply.WriteInt32(RET_ERR_NOT_SYSTEM_APP);
+        return RET_ERR_NOT_SYSTEM_APP;
+    }
 
     int32_t accessibilityWindowId = data.ReadInt32();
     int64_t elementId = data.ReadInt64();
@@ -275,13 +293,45 @@ ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearch(MessageParcel &data,
         HILOG_ERROR("callback is nullptr.");
         return ERR_INVALID_VALUE;
     }
-    bool systemApi = data.ReadBool();
 
-    RetError result = FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback, systemApi);
+    RetError result = FocusMoveSearch(accessibilityWindowId, elementId, direction, requestId, callback, false);
     HILOG_DEBUG("FocusMoveSearch ret = %{public}d", result);
     reply.WriteInt32(result);
 
     return NO_ERROR;
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleSearchElementInfosByTextWithPermission(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    if (!Permission::CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return RET_ERR_NO_PERMISSION;
+    }
+    return HandleSearchElementInfosByText(data, reply);
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleFindFocusedElementInfoWithPermission(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    if (!Permission::CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return RET_ERR_NO_PERMISSION;
+    }
+    return HandleFindFocusedElementInfo(data, reply);
+}
+
+ErrCode AccessibleAbilityChannelStub::HandleFocusMoveSearchWithPermission(MessageParcel &data,
+    MessageParcel &reply)
+{
+    HILOG_DEBUG();
+    if (!Permission::CheckPermission(OHOS_PERMISSION_ACCESSIBILITY_EXTENSION_ABILITY)) {
+        reply.WriteInt32(RET_ERR_NO_PERMISSION);
+        return RET_ERR_NO_PERMISSION;
+    }
+    return HandleFocusMoveSearch(data, reply);
 }
 
 ErrCode AccessibleAbilityChannelStub::HandleExecuteAction(MessageParcel &data, MessageParcel &reply)
