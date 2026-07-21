@@ -593,9 +593,6 @@ RetError AccessibilitySystemAbilityClientImpl::GetAbilityList(const uint32_t acc
 
 bool AccessibilitySystemAbilityClientImpl::CheckEventType(EventType eventType)
 {
-#ifdef ACCESSIBILITY_EMULATOR_DEFINED
-    ApiReportHelper reporter("AccessibilitySystemAbilityClientImpl.CheckEventType");
-#endif // ACCESSIBILITY_EMULATOR_DEFINED
     if ((eventType < EventType::TYPE_VIEW_CLICKED_EVENT) ||
         ((eventType >= EventType::TYPE_MAX_NUM) && (eventType != EventType::TYPES_ALL_MASK))) {
         HILOG_ERROR("event type is invalid");
