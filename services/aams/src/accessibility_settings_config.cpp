@@ -1277,7 +1277,8 @@ void AccessibilitySettingsConfig::HandleDaltonizationColorCache()
         datashare_->PutBoolValue(DALTONIZATION_STATE, ColorFilterSwitchCache);
         daltonizationState_.store(ColorFilterSwitchCache);
 
-        auto ret = datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
+        auto ret = datashare_->PutIntValue(
+            DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
         if (ret != RET_OK) {
             Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "HandleDaltonizationColorCache");
             HILOG_ERROR("set daltonizationColorFilter_ failed");
