@@ -330,7 +330,7 @@ int32_t AccessibilitySettingsConfig::GetMouseAutoClick() const
     return mouseAutoClick_;
 }
 
-const std::string &AccessibilitySettingsConfig::GetShortkeyTarget() const
+std::string AccessibilitySettingsConfig::GetShortkeyTarget() const
 {
     HILOG_DEBUG("start.");
     return shortkeyTarget_;
@@ -437,7 +437,7 @@ uint32_t AccessibilitySettingsConfig::GetIgnoreRepeatClickTime() const
     return ignoreRepeatClickTime_;
 }
 
-const AccessibilityConfig::CaptionProperty &AccessibilitySettingsConfig::GetCaptionProperty() const
+AccessibilityConfig::CaptionProperty AccessibilitySettingsConfig::GetCaptionProperty() const
 {
     HILOG_DEBUG("start.");
     return captionProperty_;

@@ -125,6 +125,10 @@ public:
         std::string abilityName = "SettingsExtService";
         want.SetElementName(bundleName, abilityName);
         auto settingsExtServiceAbilityConnection = new(std::nothrow) SettingsExtServiceAbilityConnection(enable);
+        if (settingsExtServiceAbilityConnection == nullptr) {
+            HILOG_ERROR("settingsExtServiceAbilityConnection is nullptr");
+            return;
+        }
         AAFwk::ExtensionManagerClient::GetInstance().ConnectServiceExtensionAbility(want,
             settingsExtServiceAbilityConnection, nullptr, -1);
     }

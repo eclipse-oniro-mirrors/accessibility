@@ -38,6 +38,10 @@ namespace Accessibility {
 
 inline bool ContainerSecurityVerify(Parcel &parcel, int readContainerSize, size_t val_size)
 {
+    if (readContainerSize < 0) {
+        HILOG_ERROR("Invalid container size: %{public}d", readContainerSize);
+        return false;
+    }
     size_t readAbleDataSize = (parcel).GetReadableBytes();
     size_t readSize = static_cast<size_t>(readContainerSize);
     if ((readSize > readAbleDataSize) || (val_size < readSize)) {

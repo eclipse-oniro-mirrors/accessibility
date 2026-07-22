@@ -93,7 +93,7 @@ public:
     int32_t GetShortKeyTimeout() const;
     bool GetMouseKeyState() const;
     int32_t GetMouseAutoClick() const;
-    const std::string &GetShortkeyTarget() const;
+    std::string GetShortkeyTarget() const;
     const std::vector<std::string> GetShortkeyMultiTarget();
     bool GetHighContrastTextState() const;
     bool GetInvertColorState() const;
@@ -104,7 +104,7 @@ public:
     uint32_t GetContentTimeout() const;
     float GetBrightnessDiscount() const;
     float GetAudioBalance() const;
-    const AccessibilityConfig::CaptionProperty &GetCaptionProperty() const;
+    AccessibilityConfig::CaptionProperty GetCaptionProperty() const;
     uint32_t GetClickResponseTime() const;
     bool GetIgnoreRepeatClickState() const;
     uint32_t GetIgnoreRepeatClickTime() const;
@@ -205,7 +205,7 @@ private:
     std::shared_ptr<AccessibilityDatashareHelper> datashare_ = nullptr;
     std::shared_ptr<AccessibilityDatashareHelper> systemDatashare_ = nullptr;
     std::shared_ptr<AccessibilityDatashareHelper> globalDatashare_ = nullptr;
-    ffrt::mutex interfaceMutex_;
+    mutable ffrt::mutex interfaceMutex_;
     bool isInitialized_ = false;
     mutable ffrt::mutex seniorModeStateForAppMapMutex_;
     std::map<std::string, bool> seniorModeStateForAppMap_;
