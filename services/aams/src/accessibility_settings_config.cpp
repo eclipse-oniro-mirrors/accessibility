@@ -1267,7 +1267,7 @@ void AccessibilitySettingsConfig::HandleDaltonizationColorCache()
     }
  
     uint32_t daltonizationColorFilter = static_cast<uint32_t>(datashare_->GetIntValue(
-        DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly));
+        DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Normal));
     bool colorFilterCacheFlag = datashare_->GetBoolValue(OOBE_COLOR_FILTER_CACHE_FLAG, false);
     if (colorFilterCacheFlag) {
         HILOG_INFO("HandleDaltonizationColorCache recovery");
@@ -1276,21 +1276,18 @@ void AccessibilitySettingsConfig::HandleDaltonizationColorCache()
         daltonizationColorFilter = ConvertStringToDaltonizationTypes(daltonizerModeCache);
         datashare_->PutBoolValue(DALTONIZATION_STATE, ColorFilterSwitchCache);
         daltonizationState_.store(ColorFilterSwitchCache);
+
+        auto ret = datashare_->PutIntValue(
+            DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
+        if (ret != RET_OK) {
+            Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "HandleDaltonizationColorCache");
+            HILOG_ERROR("set daltonizationColorFilter_ failed");
+            return;
+        }
+        daltonizationColorFilter_.store(daltonizationColorFilter);
+        datashare_->PutBoolValue(OOBE_COLOR_FILTER_CACHE_FLAG, false);
     }
  
-    if (daltonizationState_ && daltonizationColorFilter_ == AccessibilityConfig::DALTONIZATION_TYPE::Normal) {
-        HILOG_INFO("HandleDaltonizationColorCache to default");
-        daltonizationColorFilter = AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly;
-        datashare_->PutBoolValue(DALTONIZATION_STATE, false);
-        daltonizationState_.store(false);
-    }
-    auto ret = datashare_->PutIntValue(DALTONIZATION_COLOR_FILTER_KEY, static_cast<int32_t>(daltonizationColorFilter));
-    if (ret != RET_OK) {
-        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "HandleDaltonizationColorCache");
-        HILOG_ERROR("set daltonizationColorFilter_ failed");
-        return;
-    }
-    daltonizationColorFilter_.store(daltonizationColorFilter);
     return;
 }
 
@@ -1314,7 +1311,7 @@ void AccessibilitySettingsConfig::InitSetting()
     HandleIgnoreRepeatClickCache();
     mouseAutoClick_.store(static_cast<int32_t>(datashare_->GetIntValue("MouseAutoClick", -1)));
     daltonizationColorFilter_.store(static_cast<uint32_t>(datashare_->GetIntValue(
-        DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly)));
+        DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Normal)));
     SetDaltonizationColorFilter(daltonizationColorFilter_.load());
     HandleDaltonizationColorCache();
     contentTimeout_.store(static_cast<uint32_t>(datashare_->GetIntValue(CONTENT_TIMEOUT_KEY, 0)));
@@ -1616,7 +1613,7 @@ void AccessibilitySettingsConfig::recoverColorCorrection()
     }
     if (daltonizationColorFilter_.load() !=
         static_cast<uint32_t>(datashare_->GetIntValue(
-            DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Deuteranomaly))) {
+            DALTONIZATION_COLOR_FILTER_KEY, AccessibilityConfig::DALTONIZATION_TYPE::Normal))) {
         HILOG_INFO("daltonizationColorFilter_: %{public}d need recovery", daltonizationColorFilter_.load());
         SetDaltonizationColorFilter(daltonizationColorFilter_.load());
     }
