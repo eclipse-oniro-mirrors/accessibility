@@ -123,6 +123,20 @@ HWTEST_F(AccessibilityEventInfoUnitTest, SetEventType_002, TestSize.Level1)
 }
 
 /**
+ * @tc.number: SetEventType_003
+ * @tc.name: SetEventType
+ * @tc.desc: Test function SetEventType with TYPE_PAGE_STATE_PRE_UPDATE
+ */
+HWTEST_F(AccessibilityEventInfoUnitTest, SetEventType_003, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "SetEventType_003 start";
+    ASSERT_TRUE(eventInfo_ != nullptr) << "eventInfo_ is null";
+    eventInfo_->SetEventType(EventType::TYPE_PAGE_STATE_PRE_UPDATE);
+    EXPECT_EQ(eventInfo_->GetEventType(), EventType::TYPE_PAGE_STATE_PRE_UPDATE);
+    GTEST_LOG_(INFO) << "SetEventType_003 end";
+}
+
+/**
  * @tc.number: SetWindowContentChangeTypes_001
  * @tc.name: SetWindowContentChangeTypes
  * @tc.desc: Test function SetWindowContentChangeTypes

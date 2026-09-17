@@ -560,7 +560,8 @@ static std::vector<std::string> ParseEventTypesToVec(uint32_t eventTypesValue)
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
         {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
         {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
-        {EventType::TYPE_FOCUS_INVISIBLE, "focusInvisible"}};
+        {EventType::TYPE_FOCUS_INVISIBLE, "focusInvisible"},
+        {EventType::TYPE_PAGE_STATE_PRE_UPDATE, "pageStatePreUpdate"}};
 
     for (std::map<EventType, std::string>::iterator itr = accessibilityEventTable.begin();
          itr != accessibilityEventTable.end(); ++itr) {
@@ -714,7 +715,8 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
         {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
         {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
-        {EventType::TYPE_FOCUS_INVISIBLE, "focusInvisible"}};
+        {EventType::TYPE_FOCUS_INVISIBLE, "focusInvisible"},
+        {EventType::TYPE_PAGE_STATE_PRE_UPDATE, "pageStatePreUpdate"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";
@@ -812,7 +814,8 @@ AccessibilityEventType CovertStringToAccessibilityEventType(const std::string &e
         {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE},
         {"notificationUpdate", AccessibilityEventType::TYPE_NOTIFICATION_UPDATE_EVENT},
         {"oneFingerDoubleTap", AccessibilityEventType::TYPE_ONE_FINGER_DOUBLE_TAP},
-        {"focusInvisible", AccessibilityEventType::TYPE_FOCUS_INVISIBLE}};
+        {"focusInvisible", AccessibilityEventType::TYPE_FOCUS_INVISIBLE},
+        {"pageStatePreUpdate", AccessibilityEventType::TYPE_PAGE_STATE_PRE_UPDATE}};
     if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
         return AccessibilityEventType::TYPE_ERROR;
     }
@@ -990,7 +993,8 @@ static EventType ConvertStringToEventInfoTypes(std::string type)
         {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT},
         {"pageActive", EventType::TYPE_PAGE_ACTIVE},
         {"notificationUpdate", EventType::TYPE_NOTIFICATION_UPDATE_EVENT},
-        {"focusInvisible", EventType::TYPE_FOCUS_INVISIBLE}};
+        {"focusInvisible", EventType::TYPE_FOCUS_INVISIBLE},
+        {"pageStatePreUpdate", EventType::TYPE_PAGE_STATE_PRE_UPDATE}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());

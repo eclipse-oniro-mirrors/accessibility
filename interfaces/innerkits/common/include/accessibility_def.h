@@ -302,6 +302,7 @@ enum EventType : uint32_t {
     TYPE_PAGE_ACTIVE = 0x40000004,
     TYPE_FOCUS_INVISIBLE = 0x40000005,
     TYPE_TOUCH_GUIDE_GESTURE = 0x40000006,
+    TYPE_PAGE_STATE_PRE_UPDATE = 0x40000007,
     TYPE_MAX_NUM = 0x80000000,
     TYPES_ALL_MASK = 0xFFFFFFFF,
 };
@@ -435,6 +436,7 @@ const std::map<std::string, EventType> EvtTypeTable = {
     {"requestFocusForAccessibilityNotInterrupt", EventType::TYPE_VIEW_REQUEST_FOCUS_FOR_ACCESSIBILITY_NOT_INTERRUPT},
     {"pageContentUpdate", EventType::TYPE_PAGE_CONTENT_UPDATE},
     {"pageStateUpdate", EventType::TYPE_PAGE_STATE_UPDATE},
+    {"pageStatePreUpdate", EventType::TYPE_PAGE_STATE_PRE_UPDATE},
     {"pageOpen", EventType::TYPE_PAGE_OPEN},
     {"pageClose", EventType::TYPE_PAGE_CLOSE},
     {"allEvents", EventType::TYPES_ALL_MASK},
@@ -705,6 +707,7 @@ enum AccessibilityEventType : int32_t {
     TYPE_FOCUS_INVISIBLE = 71,
     TYPE_ONE_FINGER_DOUBLE_TAP = 72,
     TYPE_TOUCH_GUIDE_GESTURE = 73,
+    TYPE_PAGE_STATE_PRE_UPDATE = 74,
 };
 
 enum InjectActionType : int32_t {

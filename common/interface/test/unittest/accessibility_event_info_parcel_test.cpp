@@ -129,5 +129,26 @@ HWTEST_F(AccessibilityEventInfoParcelTest, Event_Info_Focus_Invisible_Type_Round
     EXPECT_EQ(readParcel->GetEventType(), EventType::TYPE_FOCUS_INVISIBLE);
     GTEST_LOG_(INFO) << "Event_Info_Focus_Invisible_Type_RoundTrip_001 end";
 }
+
+/**
+ * @tc.number: Event_Info_Page_State_Pre_Update_Type_RoundTrip_001
+ * @tc.name: Event_Info_Page_State_Pre_Update_Type_RoundTrip
+ * @tc.desc: Test TYPE_PAGE_STATE_PRE_UPDATE is preserved after parcel marshalling/unmarshalling.
+ */
+HWTEST_F(AccessibilityEventInfoParcelTest, Event_Info_Page_State_Pre_Update_Type_RoundTrip_001, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "Event_Info_Page_State_Pre_Update_Type_RoundTrip_001 start";
+    AccessibilityEventInfo eventInfo;
+    eventInfo.SetEventType(EventType::TYPE_PAGE_STATE_PRE_UPDATE);
+
+    AccessibilityEventInfoParcel writeParcel(eventInfo);
+    Parcel parcel;
+    ASSERT_TRUE(writeParcel.Marshalling(parcel));
+
+    sptr<AccessibilityEventInfoParcel> readParcel = writeParcel.Unmarshalling(parcel);
+    ASSERT_NE(readParcel, nullptr);
+    EXPECT_EQ(readParcel->GetEventType(), EventType::TYPE_PAGE_STATE_PRE_UPDATE);
+    GTEST_LOG_(INFO) << "Event_Info_Page_State_Pre_Update_Type_RoundTrip_001 end";
+}
 } // namespace Accessibility
 } // namespace OHOS

@@ -192,7 +192,7 @@ type GestureType = 'left' | 'leftThenRight' | 'leftThenUp' | 'leftThenDown' |
  * @syscap SystemCapability.BarrierFree.Accessibility.Core
  * @since 9
  */
-type PageUpdateType = 'pageContentUpdate' | 'pageStateUpdate';
+type PageUpdateType = 'pageContentUpdate' | 'pageStateUpdate' | 'pageStatePreUpdate';
 
 /**
  * Indicates the type of touch event during touch browsing.
