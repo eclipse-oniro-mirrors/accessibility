@@ -79,6 +79,7 @@ namespace {
     const char* CAPTIONS_ASSISTANT_HMOS_TAG = "CAPTIONS_ASSISTANT";
     const char* SCREEN_MAGNIFICATION_TAG = "SCREEN_MAGNIFICATION";
     const char* SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
+    const char* SELECT_READER_BUNDLE_ABILITY_NAME = "com.ohos.selectreader/AccessibilityExtAbility";
     const char* ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
     const char* ACCESSIBILITY_PRIVACY_CLONE_OR_UPGRADE = "accessibility_privacy_clone_or_upgrade";
     const char* IGNORE_REPEAT_CLICK_RECONFIRM = "accessibility_ignore_repeat_click_reconfirm";
@@ -1501,6 +1502,14 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     if (shortkeyServiceFlag & STATE_SCREENMAGNIFIER_ENABLED) {
         shortkeyService.push_back(SCREEN_MAGNIFICATION_TAG);
     }
+
+    bool isSelectReaderInShortcut = std::find(tmpVec.begin(), tmpVec.end(),
+        SELECT_READER_BUNDLE_ABILITY_NAME) != tmpVec.end();
+    if (isSelectReaderInShortcut &&
+        std::find(shortkeyService.begin(), shortkeyService.end(), SELECT_READER_BUNDLE_ABILITY_NAME) ==
+            shortkeyService.end()) {
+        shortkeyService.push_back(SELECT_READER_BUNDLE_ABILITY_NAME);
+    }
     SetShortkeyMultiTarget(shortkeyService);
 
     tmpVec = GetEnabledAccessibilityServices();
@@ -1508,6 +1517,11 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     std::vector<std::string> enabledShortkeyService;
     if ((shortkeyServiceFlag & STATE_EXPLORATION_ENABLED) || (isScreenReaderEnabled == true)) {
         enabledShortkeyService.push_back(SCREEN_READER_BUNDLE_ABILITY_NAME);
+    }
+    if (std::find(tmpVec.begin(), tmpVec.end(), SELECT_READER_BUNDLE_ABILITY_NAME) != tmpVec.end() &&
+        std::find(enabledShortkeyService.begin(), enabledShortkeyService.end(), SELECT_READER_BUNDLE_ABILITY_NAME) ==
+            enabledShortkeyService.end()) {
+        enabledShortkeyService.push_back(SELECT_READER_BUNDLE_ABILITY_NAME);
     }
     SetEnabledAccessibilityServices(enabledShortkeyService);
 }
