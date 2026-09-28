@@ -39,7 +39,7 @@ constexpr int64_t ROOT_PARENT_ELEMENT_ID = -2100000;
 const int32_t ROOT_TREE_ID = 0;
 constexpr uint64_t ELEMENT_MOVE_BIT = 40;
 namespace {
-    const std::string SYSTEM_PARAMETER_AAMS_SERVICE = "accessibility.config.ready";
+    constexpr const char* SYSTEM_PARAMETER_AAMS_SERVICE = "accessibility.config.ready";
     constexpr int64_t ROOT_NONE_ID = -1;
     constexpr int64_t NODE_ID_MAX = 0x7FFFFFFE;
     ffrt::mutex g_Mutex;
