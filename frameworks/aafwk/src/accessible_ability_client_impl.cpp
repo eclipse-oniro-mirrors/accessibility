@@ -79,7 +79,7 @@ AccessibleAbilityClientImpl::AccessibleAbilityClientImpl()
         HILOG_ERROR("Init accessibility service proxy failed");
     }
 #ifndef ACCESSIBILITY_WATCH_FEATURE
-    int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_SERVICE.c_str(),
+    int retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_SERVICE,
         &AccessibleAbilityClientImpl::OnParameterChanged, this);
     if (retSysParam) {
         HILOG_ERROR("Watch parameter failed, error = %{public}d", retSysParam);
@@ -99,7 +99,7 @@ AccessibleAbilityClientImpl::~AccessibleAbilityClientImpl()
         serviceProxy_->AsObject()->RemoveDeathRecipient(accessibilityServiceDeathRecipient_);
     }
     if (isParameterWatcherRegistered) {
-        RemoveParameterWatcher(SYSTEM_PARAMETER_AAMS_SERVICE.c_str(),
+        RemoveParameterWatcher(SYSTEM_PARAMETER_AAMS_SERVICE,
             &AccessibleAbilityClientImpl::OnParameterChanged, this);
     }
 }
@@ -149,7 +149,7 @@ bool AccessibleAbilityClientImpl::InitAccessibilityServiceProxy()
 
 void AccessibleAbilityClientImpl::OnParameterChanged(const char *key, const char *value, void *context)
 {
-    if (key == nullptr || std::strcmp(key, SYSTEM_PARAMETER_AAMS_SERVICE.c_str())) {
+    if (key == nullptr || std::strcmp(key, SYSTEM_PARAMETER_AAMS_SERVICE)) {
         return;
     }
     if (value == nullptr || std::strcmp(value, "true")) {
