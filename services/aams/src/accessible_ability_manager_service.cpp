@@ -1803,6 +1803,7 @@ void AccessibleAbilityManagerService::RemovedUser(int32_t accountId)
     }
     auto accountData = a11yAccountsData_.RemoveAccountData(accountId);
     if (accountData) {
+        accountData->Deinit();
         accountData->GetConfig()->ClearData();
         return;
     }
