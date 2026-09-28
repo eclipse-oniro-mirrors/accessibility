@@ -53,7 +53,7 @@ namespace {
     const std::string ACCESSIBILITY_DISPLAY_DALTONIZER_ENABLED = "accessibility_display_daltonizer_enabled";
     const std::string MASTER_MONO = "master_mono";
     const std::string ACCESSIBILITY_SCREENREADER_ENABLED = "accessibility_screenreader_enabled";
-    const std::string ACCESSIBILITY_SELECTREADER_ENABLED = "accessibility_selectreader_enabled";
+    const std::string ACCESSIBILITY_SELECTREADER_ENABLED = "accessibility_select_reader_enabled";
     const std::string MASTER_BALENCE = "master_balance";
     const std::string CLICK_RESPONSE_TIME = "click_response_time";
     const std::string IGNORE_REPEAT_CLICK_SWITCH = "ignore_repeat_click_switch";

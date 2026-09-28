@@ -409,7 +409,7 @@ private:
     std::string screenReaderAbilityName_ = "com.ohos.screenreader/AccessibilityExtAbility";
     std::string screenReaderKey_ = "accessibility_screenreader_enabled";
     std::string selectReaderAbilityName_ = "com.ohos.selectreader/AccessibilityExtAbility";
-    std::string selectReaderKey_ = "accessibility_selectreader_enabled";
+    std::string selectReaderKey_ = "accessibility_select_reader_enabled";
     uint32_t connectCounter_ = 1;
     CaptionPropertyCallbacks captionPropertyCallbacks_;
     ffrt::mutex captionPropertyCallbacksMutex_; // mutex for captionPropertyCallbacks_
