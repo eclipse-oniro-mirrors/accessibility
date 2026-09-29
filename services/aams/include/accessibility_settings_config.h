@@ -47,6 +47,7 @@ public:
     RetError SetCaptionState(const bool state);
     RetError SetScreenMagnificationState(const bool state);
     RetError SetMagnificationState(const bool state);
+    RetError SetSelectReaderState(const bool state);
     RetError SetScreenMagnificationType(const uint32_t type);
     RetError SetScreenMagnificationMode(const uint32_t mode);
     RetError SetScreenMagnificationScale(const float scale);
@@ -88,6 +89,7 @@ public:
     bool GetKeyEventObserverState() const;
     bool GetCaptionState() const;
     bool GetScreenMagnificationState() const;
+    bool GetSelectReaderState() const;
     bool GetShortKeyState() const;
     bool GetShortKeyOnLockScreenState() const;
     int32_t GetShortKeyTimeout() const;
@@ -169,6 +171,7 @@ private:
     std::atomic<bool> gesturesSimulation_ = false;
     std::atomic<bool> filteringKeyEvents_ = false;
     std::atomic<bool> isScreenMagnificationState_ = false;
+    std::atomic<bool> isSelectReaderState_ = false;
     std::atomic<uint32_t> screenMagnificationType_ = 0;
     std::atomic<uint32_t> screenMagnificationMode_ = 0;
     std::atomic<float> screenMagnificationScale_ = 2.0f;

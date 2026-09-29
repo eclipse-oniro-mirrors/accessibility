@@ -287,6 +287,8 @@ export interface AccessibilityElement {
   belongTreeId?: int;
   childrenTreeId?: int;
   sourceType?: AccessibilitySourceType;
+  windowScaleX?: double;
+  windowScaleY?: double;
 }
 
 export class AccessibilityElementImpl implements AccessibilityElement {
@@ -363,6 +365,8 @@ export class AccessibilityElementImpl implements AccessibilityElement {
     belongTreeId?: int = 0;
     childrenTreeId?: int = 0;
     sourceType?: AccessibilitySourceType = undefined;
+    windowScaleX?: double = 0;
+    windowScaleY?: double = 0;
 
     constructor() {
         super();

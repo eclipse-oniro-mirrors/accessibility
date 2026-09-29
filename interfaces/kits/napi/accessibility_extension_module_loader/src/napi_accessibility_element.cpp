@@ -105,6 +105,8 @@ namespace {
     constexpr char CHILDREN_TREE_ID[] = "childrenTreeId";
     constexpr char BELONG_TREE_ID[] = "belongTreeId";
     constexpr char SOURCE_TYPE[] = "sourceType";
+    constexpr char WINDOW_SCALE_X[] = "windowScaleX";
+    constexpr char WINDOW_SCALE_Y[] = "windowScaleY";
 
     const std::vector<std::string> ELEMENT_INFO_ATTRIBUTE_NAMES = {"componentId", "inspectorKey",
         "bundleName", "componentType", "inputType", "text", "hintText", "description", "triggerAction",
@@ -119,7 +121,7 @@ namespace {
         "accessibilityNextFocusId", "accessibilityPreviousFocusId", "accessibilityScrollable", "isEssential",
         "childrenTreeId", "belongTreeId", "accessibilityStateDescription", "customActions", "sourceType"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
-        "rootElement", "isFocused", "windowId", "mainWindowId"};
+        "rootElement", "isFocused", "windowId", "mainWindowId", "windowScaleX", "windowScaleY"};
 
     using AttributeNamesFunc = void (*)(NAccessibilityElementData *callbackInfo, napi_value &value);
     std::map<std::string, AttributeNamesFunc> elementInfoCompleteMap = {
@@ -208,6 +210,8 @@ namespace {
         {"windowId", &NAccessibilityElement::GetWindowInfoWindowId},
         {"mainWindowId", &NAccessibilityElement::GetWindowInfoMainWindowId},
         {"hotArea", &NAccessibilityElement::GetWindowInfoHotArea},
+        {"windowScaleX", &NAccessibilityElement::GetWindowInfoScaleX},
+        {"windowScaleY", &NAccessibilityElement::GetWindowInfoScaleY},
     };
 
     napi_property_descriptor descForAccessibilityElement[] = {
@@ -301,6 +305,8 @@ namespace {
         DECLARE_NAPI_GETTER(CHILDREN_TREE_ID, GetElementProperty<ElementProperty<CHILDREN_TREE_ID>>),
         DECLARE_NAPI_GETTER(BELONG_TREE_ID, GetElementProperty<ElementProperty<BELONG_TREE_ID>>),
         DECLARE_NAPI_GETTER(SOURCE_TYPE, GetElementProperty<ElementProperty<SOURCE_TYPE>>),
+        DECLARE_NAPI_GETTER(WINDOW_SCALE_X, GetElementProperty<ElementProperty<WINDOW_SCALE_X>>),
+        DECLARE_NAPI_GETTER(WINDOW_SCALE_Y, GetElementProperty<ElementProperty<WINDOW_SCALE_Y>>),
     };
 } // namespace
 
@@ -1951,6 +1957,14 @@ void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData 
     napi_value mainWindowId = nullptr;
     GetWindowInfoMainWindowId(callbackInfo, mainWindowId);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "mainWindowId", mainWindowId));
+
+    napi_value windowScaleX = nullptr;
+    GetWindowInfoScaleX(callbackInfo, windowScaleX);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "windowScaleX", windowScaleX));
+
+    napi_value windowScaleY = nullptr;
+    GetWindowInfoScaleY(callbackInfo, windowScaleY);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "windowScaleY", windowScaleY));
 }
 
 bool NAccessibilityElement::CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -2073,6 +2087,24 @@ void NAccessibilityElement::GetWindowInfoHotArea(NAccessibilityElementData *call
 
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_object(callbackInfo->env_, &value));
     ConvertRectToJS(callbackInfo->env_, value, hotAreas[0]);
+}
+
+void NAccessibilityElement::GetWindowInfoScaleX(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.windowInfo_->GetScaleX(), &value));
+}
+
+void NAccessibilityElement::GetWindowInfoScaleY(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.windowInfo_->GetScaleY(), &value));
 }
 
 napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info info)

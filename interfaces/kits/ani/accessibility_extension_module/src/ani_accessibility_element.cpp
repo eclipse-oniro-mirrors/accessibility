@@ -720,6 +720,12 @@ void SetAccessibilityElementField(ani_env *env, ani_object& elementObj, const Ac
     if (!ANIUtils::SetIntField(env, elementObj, "mainWindowId", windowInfo.GetMainWindowId())) {
         HILOG_ERROR("Failed to set mainWindowId");
     }
+    if (!ANIUtils::SetDoubleField(env, elementObj, "windowScaleX", windowInfo.GetScaleX())) {
+        HILOG_ERROR("Failed to set windowScaleX");
+    }
+    if (!ANIUtils::SetDoubleField(env, elementObj, "windowScaleY", windowInfo.GetScaleY())) {
+        HILOG_ERROR("Failed to set windowScaleY");
+    }
     SetElementRectArrayField(env, elementObj, const_cast<AccessibilityWindowInfo&>(windowInfo).GetTouchHotAreas(),
         "hotArea");
 }

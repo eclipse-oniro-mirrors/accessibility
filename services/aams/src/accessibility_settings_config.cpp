@@ -44,6 +44,7 @@ namespace {
     const char* SCREEN_MAGNIFICATION_MODE = "accessibility_magnification_mode";
     const char* SCREEN_MAGNIFICATION_SCALE = "accessibility_display_magnification_scale";
     const char* SCREEN_MAGNIFICATION_TRIGGER_METHOD = "accessibility_display_magnification_trigger_method";
+    const char* SELECTREADER_KEY = "accessibility_select_reader_enabled";
     const char* MOUSEKEY = "mousekey";
     const char* HIGH_CONTRAST_TEXT_KEY = "high_text_contrast_enabled";
     const char* DALTONIZATION_STATE = "accessibility_display_daltonizer_enabled";
@@ -227,6 +228,19 @@ RetError AccessibilitySettingsConfig::SetMagnificationState(const bool state)
 {
     isScreenMagnificationState_.store(state);
     return RET_OK;
+}
+
+RetError AccessibilitySettingsConfig::SetSelectReaderState(const bool state)
+{
+    HILOG_DEBUG("state = [%{public}s]", state ? "True" : "False");
+    auto ret = SetConfigState(SELECTREADER_KEY, state);
+    if (ret != RET_OK) {
+        Utils::RecordDatashareInteraction(A11yDatashareValueType::UPDATE, "SetSelectReaderState");
+        HILOG_ERROR("set SetSelectReaderState failed");
+        return ret;
+    }
+    isSelectReaderState_.store(state);
+    return ret;
 }
 
 RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t type)
@@ -788,6 +802,11 @@ bool AccessibilitySettingsConfig::GetScreenMagnificationState() const
     return isScreenMagnificationState_.load();
 }
 
+bool AccessibilitySettingsConfig::GetSelectReaderState() const
+{
+    return isSelectReaderState_.load();
+}
+
 bool AccessibilitySettingsConfig::GetShortKeyState() const
 {
     return isShortKeyState_.load();
@@ -1304,6 +1323,7 @@ void AccessibilitySettingsConfig::InitSetting()
     InitAnimationOffConfig();
     CloneAudioState();
     isScreenMagnificationState_.store(datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false));
+    isSelectReaderState_.store(datashare_->GetBoolValue(SELECTREADER_KEY, false));
     isMouseKeyState_.store(datashare_->GetBoolValue(MOUSEKEY, false));
     invertColorState_.store(datashare_->GetBoolValue(INVERT_COLOR_KEY, false));
     highContrastTextState_.store(datashare_->GetBoolValue(HIGH_CONTRAST_TEXT_KEY, false));

@@ -295,7 +295,7 @@ public:
     bool DealWithScreenReaderState();
     bool GetScreenReaderState();
     bool GetDefaultUserScreenReaderState();
-    void SetSelectReaderState(const std::string &name, const std::string &state);
+    void SetSelectReaderState(bool state);
     bool GetSelectReaderState();
     AccountSA::OsAccountType GetAccountType();
 
@@ -346,7 +346,6 @@ public:
     RetError ConfigureEvents(std::vector<uint32_t> needEvents);
 
     bool screenReaderState_ = false;
-    bool selectReaderState_ = false;
     std::map<std::string, std::vector<uint32_t>> abilityNeedEvents_;
     std::vector<uint32_t> needEvents_;
     ffrt::mutex abilityNeedEventsMutex_; // mutex for map abilityNeedEvents_.
@@ -409,7 +408,6 @@ private:
     std::string screenReaderAbilityName_ = "com.ohos.screenreader/AccessibilityExtAbility";
     std::string screenReaderKey_ = "accessibility_screenreader_enabled";
     std::string selectReaderAbilityName_ = "com.ohos.selectreader/AccessibilityExtAbility";
-    std::string selectReaderKey_ = "accessibility_select_reader_enabled";
     uint32_t connectCounter_ = 1;
     CaptionPropertyCallbacks captionPropertyCallbacks_;
     ffrt::mutex captionPropertyCallbacksMutex_; // mutex for captionPropertyCallbacks_
