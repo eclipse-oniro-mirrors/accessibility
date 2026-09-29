@@ -99,9 +99,9 @@ interface OHOS.Accessibility.IAccessibleAbilityManagerService {
     void GetRootParentId([in] int windowsId, [in] int treeId, [out] long parentId);
     void GetRootParentIdEx([in] int windowsId, [in] int treeId, [out] long parentId);
     void GetScreenReaderState([out] boolean state);
-    void GetSelectReaderState([out] boolean state);
     void GetAccessibilityState([out] unsigned int state);
-    void SetEnhanceConfig([in] AccessibilitySecCompRawdata rawData);
+    [ipccode 71] void SetEnhanceConfig([in] AccessibilitySecCompRawdata rawData);
+    void GetSelectReaderState([out] boolean state);
     void SearchNeedEvents([out] unsigned int[] needEvents);
     void GetReadableRules([out] String name);
     void DeRegisterCaptionObserver([in] IRemoteObject obj);
