@@ -3450,8 +3450,8 @@ void AccessibleAbilityManagerService::OnFlashReminderModeChanged()
         return;
     }
 
-    int32_t flashReminderMode = config->GetDbHandle()->GetIntValue(FLASH_REMINDER_MODE_KEY, 0);
-    config->SetFlashReminderMode(flashReminderMode);
+    int32_t flashReminderMode = config->GetDbHandle()->GetIntValue(FLASH_REMINDER_MODE_KEY,
+        FlashReminderMode::FLASHLIGHT);
 
     Singleton<AccessibilityBlinkingReminderProxy>::GetInstance().SetFlashReminderMode(flashReminderMode);
 }

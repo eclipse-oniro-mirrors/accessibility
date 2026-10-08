@@ -26,6 +26,7 @@ declare_args() {
   accessibility_screenlock_manager = false
   accessibility_sensor_support = false
   security_component_enable = false
+  accessibility_product_feature = "default"
   if (defined(global_parts_info) &&
       !defined(global_parts_info.powermgr_display_manager)) {
     accessibility_feature_display_manager = false
@@ -137,4 +138,8 @@ if (accessibility_screenlock_manager) {
 
 if (accessibility_sensor_support) {
   accessibility_default_defines += [ "OHOS_BUILD_ENABLE_SENSOR" ]
+}
+
+if (accessibility_product_feature == "phone") {
+  accessibility_default_defines += [ "ACCESSIBILITY_FEATURE_PRODUCT_PHONE" ]
 }

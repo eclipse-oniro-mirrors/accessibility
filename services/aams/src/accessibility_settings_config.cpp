@@ -88,8 +88,8 @@ namespace {
     const char* ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const char* FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
     const char* FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
-    const char* FLASH_REMINDER_MODE_KEY = "accessibility_flash_reminder_mode";
-    const char* FLASH_REMINDER_UNLOCK_KEY = "accessibility_flash_reminder_unlock";
+    const char* FLASH_REMINDER_MODE = "accessibility_flash_reminder_mode";
+    const char* FLASH_REMINDER_UNLOCK = "accessibility_flash_reminder_unlock";
     const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const char* IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
@@ -1336,15 +1336,16 @@ void AccessibilitySettingsConfig::InitSetting()
     SetClickResponseTime(clickResponseTime_.load());
     ignoreRepeatClickTime_.store(static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0)));
     SetIgnoreRepeatClickTime(ignoreRepeatClickTime_.load());
+#ifdef  ACCESSIBILITY_FEATURE_PRODUCT_PHONE
     datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
     datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
+    datashare_->GetIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
+    datashare_->GetStringValue(FLASH_REMINDER_UNLOCK, "0");
+    flashReminderSwitch_.store(datashare_->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false));
+#endif
     datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
     datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
     HandleIgnoreRepeatClickState();
-    flashReminderSwitch_.store(datashare_->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false));
-    flashReminderMode_.store(datashare_->GetIntValue(FLASH_REMINDER_MODE_KEY, 0));
-    flashReminderFunctionEnabled_ = datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "");
-    flashReminderUnlock_.store(datashare_->GetBoolValue(FLASH_REMINDER_UNLOCK_KEY, false));
     seniorModeState_.store(datashare_->GetBoolValue(ELDER_CARE_ENABLED_KEY, false));
 }
 
