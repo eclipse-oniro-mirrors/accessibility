@@ -300,6 +300,7 @@ public:
     AccountSA::OsAccountType GetAccountType();
 
     void Init();
+    void Deinit();
 
     void AddConfigCallback(const sptr<IAccessibleAbilityManagerConfigObserver>& callback);
     void RemoveConfigCallback(const wptr<IRemoteObject>& callback);
