@@ -2588,7 +2588,6 @@ napi_value NAccessibilityClient::GetFocusedUIAccessibilityElement(napi_env env, 
             Completefunction(env, "GetFocusedUIAccessibilityElement", data);
         },
         reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
- 
     if (!HandleAsyncWorkResult(env, ret, callbackInfo->work_, callbackInfo)) {
         return nullptr;
     }
