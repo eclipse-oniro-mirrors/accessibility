@@ -96,6 +96,7 @@ struct NAccessibilitySystemAbilityClient {
     bool keyEventObserverState_ = false;
     bool setKeyEvenReturn_ = false;
     OHOS::Accessibility::AccessibilityEventInfo eventInfo_ {};
+    OHOS::Accessibility::AccessibilityElementInfo elementInfo_ {};
     bool result_ = false;
     OHOS::Accessibility::RetError ret_ = OHOS::Accessibility::RET_ERR_FAILED;
     std::string eventType_ = "";
@@ -148,6 +149,12 @@ public:
     static napi_value UnsubscribeSelfSeniorMode(napi_env env, napi_callback_info info);
     static napi_value GetSeniorModeStateForApp(napi_env env, napi_callback_info info);
     static napi_value SetSeniorModeStateForApp(napi_env env, napi_callback_info info);
+    static napi_value GetFocusedUIAccessibilityElement(napi_env env, napi_callback_info info);
+    static napi_value SubscribeFocusChange(napi_env env, napi_callback_info info);
+    static napi_value UnsubscribeFocusChange(napi_env env, napi_callback_info info);
+ 
+    static void DefineJSUIAccessibilityElementInfo(napi_env env);
+    static napi_value UIElementInfoConstructor(napi_env env, napi_callback_info info);
 
     static void DefineJSCaptionsStyle(napi_env env);
     static napi_value AccessibleAbilityConstructorStyle(napi_env env, napi_callback_info info);
@@ -166,6 +173,7 @@ public:
 
     static napi_ref aaConsRef_;
     static napi_ref aaStyleConsRef_;
+    static napi_ref uiElementInfoConsRef_;
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
     static std::shared_ptr<StateListenerImpl> screenReaderStateListeners_;
@@ -176,6 +184,8 @@ public:
     static std::shared_ptr<StateListenerImpl> flashReminderSwitchStateListeners_;
     static std::shared_ptr<StateListenerImpl> seniorModeStateListeners_;
     static std::shared_ptr<StateListenerImpl> seniorModeStateForAppListeners_;
+    static std::shared_ptr<class FocusChangeListenerImpl> focusChangeListeners_;
+    static void SubscribeFocusChangeListenerToFramework();
 
 private:
     static napi_value GetAccessibilityExtensionListAsync(

@@ -82,6 +82,7 @@ ANI_EXPORT ani_status ANI_Constructor(ani_vm *vm, uint32_t *result)
     ANIAccessibilityClient::flashReminderSwitchStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::seniorModeStateListeners_->SubscribeToFramework();
     ANIAccessibilityClient::seniorModeStateForAppListeners_->SubscribeToFramework();
+    ANIAccessibilityClient::SubscribeFocusChangeListenerToFramework();
 
     *result = ANI_VERSION_1;
     return ANI_OK;
@@ -126,7 +127,13 @@ static bool BindMethod(ani_env *env, ani_namespace ns, ani_module mod)
         ani_native_function {"getSeniorModeStateForSelfSync", nullptr,
             reinterpret_cast<void *>(ANIAccessibilityClient::GetSeniorModeStateForSelfSync)},
         ani_native_function {"setSeniorModeStateForSelfSync", nullptr,
-            reinterpret_cast<void *>(ANIAccessibilityClient::SetSeniorModeStateForSelfSync)}
+            reinterpret_cast<void *>(ANIAccessibilityClient::SetSeniorModeStateForSelfSync)},
+        ani_native_function {"getFocusedUIAccessibilityElementSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityClient::GetFocusedUIAccessibilityElementSync)},
+        ani_native_function {"onUIAccessibilityFocusChangedSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityClient::OnFocusedUIAccessibilityElementChangedSync)},
+        ani_native_function {"offUIAccessibilityFocusChangedSync", nullptr, reinterpret_cast<void *>(
+            ANIAccessibilityClient::OffFocusedUIAccessibilityElementChangedSync)}
    };
 
     if (env->Namespace_BindNativeFunctions(ns, methods.data(), methods.size()) != ANI_OK) {
@@ -204,6 +211,7 @@ ANI_EXPORT ani_status ANI_Destructor(ani_vm *vm)
     if (ANIAccessibilityClient::seniorModeStateForAppListeners_) {
         ANIAccessibilityClient::seniorModeStateForAppListeners_->UnsubscribeFromFramework();
     }
+    ANIAccessibilityClient::UnsubscribeFocusChangeListenerFromFramework();
 
     return ANI_OK;
 }

@@ -56,11 +56,14 @@ std::shared_ptr<StateListenerImpl> NAccessibilityClient::seniorModeStateListener
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED);
 std::shared_ptr<StateListenerImpl> NAccessibilityClient::seniorModeStateForAppListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SELF_SENIOR_MODE_STATE_CHANGE);
+std::shared_ptr<FocusChangeListenerImpl> NAccessibilityClient::focusChangeListeners_ =
+    std::make_shared<FocusChangeListenerImpl>();
 
 constexpr int32_t REPORTER_THRESHOLD_VALUE = 3000;
 
 napi_ref NAccessibilityClient::aaConsRef_;
 napi_ref NAccessibilityClient::aaStyleConsRef_;
+napi_ref NAccessibilityClient::uiElementInfoConsRef_ = nullptr;
 
 #define ACCESSIBILITY_NAPI_ASSERT(env, cond, errCode) \
 do { \
@@ -72,6 +75,315 @@ do { \
         return res; \
     } \
 } while (0)
+
+static void SetChildrenIdsToJS(napi_env env, napi_value result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    napi_value childrenArr = nullptr;
+    auto childIds = elementInfo.GetChildIds();
+    napi_create_array_with_length(env, childIds.size(), &childrenArr);
+    for (size_t i = 0; i < childIds.size(); i++) {
+        napi_value childId = nullptr;
+        napi_create_int64(env, childIds[i], &childId);
+        napi_set_element(env, childrenArr, i, childId);
+    }
+    napi_set_named_property(env, result, "childrenIds", childrenArr);
+}
+ 
+static void SetCustomActionsToJS(napi_env env, napi_value result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    napi_value actionArr = nullptr;
+    std::vector<std::string> customActions;
+    elementInfo.GetCustomActionList(customActions);
+    napi_create_array_with_length(env, customActions.size(), &actionArr);
+    for (size_t i = 0; i < customActions.size(); i++) {
+        napi_value item = nullptr;
+        napi_create_string_utf8(env, customActions[i].c_str(), NAPI_AUTO_LENGTH, &item);
+        napi_set_element(env, actionArr, i, item);
+    }
+    napi_set_named_property(env, result, "customActions", actionArr);
+}
+ 
+static void ConvertUIElementInfoToJSPart1(napi_env env, napi_value result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    napi_value temp = nullptr;
+    napi_create_int64(env, elementInfo.GetAccessibilityId(), &temp);
+    napi_set_named_property(env, result, "componentId", temp);
+    napi_create_string_utf8(env, elementInfo.GetComponentType().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "componentType", temp);
+    napi_create_string_utf8(env, elementInfo.GetDescriptionInfo().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "accessibilityDescription", temp);
+    napi_get_boolean(env, elementInfo.IsEditable(), &temp);
+    napi_set_named_property(env, result, "editable", temp);
+    napi_create_string_utf8(env, elementInfo.GetError().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "error", temp);
+    napi_get_boolean(env, elementInfo.IsFocusable(), &temp);
+    napi_set_named_property(env, result, "focusable", temp);
+    napi_create_string_utf8(env, elementInfo.GetHint().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "hintText", temp);
+    napi_create_string_utf8(env, elementInfo.GetInspectorKey().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "identifier", temp);
+    napi_get_boolean(env, elementInfo.GetIsActive(), &temp);
+    napi_set_named_property(env, result, "isActive", temp);
+    napi_get_boolean(env, elementInfo.IsEnabled(), &temp);
+    napi_set_named_property(env, result, "isEnabled", temp);
+    napi_get_boolean(env, elementInfo.IsFocused(), &temp);
+    napi_set_named_property(env, result, "isFocused", temp);
+    napi_get_boolean(env, elementInfo.IsVisible(), &temp);
+    napi_set_named_property(env, result, "isVisible", temp);
+    napi_get_boolean(env, elementInfo.IsLongClickable(), &temp);
+    napi_set_named_property(env, result, "longClickable", temp);
+    napi_create_int32(env, elementInfo.GetPageId(), &temp);
+    napi_set_named_property(env, result, "pageId", temp);
+}
+ 
+static void ConvertUIElementInfoToJSPart2(napi_env env, napi_value result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    napi_value temp = nullptr;
+    napi_get_boolean(env, elementInfo.IsScrollable(), &temp);
+    napi_set_named_property(env, result, "scrollable", temp);
+    napi_get_boolean(env, elementInfo.IsSelected(), &temp);
+    napi_set_named_property(env, result, "selected", temp);
+    napi_create_string_utf8(env, elementInfo.GetContent().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "text", temp);
+    napi_create_int32(env, elementInfo.GetTextLengthLimit(), &temp);
+    napi_set_named_property(env, result, "textLengthLimit", temp);
+    napi_create_double(env, elementInfo.GetRange().GetMax(), &temp);
+    napi_set_named_property(env, result, "valueMax", temp);
+    napi_create_double(env, elementInfo.GetRange().GetMin(), &temp);
+    napi_set_named_property(env, result, "valueMin", temp);
+    napi_create_double(env, elementInfo.GetRange().GetCurrent(), &temp);
+    napi_set_named_property(env, result, "valueNow", temp);
+    napi_create_double(env, elementInfo.GetOffset(), &temp);
+    napi_set_named_property(env, result, "offset", temp);
+    napi_create_string_utf8(env, elementInfo.GetAccessibilityText().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "accessibilityText", temp);
+    napi_create_string_utf8(env, elementInfo.GetAccessibilityStateDescription().c_str(),
+        NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "accessibilityStateDescription", temp);
+    napi_create_string_utf8(env, elementInfo.GetCustomComponentType().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "accessibilityRole", temp);
+    napi_create_int64(env, elementInfo.GetAccessibilityNextFocusId(), &temp);
+    napi_set_named_property(env, result, "accessibilityNextFocusId", temp);
+    napi_create_int64(env, elementInfo.GetAccessibilityPreviousFocusId(), &temp);
+    napi_set_named_property(env, result, "accessibilityPreviousFocusId", temp);
+    napi_get_boolean(env, elementInfo.GetAccessibilityScrollable(), &temp);
+    napi_set_named_property(env, result, "accessibilityScrollable", temp);
+    napi_get_boolean(env, elementInfo.GetAccessibilityGroup(), &temp);
+    napi_set_named_property(env, result, "accessibilityGroup", temp);
+    napi_create_string_utf8(env, elementInfo.GetAccessibilityLevel().c_str(), NAPI_AUTO_LENGTH, &temp);
+    napi_set_named_property(env, result, "accessibilityLevel", temp);
+    napi_value rectObj = nullptr;
+    napi_create_object(env, &rectObj);
+    ConvertRectToJS(env, rectObj, elementInfo.GetRectInScreen());
+    napi_set_named_property(env, result, "rect", rectObj);
+}
+ 
+static void ConvertUIElementInfoToJSPart3(napi_env env, napi_value result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    napi_value temp = nullptr;
+    napi_get_boolean(env, elementInfo.GetAccessibilityVisible(), &temp);
+    napi_set_named_property(env, result, "accessibilityVisible", temp);
+    napi_create_int64(env, elementInfo.GetParentNodeId(), &temp);
+    napi_set_named_property(env, result, "parentId", temp);
+    SetChildrenIdsToJS(env, result, elementInfo);
+    SetCustomActionsToJS(env, result, elementInfo);
+    napi_get_boolean(env, elementInfo.IsCheckable(), &temp);
+    napi_set_named_property(env, result, "checkable", temp);
+    napi_get_boolean(env, elementInfo.IsChecked(), &temp);
+    napi_set_named_property(env, result, "isChecked", temp);
+    napi_get_boolean(env, elementInfo.IsClickable(), &temp);
+    napi_set_named_property(env, result, "clickable", temp);
+    napi_get_boolean(env, elementInfo.HasAccessibilityFocus(), &temp);
+    napi_set_named_property(env, result, "accessibilityFocused", temp);
+}
+ 
+static void ConvertUIElementInfoToJS(napi_env env, napi_value result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    ConvertUIElementInfoToJSPart1(env, result, elementInfo);
+    ConvertUIElementInfoToJSPart2(env, result, elementInfo);
+    ConvertUIElementInfoToJSPart3(env, result, elementInfo);
+}
+ 
+napi_value NAccessibilityClient::UIElementInfoConstructor(napi_env env, napi_callback_info info)
+{
+    napi_value jsthis = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr));
+    return jsthis;
+}
+ 
+void NAccessibilityClient::DefineJSUIAccessibilityElementInfo(napi_env env)
+{
+    napi_property_descriptor uiElementInfoDesc[] = {};
+ 
+    napi_value aaCons = nullptr;
+    NAPI_CALL_RETURN_VOID(env,
+        napi_define_class(env, "UIAccessibilityElementInfo", NAPI_AUTO_LENGTH,
+            NAccessibilityClient::UIElementInfoConstructor, nullptr,
+            sizeof(uiElementInfoDesc) / sizeof(uiElementInfoDesc[0]),
+            uiElementInfoDesc, &aaCons));
+    napi_create_reference(env, aaCons, 1, &NAccessibilityClient::uiElementInfoConsRef_);
+}
+ 
+static napi_value CreateUIElementInfoJS(napi_env env,
+    const OHOS::Accessibility::AccessibilityElementInfo& elementInfo)
+{
+    napi_value constructor = nullptr;
+    napi_get_reference_value(env, NAccessibilityClient::uiElementInfoConsRef_, &constructor);
+    napi_value obj = nullptr;
+    napi_new_instance(env, constructor, 0, nullptr, &obj);
+    ConvertUIElementInfoToJS(env, obj, elementInfo);
+    return obj;
+}
+ 
+class FocusChangeCallbackListener {
+public:
+    FocusChangeCallbackListener(napi_env env, napi_ref handlerRef)
+        : env_(env), handlerRef_(handlerRef) {}
+    ~FocusChangeCallbackListener() = default;
+    napi_env env_ = nullptr;
+    napi_ref handlerRef_ = nullptr;
+};
+ 
+class FocusChangeListenerImpl : public OHOS::Accessibility::AccessibilityFocusChangeObserver,
+    public std::enable_shared_from_this<FocusChangeListenerImpl> {
+public:
+    FocusChangeListenerImpl() = default;
+    ~FocusChangeListenerImpl() override = default;
+ 
+    void SubscribeToFramework()
+    {
+        auto asaClient = OHOS::Accessibility::AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient) {
+            asaClient->SubscribeFocusChangeObserver(shared_from_this());
+        }
+    }
+ 
+    void UnsubscribeFromFramework()
+    {
+        auto asaClient = OHOS::Accessibility::AccessibilitySystemAbilityClient::GetInstance();
+        if (asaClient) {
+            asaClient->UnsubscribeFocusChangeObserver(shared_from_this());
+        }
+    }
+ 
+    void OnFocusChanged(const OHOS::Accessibility::AccessibilityElementInfo &focusedElement,
+        const OHOS::Accessibility::AccessibilityElementInfo &unfocusedElement) override
+    {
+        HILOG_INFO("FocusChangeListenerImpl::OnFocusChanged");
+        NotifyObservers(focusedElement, unfocusedElement);
+    }
+ 
+    void SubscribeObserver(napi_env env, napi_value observer)
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+            if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
+                HILOG_INFO("SubscribeObserver Observer exist");
+                return;
+            }
+        }
+        napi_ref ref = nullptr;
+        napi_status refStatus = napi_create_reference(env, observer, 1, &ref);
+        if (refStatus != napi_ok || ref == nullptr) {
+            HILOG_ERROR("napi_create_reference failed");
+            return;
+        }
+        observers_.emplace_back(std::make_shared<FocusChangeCallbackListener>(env, ref));
+    }
+ 
+    void UnsubscribeObserver(napi_env env, napi_value observer)
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+            if (CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->handlerRef_)) {
+                DeleteObserverReference(env, *iter);
+                observers_.erase(iter);
+                return;
+            }
+        }
+    }
+ 
+    void UnsubscribeObservers()
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto &observer : observers_) {
+            DeleteObserverReference(observer->env_, observer);
+        }
+        observers_.clear();
+    }
+ 
+private:
+    void NotifyObservers(const OHOS::Accessibility::AccessibilityElementInfo &focusedElement,
+        const OHOS::Accessibility::AccessibilityElementInfo &unfocusedElement)
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto &observer : observers_) {
+            auto env = observer->env_;
+            auto handlerRef = observer->handlerRef_;
+            auto focusedPtr = std::make_shared<OHOS::Accessibility::AccessibilityElementInfo>(focusedElement);
+            auto unfocusedPtr = std::make_shared<OHOS::Accessibility::AccessibilityElementInfo>(unfocusedElement);
+            bool hasUnfocused = (unfocusedElement.GetAccessibilityId() !=
+                                 OHOS::Accessibility::AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID);
+            auto task = [env, handlerRef, focusedPtr, unfocusedPtr, hasUnfocused]() {
+                auto closeScope = [env](napi_handle_scope scope) {
+                    napi_close_handle_scope(env, scope);
+                };
+                std::unique_ptr<napi_handle_scope__, decltype(closeScope)> scope(
+                    OHOS::Accessibility::TmpOpenScope(env), closeScope);
+ 
+                napi_value callback = nullptr;
+                napi_get_reference_value(env, handlerRef, &callback);
+ 
+                napi_value jsFocusedInfo = nullptr;
+                napi_create_object(env, &jsFocusedInfo);
+ 
+                napi_value jsFocusedElement = CreateUIElementInfoJS(env, *focusedPtr);
+                napi_set_named_property(env, jsFocusedInfo, "focusedElement", jsFocusedElement);
+ 
+                if (hasUnfocused) {
+                    napi_value jsUnfocusedElement = CreateUIElementInfoJS(env, *unfocusedPtr);
+                    napi_set_named_property(env, jsFocusedInfo, "unfocusedElement", jsUnfocusedElement);
+                } else {
+                    napi_value nullValue = nullptr;
+                    napi_get_null(env, &nullValue);
+                    napi_set_named_property(env, jsFocusedInfo, "unfocusedElement", nullValue);
+                }
+ 
+                napi_value undefined = nullptr;
+                napi_get_undefined(env, &undefined);
+                napi_value returnVal = nullptr;
+                napi_call_function(env, undefined, callback, ARGS_SIZE_ONE, &jsFocusedInfo, &returnVal);
+            };
+            if (napi_send_event(env, task, napi_eprio_high,
+                "FocusChangeNotify") != napi_status::napi_ok) {
+                HILOG_ERROR("Failed to send focus change event");
+            }
+        }
+    }
+ 
+    void DeleteObserverReference(napi_env env, std::shared_ptr<FocusChangeCallbackListener> observer)
+    {
+        auto callbackInfo = std::make_shared<AccessibilityCallbackInfo>();
+        callbackInfo->env_ = observer->env_;
+        callbackInfo->ref_ = observer->handlerRef_;
+        auto task = [callbackInfo]() {
+            napi_delete_reference(callbackInfo->env_, callbackInfo->ref_);
+        };
+        if (napi_send_event(env, task, napi_eprio_high,
+            "DeleteFocusChangeObserverRef") != napi_status::napi_ok) {
+            HILOG_ERROR("Failed to send delete reference event");
+        }
+    }
+ 
+    ffrt::mutex mutex_;
+    std::vector<std::shared_ptr<FocusChangeCallbackListener>> observers_;
+};
 
 napi_value NAccessibilityClient::IsScreenReaderOpenSync(napi_env env, napi_callback_info info)
 {
@@ -292,6 +604,14 @@ void NAccessibilityClient::Completefunction(napi_env env, std::string type, void
     } else if (type == "SetSeniorModeStateForApp") {
         HILOG_INFO("SetSeniorModeStateForApp completed");
         result[PARAM1] = undefined;
+    } else if (type == "GetFocusedUIAccessibilityElement") {
+        if (callbackInfo->ret_ == OHOS::Accessibility::RET_OK) {
+            result[PARAM1] = CreateUIElementInfoJS(env, callbackInfo->elementInfo_);
+        } else {
+            napi_get_undefined(env, &result[PARAM1]);
+            callbackInfo->ret_ = OHOS::Accessibility::RET_OK;
+        }
+        HILOG_INFO("GetFocusedUIAccessibilityElement completed ret_[%{public}d]", callbackInfo->ret_);
     } else {
         napi_delete_async_work(env, callbackInfo->work_);
         delete callbackInfo;
@@ -2231,4 +2551,78 @@ bool NAccessibilityClient::HandleAsyncWorkResult(
         return false;
     }
     return true;
+}
+
+void NAccessibilityClient::SubscribeFocusChangeListenerToFramework()
+{
+    focusChangeListeners_->SubscribeToFramework();
+}
+ 
+napi_value NAccessibilityClient::GetFocusedUIAccessibilityElement(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ZERO;
+    napi_get_cb_info(env, info, &argc, nullptr, nullptr, nullptr);
+ 
+    NAccessibilitySystemAbilityClient* callbackInfo = new(std::nothrow) NAccessibilitySystemAbilityClient();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("Failed to create callbackInfo.");
+        return nullptr;
+    }
+ 
+    napi_value promise = nullptr;
+    napi_create_promise(env, &callbackInfo->deferred_, &promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "GetFocusedUIAccessibilityElement", NAPI_AUTO_LENGTH, &resource);
+ 
+    auto ret = napi_create_async_work(env, nullptr, resource,
+        [](napi_env env, void* data) {
+            NAccessibilitySystemAbilityClient* callbackInfo =
+                static_cast<NAccessibilitySystemAbilityClient*>(data);
+            auto asaClient = OHOS::Accessibility::AccessibilitySystemAbilityClient::GetInstance();
+            if (asaClient) {
+                callbackInfo->ret_ = asaClient->GetLocalFocusElement(callbackInfo->elementInfo_);
+            }
+        },
+        [](napi_env env, napi_status status, void* data) {
+            Completefunction(env, "GetFocusedUIAccessibilityElement", data);
+        },
+        reinterpret_cast<void*>(callbackInfo), &callbackInfo->work_);
+ 
+    if (!HandleAsyncWorkResult(env, ret, callbackInfo->work_, callbackInfo)) {
+        return nullptr;
+    }
+    return promise;
+}
+ 
+napi_value NAccessibilityClient::SubscribeFocusChange(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value args[ARGS_SIZE_ONE] = {0};
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+ 
+    if (argc < ARGS_SIZE_ONE || !CheckJsFunction(env, args[PARAM0])) {
+        HILOG_ERROR("SubscribeFocusChange argc is invalid");
+        napi_value err = CreateBusinessError(env, OHOS::Accessibility::RET_ERR_INVALID_PARAM);
+        napi_throw(env, err);
+        return nullptr;
+    }
+    focusChangeListeners_->SubscribeObserver(env, args[PARAM0]);
+    return nullptr;
+}
+ 
+napi_value NAccessibilityClient::UnsubscribeFocusChange(napi_env env, napi_callback_info info)
+{
+    HILOG_INFO();
+    size_t argc = ARGS_SIZE_ONE;
+    napi_value args[ARGS_SIZE_ONE] = {0};
+    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
+ 
+    if (argc >= ARGS_SIZE_ONE && CheckJsFunction(env, args[PARAM0])) {
+        focusChangeListeners_->UnsubscribeObserver(env, args[PARAM0]);
+    } else {
+        focusChangeListeners_->UnsubscribeObservers();
+    }
+    return nullptr;
 }

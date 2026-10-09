@@ -20,6 +20,7 @@
 #include <map>
 #include <ani.h>
 #include "accessibility_system_ability_client.h"
+#include "accessibility_element_info.h"
 #include "accessibility_state_event.h"
 #include "accessibility_config.h"
 #include "ffrt.h"
@@ -65,6 +66,44 @@ struct ANICaptionCallbackInfo {
     ani_env *env_;
     ani_ref fnRef_;
     OHOS::AccessibilityConfig::CaptionProperty caption_;
+};
+
+struct ANIFocusChangeCallbackInfo {
+    ani_env *env_;
+    ani_ref fnRef_;
+    OHOS::Accessibility::AccessibilityElementInfo focusedElement_;
+    OHOS::Accessibility::AccessibilityElementInfo unfocusedElement_;
+};
+ 
+struct FocusChangeCallbackListener {
+public:
+    FocusChangeCallbackListener(ani_env *env, ani_ref fnRef) : env_(env), fnRef_(fnRef) {}
+    ~FocusChangeCallbackListener() = default;
+    ani_env *env_ = nullptr;
+    ani_ref fnRef_ = nullptr;
+};
+ 
+class FocusChangeListenerImpl : public OHOS::Accessibility::AccessibilityFocusChangeObserver,
+    public std::enable_shared_from_this<FocusChangeListenerImpl> {
+public:
+    FocusChangeListenerImpl() = default;
+    ~FocusChangeListenerImpl() override = default;
+    void OnFocusChanged(const OHOS::Accessibility::AccessibilityElementInfo &focusedElement,
+        const OHOS::Accessibility::AccessibilityElementInfo &unfocusedElement) override;
+    void SubscribeToFramework();
+    void UnsubscribeFromFramework();
+    void SubscribeObserver(ani_env *env, ani_object observer);
+    void UnsubscribeObserver(ani_env *env, ani_object observer);
+    void UnsubscribeObservers();
+ 
+private:
+    void NotifyObservers(const OHOS::Accessibility::AccessibilityElementInfo &focusedElement,
+        const OHOS::Accessibility::AccessibilityElementInfo &unfocusedElement);
+    void InvokeObserverCallback(std::shared_ptr<ANIFocusChangeCallbackInfo> callbackInfo,
+        bool hasUnfocused);
+    void DeleteObserverReference(ani_env *env, std::shared_ptr<FocusChangeCallbackListener> observer);
+    ffrt::mutex mutex_;
+    std::vector<std::shared_ptr<FocusChangeCallbackListener>> observers_;
 };
 
 struct AccessibilityCaptionsObserver {
@@ -131,6 +170,11 @@ public:
     static void OffSeniorModeStateChangeForSelfSync(ani_env *env, ani_object observer);
     static ani_boolean GetSeniorModeStateForSelfSync(ani_env *env);
     static void SetSeniorModeStateForSelfSync(ani_env *env, ani_boolean state);
+    static ani_object GetFocusedUIAccessibilityElementSync(ani_env *env);
+    static void OnFocusedUIAccessibilityElementChangedSync(ani_env *env, ani_object observer);
+    static void OffFocusedUIAccessibilityElementChangedSync(ani_env *env, ani_object observer);
+    static void SubscribeFocusChangeListenerToFramework();
+    static void UnsubscribeFocusChangeListenerFromFramework();
 
     static std::shared_ptr<StateListenerImpl> accessibilityStateListeners_;
     static std::shared_ptr<StateListenerImpl> touchGuideStateListeners_;
@@ -154,6 +198,7 @@ private:
         OHOS::Accessibility::AccessibilityAbilityInfo& accessibleAbilityInfo);
     static ani_object ConvertAccessibleAbilityInfosToJs(ani_env *env,
         std::vector<OHOS::Accessibility::AccessibilityAbilityInfo>& accessibleAbilityInfos);
+    static std::shared_ptr<FocusChangeListenerImpl> focusChangeListeners_;
 };
 
 #endif // ANI_ACCESSIBILITY_SYSTEM_ABILITY_CLIENT_H

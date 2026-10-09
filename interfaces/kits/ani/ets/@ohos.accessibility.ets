@@ -421,6 +421,104 @@ namespace accessibility {
         });
     }
 
+    interface UIRect {
+        left: int;
+        top: int;
+        width: int;
+        height: int;
+    }
+ 
+    class UIRectImpl implements UIRect {
+        left: int = 0;
+        top: int = 0;
+        width: int = 0;
+        height: int = 0;
+    }
+ 
+    export interface UIAccessibilityElement {
+        accessibilityFocused?: boolean;
+        checkable?: boolean;
+        isChecked?: boolean;
+        clickable?: boolean;
+        componentId?: long;
+        componentType?: string;
+        accessibilityDescription?: string;
+        editable?: boolean;
+        error?: string;
+        focusable?: boolean;
+        hintText?: string;
+        identifier?: string;
+        isActive?: boolean;
+        isEnabled?: boolean;
+        isFocused?: boolean;
+        isVisible?: boolean;
+        longClickable?: boolean;
+        pageId?: int;
+        scrollable?: boolean;
+        selected?: boolean;
+        text?: string;
+        textLengthLimit?: int;
+        valueMax?: double;
+        valueMin?: double;
+        valueNow?: double;
+        offset?: double;
+        accessibilityText?: string;
+        accessibilityStateDescription?: string;
+        accessibilityRole?: string;
+        accessibilityNextFocusId?: long;
+        accessibilityPreviousFocusId?: long;
+        accessibilityScrollable?: boolean;
+        accessibilityGroup?: boolean;
+        accessibilityLevel?: string;
+        rect?: UIRect;
+        accessibilityVisible?: boolean;
+        parentId?: long;
+        childrenIds?: Array<long>;
+        customActions?: Array<string>;
+    }
+ 
+    class UIAccessibilityElementImpl implements UIAccessibilityElement {
+        accessibilityFocused?: boolean = false;
+        checkable?: boolean = false;
+        isChecked?: boolean = false;
+        clickable?: boolean = false;
+        componentId?: long = 0;
+        componentType?: string = "";
+        accessibilityDescription?: string = "";
+        editable?: boolean = false;
+        error?: string = "";
+        focusable?: boolean = false;
+        hintText?: string = "";
+        identifier?: string = "";
+        isActive?: boolean = true;
+        isEnabled?: boolean = true;
+        isFocused?: boolean = false;
+        isVisible?: boolean = true;
+        longClickable?: boolean = false;
+        pageId?: int = 0;
+        scrollable?: boolean = false;
+        selected?: boolean = false;
+        text?: string = "";
+        textLengthLimit?: int = 0;
+        valueMax?: double = 0;
+        valueMin?: double = 0;
+        valueNow?: double = 0;
+        offset?: double = 0;
+        accessibilityText?: string = "";
+        accessibilityStateDescription?: string = "";
+        accessibilityRole?: string = "";
+        accessibilityNextFocusId?: long = 0;
+        accessibilityPreviousFocusId?: long = 0;
+        accessibilityScrollable?: boolean = false;
+        accessibilityGroup?: boolean = true;
+        accessibilityLevel?: string = "auto";
+        rect?: UIRect = new UIRectImpl();
+        accessibilityVisible?: boolean = true;
+        parentId?: long = 0;
+        childrenIds?: Array<long> = [];
+        customActions?: Array<string> = [];
+    }
+
     export interface CaptionsManager {
         enabled: boolean;
         style: CaptionsStyle;

@@ -317,6 +317,12 @@ public:
      */
     virtual RetError SetSeniorModeStateForApp(const bool state) override;
 
+    virtual RetError GetLocalFocusElement(AccessibilityElementInfo &elementInfo) override;
+    virtual void SubscribeFocusChangeObserver(
+        const std::shared_ptr<AccessibilityFocusChangeObserver> &observer) override;
+    virtual void UnsubscribeFocusChangeObserver(
+        const std::shared_ptr<AccessibilityFocusChangeObserver> &observer) override;
+
     /**
      * @brief Set the result of update accessibility virtual node.
      * @param result The result of add operation, refer to OperateVirtualNodeResult.
@@ -454,6 +460,11 @@ private:
     bool CheckEventType(EventType eventType);
     static void OnParameterChanged(const char *key, const char *value, void *context);
 
+    void RecordFocusElementIfNeeded(const AccessibilityEventInfo &event);
+    void NotifyFocusChangeObservers(const AccessibilityElementInfo &focusedElement,
+        const AccessibilityElementInfo &unfocusedElement);
+    void ClearFocusedElement();
+
     bool SubscribeAccessibilityCommonEvent(const std::string &event);
     void OnReceiveAccessibilityCommonEvent(const EventFwk::CommonEventData &data);
 
@@ -472,6 +483,12 @@ private:
     ffrt::mutex conVarMutex_; // mutex for proxyConVar
 
     std::shared_ptr<A11yPublishEventSubscriber> subscriber_ = nullptr;
+
+    AccessibilityElementInfo lastFocusedElementInfo_;
+    bool hasFocusedElement_ = false;
+    ffrt::mutex focusedElementMutex_;
+    std::vector<std::shared_ptr<AccessibilityFocusChangeObserver>> focusChangeObservers_;
+    ffrt::mutex focusChangeObserversMutex_;
 };
 } // namespace Accessibility
 } // namespace OHOS
