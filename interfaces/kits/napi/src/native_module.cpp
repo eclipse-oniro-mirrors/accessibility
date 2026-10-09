@@ -324,7 +324,7 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("getAbilityLists", NAccessibilityClient::GetAbilityList),
         DECLARE_NAPI_FUNCTION("getAccessibilityExtensionList", NAccessibilityClient::GetAccessibilityExtensionList),
         DECLARE_NAPI_FUNCTION("getAccessibilityExtensionListSync",
-            NAccessibilityClient::GetAccessibilityExtensionListSync),
+                              NAccessibilityClient::GetAccessibilityExtensionListSync),
         DECLARE_NAPI_FUNCTION("on", NAccessibilityClient::SubscribeState),
         DECLARE_NAPI_FUNCTION("off", NAccessibilityClient::UnsubscribeState),
         DECLARE_NAPI_FUNCTION("sendEvent", NAccessibilityClient::SendEvent),
@@ -349,6 +349,10 @@ static napi_value Init(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("offSeniorModeStateChangeForSelf", NAccessibilityClient::UnsubscribeSelfSeniorMode),
         DECLARE_NAPI_FUNCTION("getSeniorModeStateForSelf", NAccessibilityClient::GetSeniorModeStateForApp),
         DECLARE_NAPI_FUNCTION("setSeniorModeStateForSelf", NAccessibilityClient::SetSeniorModeStateForApp),
+        DECLARE_NAPI_FUNCTION("getFocusedUIAccessibilityElement",
+                              NAccessibilityClient::GetFocusedUIAccessibilityElement),
+        DECLARE_NAPI_FUNCTION("onUIAccessibilityFocusChanged", NAccessibilityClient::SubscribeFocusChange),
+        DECLARE_NAPI_FUNCTION("offUIAccessibilityFocusChanged", NAccessibilityClient::UnsubscribeFocusChange),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
@@ -365,6 +369,7 @@ static napi_value Init(napi_env env, napi_value exports)
     (void)instance.InitializeContext();
     NAccessibilityClient::DefineJSCaptionsManager(env);
     NAccessibilityClient::DefineJSCaptionsStyle(env);
+    NAccessibilityClient::DefineJSUIAccessibilityElementInfo(env);
     NAccessibilityEventInfo::DefineJSAccessibilityEventInfo(env, exports);
     NAccessibilityClient::accessibilityStateListeners_->SubscribeToFramework();
     NAccessibilityClient::touchGuideStateListeners_->SubscribeToFramework();
@@ -376,6 +381,7 @@ static napi_value Init(napi_env env, napi_value exports)
     NAccessibilityClient::flashReminderSwitchStateListeners_->SubscribeToFramework();
     NAccessibilityClient::seniorModeStateListeners_->SubscribeToFramework();
     NAccessibilityClient::seniorModeStateForAppListeners_->SubscribeToFramework();
+    NAccessibilityClient::SubscribeFocusChangeListenerToFramework();
 
     HILOG_INFO("-----Init end------");
     return exports;

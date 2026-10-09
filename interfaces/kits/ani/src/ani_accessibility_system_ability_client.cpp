@@ -50,6 +50,8 @@ std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::seniorModeStateListen
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED);
 std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::seniorModeStateForAppListeners_ =
     std::make_shared<StateListenerImpl>(AccessibilityStateEventType::EVENT_SELF_SENIOR_MODE_STATE_CHANGE);
+std::shared_ptr<FocusChangeListenerImpl> ANIAccessibilityClient::focusChangeListeners_ =
+    std::make_shared<FocusChangeListenerImpl>();
 
 void StateListenerImpl::SubscribeToFramework()
 {
@@ -1068,4 +1070,430 @@ void ANIAccessibilityClient::SetSeniorModeStateForSelfSync(ani_env *env, ani_boo
         return;
     }
     HILOG_INFO("SetSeniorModeStateForSelf success");
+}
+
+static void SetRectToANI(ani_env *env, ani_object result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    OHOS::Accessibility::Rect rect = elementInfo.GetRectInScreen();
+    ani_class rectCls = nullptr;
+    ani_status status = env->FindClass(
+        Builder::BuildClass("@ohos.accessibility.accessibility.UIRectImpl")
+        .Descriptor().c_str(), &rectCls);
+    if (rectCls == nullptr) {
+        HILOG_ERROR("FindClass UIRectImpl failed, status=%{public}d", static_cast<int32_t>(status));
+        return;
+    }
+    ani_object rectObj = ANIUtils::CreateObject(env, rectCls);
+    if (rectObj == nullptr) {
+        HILOG_ERROR("Failed to create UIRectImpl object");
+        return;
+    }
+    env->Object_SetFieldByName_Int(rectObj, "left", rect.GetLeftTopXScreenPostion());
+    env->Object_SetFieldByName_Int(rectObj, "top", rect.GetLeftTopYScreenPostion());
+    int32_t width = rect.GetRightBottomXScreenPostion() - rect.GetLeftTopXScreenPostion();
+    int32_t height = rect.GetRightBottomYScreenPostion() - rect.GetLeftTopYScreenPostion();
+    env->Object_SetFieldByName_Int(rectObj, "width", width);
+    env->Object_SetFieldByName_Int(rectObj, "height", height);
+    env->Object_SetFieldByName_Ref(result, "rect", rectObj);
+}
+ 
+static void SetChildrenIdsToANI(ani_env *env, ani_object result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    auto childIds = elementInfo.GetChildIds();
+    ani_ref undefinedRef = nullptr;
+    env->GetUndefined(&undefinedRef);
+    ani_array childrenArr = nullptr;
+    env->Array_New(childIds.size(), undefinedRef, &childrenArr);
+    for (size_t i = 0; i < childIds.size(); i++) {
+        ani_object idObj;
+        if (ANIUtils::CreateAniLong(env, static_cast<ani_long>(childIds[i]), idObj) != ANI_OK) {
+            HILOG_ERROR("CreateAniLong failed");
+            return;
+        }
+        env->Array_Set(childrenArr, static_cast<ani_size>(i), idObj);
+    }
+    env->Object_SetFieldByName_Ref(result, "childrenIds", childrenArr);
+}
+ 
+static void SetCustomActionsToANI(ani_env *env, ani_object result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    std::vector<std::string> customActions;
+    elementInfo.GetCustomActionList(customActions);
+    ani_ref undefinedRef = nullptr;
+    env->GetUndefined(&undefinedRef);
+    ani_array actionArr = nullptr;
+    env->Array_New(customActions.size(), undefinedRef, &actionArr);
+    for (size_t i = 0; i < customActions.size(); i++) {
+        ani_string item = ANIUtils::CreateAniString(env, customActions[i]);
+        env->Array_Set(actionArr, static_cast<ani_size>(i), item);
+    }
+    env->Object_SetFieldByName_Ref(result, "customActions", actionArr);
+}
+ 
+static void ConvertUIElementInfoToANIPart1(ani_env *env, ani_object result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    int64_t componentId = static_cast<int64_t>(elementInfo.GetAccessibilityId());
+    ANIUtils::SetLongField(env, result, "componentId", componentId);
+    ani_string componentType = ANIUtils::CreateAniString(env, elementInfo.GetComponentType());
+    env->Object_SetFieldByName_Ref(result, "componentType", componentType);
+    ani_string description = ANIUtils::CreateAniString(env, elementInfo.GetDescriptionInfo());
+    env->Object_SetFieldByName_Ref(result, "accessibilityDescription", description);
+    ani_object editable = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsEditable()));
+    env->Object_SetFieldByName_Ref(result, "editable", editable);
+    ani_string error = ANIUtils::CreateAniString(env, elementInfo.GetError());
+    env->Object_SetFieldByName_Ref(result, "error", error);
+    ani_object focusable = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsFocusable()));
+    env->Object_SetFieldByName_Ref(result, "focusable", focusable);
+    ani_string hintText = ANIUtils::CreateAniString(env, elementInfo.GetHint());
+    env->Object_SetFieldByName_Ref(result, "hintText", hintText);
+    ani_string identifier = ANIUtils::CreateAniString(env, elementInfo.GetInspectorKey());
+    env->Object_SetFieldByName_Ref(result, "identifier", identifier);
+    ani_object isActive = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.GetIsActive()));
+    env->Object_SetFieldByName_Ref(result, "isActive", isActive);
+    ani_object isEnabled = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsEnabled()));
+    env->Object_SetFieldByName_Ref(result, "isEnabled", isEnabled);
+    ani_object isFocused = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsFocused()));
+    env->Object_SetFieldByName_Ref(result, "isFocused", isFocused);
+    ani_object isVisible = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsVisible()));
+    env->Object_SetFieldByName_Ref(result, "isVisible", isVisible);
+    ani_object longClickable = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsLongClickable()));
+    env->Object_SetFieldByName_Ref(result, "longClickable", longClickable);
+    env->Object_SetFieldByName_Int(result, "pageId", static_cast<ani_int>(elementInfo.GetPageId()));
+}
+ 
+static void ConvertUIElementInfoToANIPart2(ani_env *env, ani_object result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    ani_object scrollable = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsScrollable()));
+    env->Object_SetFieldByName_Ref(result, "scrollable", scrollable);
+    ani_object selected = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsSelected()));
+    env->Object_SetFieldByName_Ref(result, "selected", selected);
+    ani_string text = ANIUtils::CreateAniString(env, elementInfo.GetContent());
+    env->Object_SetFieldByName_Ref(result, "text", text);
+    env->Object_SetFieldByName_Int(result, "textLengthLimit",
+        static_cast<ani_int>(elementInfo.GetTextLengthLimit()));
+    ani_object valueMax = ANIUtils::CreateDouble(env, static_cast<float>(elementInfo.GetRange().GetMax()));
+    env->Object_SetFieldByName_Ref(result, "valueMax", valueMax);
+    ani_object valueMin = ANIUtils::CreateDouble(env, static_cast<float>(elementInfo.GetRange().GetMin()));
+    env->Object_SetFieldByName_Ref(result, "valueMin", valueMin);
+    ani_object valueNow = ANIUtils::CreateDouble(env, static_cast<float>(elementInfo.GetRange().GetCurrent()));
+    env->Object_SetFieldByName_Ref(result, "valueNow", valueNow);
+    ani_object offset = ANIUtils::CreateDouble(env, static_cast<float>(elementInfo.GetOffset()));
+    env->Object_SetFieldByName_Ref(result, "offset", offset);
+    ani_string accessibilityText = ANIUtils::CreateAniString(env, elementInfo.GetAccessibilityText());
+    env->Object_SetFieldByName_Ref(result, "accessibilityText", accessibilityText);
+    ani_string accessibilityStateDescription = ANIUtils::CreateAniString(env,
+        elementInfo.GetAccessibilityStateDescription());
+    env->Object_SetFieldByName_Ref(result, "accessibilityStateDescription", accessibilityStateDescription);
+    ani_string customComponentType = ANIUtils::CreateAniString(env, elementInfo.GetCustomComponentType());
+    env->Object_SetFieldByName_Ref(result, "accessibilityRole", customComponentType);
+    ANIUtils::SetLongField(env, result, "accessibilityNextFocusId",
+        static_cast<int64_t>(elementInfo.GetAccessibilityNextFocusId()));
+    ANIUtils::SetLongField(env, result, "accessibilityPreviousFocusId",
+        static_cast<int64_t>(elementInfo.GetAccessibilityPreviousFocusId()));
+    ani_object accessibilityScrollable = ANIUtils::CreateBoolObject(env,
+        static_cast<ani_boolean>(elementInfo.GetAccessibilityScrollable()));
+    env->Object_SetFieldByName_Ref(result, "accessibilityScrollable", accessibilityScrollable);
+    ani_object accessibilityGroup = ANIUtils::CreateBoolObject(env,
+        static_cast<ani_boolean>(elementInfo.GetAccessibilityGroup()));
+    env->Object_SetFieldByName_Ref(result, "accessibilityGroup", accessibilityGroup);
+    ani_string accessibilityLevel = ANIUtils::CreateAniString(env, elementInfo.GetAccessibilityLevel());
+    env->Object_SetFieldByName_Ref(result, "accessibilityLevel", accessibilityLevel);
+    SetRectToANI(env, result, elementInfo);
+}
+ 
+static void ConvertUIElementInfoToANIPart3(ani_env *env, ani_object result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    ani_object accessibilityVisible = ANIUtils::CreateBoolObject(env,
+        static_cast<ani_boolean>(elementInfo.GetAccessibilityVisible()));
+    env->Object_SetFieldByName_Ref(result, "accessibilityVisible", accessibilityVisible);
+    ANIUtils::SetLongField(env, result, "parentId",
+        static_cast<int64_t>(elementInfo.GetParentNodeId()));
+    SetChildrenIdsToANI(env, result, elementInfo);
+    SetCustomActionsToANI(env, result, elementInfo);
+    ani_object checkable = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsCheckable()));
+    env->Object_SetFieldByName_Ref(result, "checkable", checkable);
+    ani_object checked = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsChecked()));
+    env->Object_SetFieldByName_Ref(result, "isChecked", checked);
+    ani_object clickable = ANIUtils::CreateBoolObject(env, static_cast<ani_boolean>(elementInfo.IsClickable()));
+    env->Object_SetFieldByName_Ref(result, "clickable", clickable);
+    ani_object accessibilityFocused = ANIUtils::CreateBoolObject(env,
+        static_cast<ani_boolean>(elementInfo.HasAccessibilityFocus()));
+    env->Object_SetFieldByName_Ref(result, "accessibilityFocused", accessibilityFocused);
+}
+ 
+static void ConvertUIElementInfoToANI(ani_env *env, ani_object result,
+    const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
+{
+    ConvertUIElementInfoToANIPart1(env, result, elementInfo);
+    ConvertUIElementInfoToANIPart2(env, result, elementInfo);
+    ConvertUIElementInfoToANIPart3(env, result, elementInfo);
+}
+ 
+ani_object ANIAccessibilityClient::GetFocusedUIAccessibilityElementSync(ani_env *env)
+{
+    HILOG_INFO("GetFocusedUIAccessibilityElementSync enter");
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient == nullptr) {
+        HILOG_ERROR("asaClient is nullptr!");
+        ANIUtils::ThrowBusinessError(env, ANIUtils::QueryRetMsg(RET_ERR_NULLPTR));
+        return nullptr;
+    }
+    OHOS::Accessibility::AccessibilityElementInfo elementInfo;
+    auto ret = asaClient->GetLocalFocusElement(elementInfo);
+    if (ret != RET_OK) {
+        HILOG_INFO("GetLocalFocusElement no focused element, ret=%{public}d", static_cast<int32_t>(ret));
+        ani_ref undefinedRef = nullptr;
+        env->GetUndefined(&undefinedRef);
+        return reinterpret_cast<ani_object>(undefinedRef);
+    }
+    HILOG_INFO("GetLocalFocusElement success, componentId=%{public}lld",
+        static_cast<long long>(elementInfo.GetAccessibilityId()));
+    ani_class cls = nullptr;
+    ani_status status = ANI_ERROR;
+    if ((status = env->FindClass(Builder::BuildClass("@ohos.accessibility.accessibility.UIAccessibilityElementImpl")
+        .Descriptor().c_str(), &cls)) != ANI_OK || cls == nullptr) {
+        HILOG_ERROR("FindClass UIAccessibilityElementImpl failed, status=%{public}d", static_cast<int32_t>(status));
+        return nullptr;
+    }
+    ani_method ctor = nullptr;
+    std::string ctorName = Builder::BuildConstructorName();
+    SignatureBuilder sb{};
+    if ((status = env->Class_FindMethod(cls, ctorName.c_str(), sb.BuildSignatureDescriptor().c_str(), &ctor)) != ANI_OK
+        || ctor == nullptr) {
+        HILOG_ERROR("Find ctor UIAccessibilityElementImpl failed, status=%{public}d", static_cast<int32_t>(status));
+        return nullptr;
+    }
+    ani_object result = nullptr;
+    if ((status = env->Object_New(cls, ctor, &result)) != ANI_OK || result == nullptr) {
+        HILOG_ERROR("Object_New UIAccessibilityElementImpl failed, status=%{public}d", static_cast<int32_t>(status));
+        return nullptr;
+    }
+    HILOG_INFO("UIAccessibilityElementImpl object created, begin ConvertUIElementInfoToANI");
+    ConvertUIElementInfoToANI(env, result, elementInfo);
+    HILOG_INFO("GetFocusedUIAccessibilityElementSync done, sourceId=%{public}lld",
+        static_cast<long long>(elementInfo.GetAccessibilityId()));
+    return result;
+}
+ 
+void ANIAccessibilityClient::OnFocusedUIAccessibilityElementChangedSync(ani_env *env, ani_object observer)
+{
+    HILOG_INFO("OnFocusedUIAccessibilityElementChangedSync");
+    focusChangeListeners_->SubscribeObserver(env, observer);
+}
+ 
+void ANIAccessibilityClient::OffFocusedUIAccessibilityElementChangedSync(ani_env *env, ani_object observer)
+{
+    HILOG_INFO("OffFocusedUIAccessibilityElementChangedSync");
+    ani_boolean isUndefined = true;
+    if (env->Reference_IsUndefined(observer, &isUndefined) != ANI_OK) {
+        HILOG_ERROR("OffFocusedUIAccessibilityElementChangedSync Reference_IsUndefined failed");
+        return;
+    }
+    if (!isUndefined) {
+        focusChangeListeners_->UnsubscribeObserver(env, observer);
+    } else {
+        focusChangeListeners_->UnsubscribeObservers();
+    }
+}
+ 
+void ANIAccessibilityClient::SubscribeFocusChangeListenerToFramework()
+{
+    focusChangeListeners_->SubscribeToFramework();
+}
+ 
+void ANIAccessibilityClient::UnsubscribeFocusChangeListenerFromFramework()
+{
+    focusChangeListeners_->UnsubscribeFromFramework();
+}
+ 
+void FocusChangeListenerImpl::SubscribeToFramework()
+{
+    HILOG_INFO("FocusChangeListenerImpl SubscribeToFramework");
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient) {
+        asaClient->SubscribeFocusChangeObserver(shared_from_this());
+    }
+}
+ 
+void FocusChangeListenerImpl::UnsubscribeFromFramework()
+{
+    HILOG_INFO("FocusChangeListenerImpl UnsubscribeFromFramework");
+    auto asaClient = AccessibilitySystemAbilityClient::GetInstance();
+    if (asaClient) {
+        asaClient->UnsubscribeFocusChangeObserver(shared_from_this());
+    }
+}
+ 
+void FocusChangeListenerImpl::OnFocusChanged(
+    const OHOS::Accessibility::AccessibilityElementInfo &focusedElement,
+    const OHOS::Accessibility::AccessibilityElementInfo &unfocusedElement)
+{
+    HILOG_INFO("FocusChangeListenerImpl::OnFocusChanged");
+    NotifyObservers(focusedElement, unfocusedElement);
+}
+ 
+void FocusChangeListenerImpl::SubscribeObserver(ani_env *env, ani_object observer)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+        if (ANIUtils::CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->fnRef_)) {
+            HILOG_INFO("SubscribeObserver Observer exist");
+            return;
+        }
+    }
+    ani_ref ref = nullptr;
+    if (env->GlobalReference_Create(observer, &ref) != ANI_OK) {
+        HILOG_ERROR("Reference_New failed");
+        return;
+    }
+    observers_.emplace_back(std::make_shared<FocusChangeCallbackListener>(env, ref));
+}
+ 
+void FocusChangeListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+        if (ANIUtils::CheckObserverEqual(env, observer, (*iter)->env_, (*iter)->fnRef_)) {
+            DeleteObserverReference(env, *iter);
+            observers_.erase(iter);
+            return;
+        }
+    }
+}
+ 
+void FocusChangeListenerImpl::UnsubscribeObservers()
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    for (auto &observer : observers_) {
+        DeleteObserverReference(observer->env_, observer);
+    }
+    observers_.clear();
+}
+ 
+static ani_object CreateChangeInfoObject(ani_env *env)
+{
+    ani_class infoCls = nullptr;
+    if (env->FindClass(Builder::BuildClass(
+        "@ohos.accessibility.accessibility.UIAccessibilityFocusChangeInfoImpl")
+        .Descriptor().c_str(), &infoCls) != ANI_OK || infoCls == nullptr) {
+        HILOG_ERROR("FindClass UIAccessibilityFocusChangeInfoImpl failed");
+        return nullptr;
+    }
+    ani_method infoCtor = nullptr;
+    std::string infoCtorName = Builder::BuildConstructorName();
+    SignatureBuilder infoSb{};
+    if (env->Class_FindMethod(infoCls, infoCtorName.c_str(),
+        infoSb.BuildSignatureDescriptor().c_str(), &infoCtor) != ANI_OK || infoCtor == nullptr) {
+        HILOG_ERROR("Find ctor UIAccessibilityFocusChangeInfoImpl failed");
+        return nullptr;
+    }
+    ani_object obj = nullptr;
+    if (env->Object_New(infoCls, infoCtor, &obj) != ANI_OK || obj == nullptr) {
+        HILOG_ERROR("Object_New UIAccessibilityFocusChangeInfoImpl failed");
+        return nullptr;
+    }
+    return obj;
+}
+ 
+void FocusChangeListenerImpl::NotifyObservers(
+    const OHOS::Accessibility::AccessibilityElementInfo &focusedElement,
+    const OHOS::Accessibility::AccessibilityElementInfo &unfocusedElement)
+{
+    bool hasUnfocused = (unfocusedElement.GetAccessibilityId() !=
+                         OHOS::Accessibility::AccessibilityElementInfo::UNDEFINED_ACCESSIBILITY_ID);
+    std::vector<std::shared_ptr<FocusChangeCallbackListener>> observersCopy;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        HILOG_INFO("NotifyObservers hasUnfocused=%{public}d observers=%{public}zu",
+            static_cast<int32_t>(hasUnfocused), observers_.size());
+        observersCopy = observers_;
+    }
+    for (auto &observer : observersCopy) {
+        auto callbackInfo = std::make_shared<ANIFocusChangeCallbackInfo>();
+        callbackInfo->env_ = observer->env_;
+        callbackInfo->fnRef_ = observer->fnRef_;
+        callbackInfo->focusedElement_ = focusedElement;
+        callbackInfo->unfocusedElement_ = unfocusedElement;
+        auto task = [this, callbackInfo, hasUnfocused]() {
+            InvokeObserverCallback(callbackInfo, hasUnfocused);
+        };
+        if (!ANIUtils::SendEventToMainThread(task)) {
+            HILOG_ERROR("Failed to send focus change event to main thread");
+        }
+    }
+}
+ 
+void FocusChangeListenerImpl::InvokeObserverCallback(
+    std::shared_ptr<ANIFocusChangeCallbackInfo> callbackInfo, bool hasUnfocused)
+{
+    ani_env *tmpEnv = callbackInfo->env_;
+    ani_size nr_refs = ANI_SCOPE_SIZE;
+    tmpEnv->CreateLocalScope(nr_refs);
+    auto fnObj = reinterpret_cast<ani_fn_object>(callbackInfo->fnRef_);
+    ani_object jsFocusedInfo = CreateChangeInfoObject(tmpEnv);
+    if (jsFocusedInfo == nullptr) {
+        tmpEnv->DestroyLocalScope();
+        return;
+    }
+    ani_class elementCls = nullptr;
+    ani_status elemStatus = tmpEnv->FindClass(
+        Builder::BuildClass("@ohos.accessibility.accessibility.UIAccessibilityElementImpl")
+        .Descriptor().c_str(), &elementCls);
+    if (elementCls == nullptr) {
+        tmpEnv->DestroyLocalScope();
+        return;
+    }
+    ani_object jsFocusedElement = ANIUtils::CreateObject(tmpEnv, elementCls);
+    if (jsFocusedElement != nullptr) {
+        ConvertUIElementInfoToANI(tmpEnv, jsFocusedElement, callbackInfo->focusedElement_);
+        ani_status focusedStat = tmpEnv->Object_SetFieldByName_Ref(jsFocusedInfo, "focusedElement", jsFocusedElement);
+    } else {
+        ani_ref nullRef = nullptr;
+        tmpEnv->GetNull(&nullRef);
+        tmpEnv->Object_SetFieldByName_Ref(jsFocusedInfo, "focusedElement", nullRef);
+    }
+    if (hasUnfocused) {
+        ani_object jsUnfocusedElement = ANIUtils::CreateObject(tmpEnv, elementCls);
+        if (jsUnfocusedElement != nullptr) {
+            ConvertUIElementInfoToANI(tmpEnv, jsUnfocusedElement, callbackInfo->unfocusedElement_);
+            ani_status unfocusedStat = tmpEnv->Object_SetFieldByName_Ref(jsFocusedInfo,
+                "unfocusedElement", jsUnfocusedElement);
+        } else {
+            ani_ref undefinedRef = nullptr;
+            tmpEnv->GetUndefined(&undefinedRef);
+            tmpEnv->Object_SetFieldByName_Ref(jsFocusedInfo, "unfocusedElement", undefinedRef);
+        }
+    } else {
+        ani_ref undefinedRef = nullptr;
+        tmpEnv->GetUndefined(&undefinedRef);
+        tmpEnv->Object_SetFieldByName_Ref(jsFocusedInfo, "unfocusedElement", undefinedRef);
+    }
+ 
+    std::vector<ani_ref> args = {reinterpret_cast<ani_ref>(jsFocusedInfo)};
+    ani_ref result;
+    HILOG_INFO("NotifyObservers callback done, hasUnfocused=%{public}d",
+        static_cast<int32_t>(hasUnfocused));
+    tmpEnv->FunctionalObject_Call(fnObj, 1, args.data(), &result);
+    tmpEnv->DestroyLocalScope();
+}
+ 
+void FocusChangeListenerImpl::DeleteObserverReference(ani_env *env,
+    std::shared_ptr<FocusChangeCallbackListener> observer)
+{
+    auto callbackInfo = std::make_shared<ANIFocusChangeCallbackInfo>();
+    callbackInfo->env_ = observer->env_;
+    callbackInfo->fnRef_ = observer->fnRef_;
+    auto task = [callbackInfo]() {
+        ani_env *tmpEnv = callbackInfo->env_;
+        tmpEnv->GlobalReference_Delete(callbackInfo->fnRef_);
+    };
+    if (!ANIUtils::SendEventToMainThread(task)) {
+        HILOG_ERROR("Failed to send delete reference event");
+    }
 }

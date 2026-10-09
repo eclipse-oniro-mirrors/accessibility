@@ -19,6 +19,7 @@
 #include <map>
 #include <vector>
 #include "accessibility_ability_info.h"
+#include "accessibility_element_info.h"
 #include "accessibility_element_operator.h"
 #include "accessibility_event_info.h"
 #include "accessibility_state_event.h"
@@ -43,6 +44,13 @@ enum ReadableSpecificType : int32_t {
 constexpr int32_t ELEMENT_MOVE_BIT = 40;
 constexpr int32_t CONT_SPLIT_ID = -1;
 constexpr uint64_t MAX_ELEMENT_ID = 0xFFFFFFFFFF;
+
+class AccessibilityFocusChangeObserver {
+public:
+    virtual ~AccessibilityFocusChangeObserver() = default;
+    virtual void OnFocusChanged(const AccessibilityElementInfo &focusedElement,
+        const AccessibilityElementInfo &unfocusedElement) = 0;
+};
 
 /*
  * The class register the accessibility service observer to AAMS,and
@@ -283,6 +291,27 @@ public:
      * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
      */
     virtual RetError SetSeniorModeStateForApp(const bool state) = 0;
+
+    /**
+     * @brief Get the focused element in current application.
+     * @param elementInfo The focused element info.
+     * @return Returns RET_OK if successful, otherwise refer to the RetError for the failure.
+     */
+    virtual RetError GetLocalFocusElement(AccessibilityElementInfo &elementInfo) = 0;
+ 
+    /**
+     * @brief Subscribes to accessibility focus change events.
+     * @param observer Indicates the observer for listening to focus change events.
+     */
+    virtual void SubscribeFocusChangeObserver(
+        const std::shared_ptr<AccessibilityFocusChangeObserver> &observer) = 0;
+ 
+    /**
+     * @brief Unsubscribes from accessibility focus change events.
+     * @param observer Indicates the registered focus change event observer.
+     */
+    virtual void UnsubscribeFocusChangeObserver(
+        const std::shared_ptr<AccessibilityFocusChangeObserver> &observer) = 0;
 };
 } // namespace Accessibility
 } // namespace OHOS

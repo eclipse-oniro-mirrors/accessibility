@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <algorithm>
 #include <cinttypes>
 #include "accessibility_system_ability_client_impl.h"
 #include "hilog_wrapper.h"
@@ -680,6 +681,9 @@ RetError AccessibilitySystemAbilityClientImpl::SendEvent(const AccessibilityEven
     if (!CheckEventType(event.GetEventType())) {
         return RET_ERR_INVALID_PARAM;
     }
+
+    RecordFocusElementIfNeeded(event);
+
     sptr<IAccessibleAbilityManagerService> serviceProxy;
     {
         std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -748,6 +752,80 @@ RetError AccessibilitySystemAbilityClientImpl::UnsubscribeStateObserver(
     return RET_ERR_NO_REGISTER;
 }
 
+RetError AccessibilitySystemAbilityClientImpl::GetLocalFocusElement(AccessibilityElementInfo &elementInfo)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(focusedElementMutex_);
+    if (!hasFocusedElement_) {
+        HILOG_ERROR("No focused element in current app");
+        return RET_ERR_FAILED;
+    }
+    elementInfo = lastFocusedElementInfo_;
+    return RET_OK;
+}
+ 
+void AccessibilitySystemAbilityClientImpl::SubscribeFocusChangeObserver(
+    const std::shared_ptr<AccessibilityFocusChangeObserver> &observer)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(focusChangeObserversMutex_);
+    focusChangeObservers_.push_back(observer);
+}
+ 
+void AccessibilitySystemAbilityClientImpl::UnsubscribeFocusChangeObserver(
+    const std::shared_ptr<AccessibilityFocusChangeObserver> &observer)
+{
+    HILOG_DEBUG();
+    std::lock_guard<ffrt::mutex> lock(focusChangeObserversMutex_);
+    auto iter = std::find(focusChangeObservers_.begin(), focusChangeObservers_.end(), observer);
+    if (iter != focusChangeObservers_.end()) {
+        focusChangeObservers_.erase(iter);
+    }
+}
+ 
+void AccessibilitySystemAbilityClientImpl::NotifyFocusChangeObservers(
+    const AccessibilityElementInfo &focusedElement, const AccessibilityElementInfo &unfocusedElement)
+{
+    HILOG_DEBUG();
+    std::vector<std::shared_ptr<AccessibilityFocusChangeObserver>> observersCopy;
+    {
+        std::lock_guard<ffrt::mutex> lock(focusChangeObserversMutex_);
+        if (focusChangeObservers_.empty()) {
+            return;
+        }
+        observersCopy = focusChangeObservers_;
+    }
+    for (auto &observer : observersCopy) {
+        observer->OnFocusChanged(focusedElement, unfocusedElement);
+    }
+}
+ 
+void AccessibilitySystemAbilityClientImpl::RecordFocusElementIfNeeded(const AccessibilityEventInfo &event)
+{
+    EventType type = event.GetEventType();
+    if (type != TYPE_VIEW_ACCESSIBILITY_FOCUSED_EVENT) {
+        return;
+    }
+ 
+    AccessibilityElementInfo elementInfo = event.GetElementInfo();
+    AccessibilityElementInfo previousElement;
+    {
+        std::lock_guard<ffrt::mutex> lock(focusedElementMutex_);
+        previousElement = lastFocusedElementInfo_;
+        lastFocusedElementInfo_ = elementInfo;
+        hasFocusedElement_ = true;
+    }
+    NotifyFocusChangeObservers(elementInfo, previousElement);
+}
+ 
+void AccessibilitySystemAbilityClientImpl::ClearFocusedElement()
+{
+    HILOG_INFO("Clear focused element due to touch exploration disabled");
+    std::lock_guard<ffrt::mutex> lock(focusedElementMutex_);
+    lastFocusedElementInfo_ = AccessibilityElementInfo();
+    hasFocusedElement_ = false;
+}
+
 void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType, bool value)
 {
     HILOG_DEBUG("EventType is %{public}d, value is %{public}d", eventType, value);
@@ -765,6 +843,11 @@ void AccessibilitySystemAbilityClientImpl::NotifyStateChanged(uint32_t eventType
     }
 
     stateHandler_.SetState(static_cast<AccessibilityStateEventType>(eventType), value);
+
+    if (eventType == AccessibilityStateEventType::EVENT_TOUCH_GUIDE_STATE_CHANGED && !value) {
+        ClearFocusedElement();
+    }
+
     StateObserverVector &observers = stateObserversArray_[eventType];
     HILOG_INFO("observers size is %{public}zu", observers.size());
     for (auto &observer : observers) {
