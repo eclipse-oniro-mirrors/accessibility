@@ -195,6 +195,8 @@ public:
     static void GetWindowInfoWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoMainWindowId(NAccessibilityElementData *callbackInfo, napi_value &value);
     static void GetWindowInfoHotArea(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoScaleX(NAccessibilityElementData *callbackInfo, napi_value &value);
+    static void GetWindowInfoScaleY(NAccessibilityElementData *callbackInfo, napi_value &value);
 
     static OHOS::Accessibility::RetError ParseConditionInt64(OHOS::Accessibility::NAPICbInfo& cbInfo,
         NAccessibilityElementData* elementData, size_t paramIndex, FindElementCondition conditionId);

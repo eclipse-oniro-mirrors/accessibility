@@ -73,6 +73,13 @@ RetError AccessibilitySettingsConfig::SetMagnificationState(const bool state)
     return RET_OK;
 }
 
+RetError AccessibilitySettingsConfig::SetSelectReaderState(const bool state)
+{
+    HILOG_DEBUG("start.");
+    isSelectReaderState_ = state;
+    return RET_OK;
+}
+
 RetError AccessibilitySettingsConfig::SetScreenMagnificationType(const uint32_t type)
 {
     HILOG_DEBUG("start.");
@@ -264,6 +271,12 @@ bool AccessibilitySettingsConfig::GetScreenMagnificationState() const
 {
     HILOG_DEBUG("start.");
     return isScreenMagnificationState_;
+}
+
+bool AccessibilitySettingsConfig::GetSelectReaderState() const
+{
+    HILOG_DEBUG("start.");
+    return isSelectReaderState_;
 }
 
 uint32_t AccessibilitySettingsConfig::GetScreenMagnificationType() const

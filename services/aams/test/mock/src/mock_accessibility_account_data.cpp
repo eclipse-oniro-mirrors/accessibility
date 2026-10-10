@@ -252,10 +252,9 @@ void AccessibilityAccountData::SetScreenReaderState(const std::string &name, con
     (void)state;
 }
 
-void AccessibilityAccountData::SetSelectReaderState(const std::string &name, const std::string &state)
+void AccessibilityAccountData::SetSelectReaderState(bool state)
 {
     HILOG_DEBUG("start.");
-    (void)name;
     (void)state;
 }
 
