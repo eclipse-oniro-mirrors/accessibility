@@ -273,6 +273,7 @@ public:
     AccountSA::OsAccountType GetAccountType();
 
     void Init();
+    void Deinit();
 
     void UpdateEnableAbilityListsState();
     void UpdateInstallAbilityListsState();
