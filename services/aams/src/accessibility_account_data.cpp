@@ -940,7 +940,6 @@ void AccessibilityAccountData::Init()
 void AccessibilityAccountData::Deinit()
 {
     HILOG_DEBUG("Deinit account %{public}d", id_);
-    windowManager_.DeregisterWindowListener();
     if (config_) {
         if (config_->GetDbHandle()) {
             config_->GetDbHandle()->ClearObservers();
