@@ -104,6 +104,7 @@ namespace {
     const char* OLD_DEVICE_CAPABILITY = "accessibility_clone_capability";
     const char* SUPPORT_THREE_FINGER_ZOOM = "accessibility_support_three_finger_zoom";
     const char* TRANSITION_ANIMATIONS_TIMESTAMP = "accessibility_transition_animations_timestamp";
+    const char* ZOOM_GESTURE_TIMESTAMP = "accessibility_zoom_gesture_timestamp";
     const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
@@ -133,6 +134,7 @@ namespace {
     constexpr int32_t INVALID_TRIGGER_METHOD = -1;
     bool g_ignoreRepeatClickOnceFlag = false;
     bool g_transitionAnimationsOnceFlag = false;
+    bool g_zoomGestureOnceFlag = false;
 
     constexpr int PC_ENABLE_CAPABILITY_LIST[] = {
         CLONE_CAPABILITY_INVERT_COLOR,
@@ -1225,6 +1227,26 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
     }
 }
 
+void AccessibilitySettingsConfig::InitZoomGestureConfig()
+{
+    if (isScreenMagnificationState_.load()) {
+        ZoomGestureNotification::PublishZoomGestureReminder();
+        int64_t timeStamp = datashare_->GetLongValue(ZOOM_GESTURE_TIMESTAMP, 0);
+        if (timeStamp == 0) {
+            timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
+            datashare_->PutLongValue(ZOOM_GESTURE_TIMESTAMP, timeStamp);
+        }
+        if (timeStamp > 0) {
+            ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp));
+        }
+        if (g_zoomGestureOnceFlag) {
+            ZoomGestureNotification::PublishZoomGestureReminder();
+        } else {
+            g_zoomGestureOnceFlag = true;
+        }
+    }
+}
+
 void AccessibilitySettingsConfig::HandleIgnoreRepeatClickState()
 {
     int64_t recoveryDate = datashare_->GetLongValue(RECOVERY_IGNORE_REPEAT_CLICK_DATE, 0);
@@ -1323,6 +1345,7 @@ void AccessibilitySettingsConfig::InitSetting()
     InitAnimationOffConfig();
     CloneAudioState();
     isScreenMagnificationState_.store(datashare_->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false));
+    InitZoomGestureConfig();
     isSelectReaderState_.store(datashare_->GetBoolValue(SELECTREADER_KEY, false));
     isMouseKeyState_.store(datashare_->GetBoolValue(MOUSEKEY, false));
     invertColorState_.store(datashare_->GetBoolValue(INVERT_COLOR_KEY, false));
@@ -1680,6 +1703,9 @@ void AccessibilitySettingsConfig::OnDataClone()
     }
     if (animationOffState_.load()) {
         TransitionAnimationsNotification::CancelNotification();
+    }
+    if (isScreenMagnificationState_.load()) {
+        ZoomGestureNotification::CancelNotification();
     }
 
     bool isShortkeyEnabled = GetShortKeyState();

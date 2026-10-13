@@ -982,6 +982,120 @@ void ExtendManagerServiceProxy::TransitionAnimationsDestroyTimers()
     }
 }
 
+int32_t ExtendManagerServiceProxy::PublishZoomGestureReminder()
+{
+    using PublishZoomGestureReminder = int32_t(*)();
+    static PublishZoomGestureReminder func;
+    {
+        std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+        if (func && readyFunc_.find(ExtMethod::PUBLISH_ZOOM_GESTURE_REMINDER) != readyFunc_.end()) {
+            return func();
+        }
+    }
+    {
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+        if (!handle_) {
+            HILOG_ERROR("handle is null");
+            return 0;
+        }
+        if (!func || readyFunc_.find(ExtMethod::PUBLISH_ZOOM_GESTURE_REMINDER) == readyFunc_.end()) {
+            func = (PublishZoomGestureReminder)GetFunc("PublishZoomGestureReminder");
+            if (!func) {
+                HILOG_ERROR("get PublishZoomGestureReminder func failed");
+                return 0;
+            }
+            readyFunc_.insert(ExtMethod::PUBLISH_ZOOM_GESTURE_REMINDER);
+        }
+        return func();
+    }
+}
+
+void ExtendManagerServiceProxy::ZoomGestureCancelNotification()
+{
+    using ZoomGestureCancelNotification = void(*)();
+    static ZoomGestureCancelNotification func;
+    {
+        std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+        if (func && readyFunc_.find(ExtMethod::ZOOM_GESTURE_CANCEL_NOTIFICATION) != readyFunc_.end()) {
+            func();
+            return;
+        }
+    }
+    {
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+        if (!handle_) {
+            HILOG_ERROR("handle is null");
+            return;
+        }
+        if (!func || readyFunc_.find(ExtMethod::ZOOM_GESTURE_CANCEL_NOTIFICATION) == readyFunc_.end()) {
+            func = (ZoomGestureCancelNotification)GetFunc("ZoomGestureCancelNotification");
+            if (!func) {
+                HILOG_ERROR("get ZoomGestureCancelNotification func failed");
+                return;
+            }
+            readyFunc_.insert(ExtMethod::ZOOM_GESTURE_CANCEL_NOTIFICATION);
+        }
+        func();
+    }
+}
+
+int32_t ExtendManagerServiceProxy::ZoomGestureRegisterTimers(uint64_t beginTime)
+{
+    using ZoomGestureRegisterTimers = int32_t(*)(uint64_t beginTime);
+    static ZoomGestureRegisterTimers func;
+    {
+        std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+        if (func && readyFunc_.find(ExtMethod::ZOOM_GESTURE_REGISTER_TIMERS) != readyFunc_.end()) {
+            return func(beginTime);
+        }
+    }
+    {
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+        if (!handle_) {
+            HILOG_ERROR("handle is null");
+            return 0;
+        }
+        if (!func || readyFunc_.find(ExtMethod::ZOOM_GESTURE_REGISTER_TIMERS) == readyFunc_.end()) {
+            func = (ZoomGestureRegisterTimers)GetFunc("ZoomGestureRegisterTimers");
+            if (!func) {
+                HILOG_ERROR("get ZoomGestureRegisterTimers func failed");
+                return 0;
+            }
+            readyFunc_.insert(ExtMethod::ZOOM_GESTURE_REGISTER_TIMERS);
+        }
+        return func(beginTime);
+    }
+}
+
+void ExtendManagerServiceProxy::ZoomGestureDestroyTimers()
+{
+    using ZoomGestureDestroyTimers = void(*)();
+    static ZoomGestureDestroyTimers func;
+    {
+        std::shared_lock<ffrt::shared_mutex> rLock(rwLock_);
+        if (func && readyFunc_.find(ExtMethod::ZOOM_GESTURE_DESTROY_TIMERS) != readyFunc_.end()) {
+            func();
+            return;
+        }
+    }
+    {
+        std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
+        if (!handle_) {
+            HILOG_ERROR("handle is null");
+            return;
+        }
+        if (!func || readyFunc_.find(ExtMethod::ZOOM_GESTURE_DESTROY_TIMERS) == readyFunc_.end()) {
+            func = (ZoomGestureDestroyTimers)GetFunc("ZoomGestureDestroyTimers");
+            if (!func) {
+                HILOG_ERROR("get ZoomGestureDestroyTimers func failed");
+                return;
+            }
+            readyFunc_.insert(ExtMethod::ZOOM_GESTURE_DESTROY_TIMERS);
+        }
+        func();
+    }
+}
+
 void ExtendManagerServiceProxy::OnScreenMagnificationTriggerMethodChanged(int32_t screenMagnificationTriggerMethod)
 {
     using OnScreenMagnificationTriggerMethodChanged = void(*)(int32_t screenMagnificationTriggerMethod);

@@ -108,6 +108,8 @@ namespace {
     const char* PC_MODE_SUPPORT = "const.window.support_window_pcmode_switch";
     const char* TRANSITION_ANIMATIONS_NOTIFICATION = "transition_animations_notification";
     const char* IGNORE_REPEAT_CLICK_NOTIFICATION = "ignore_repeat_click_notification";
+    const char* ZOOM_GESTURE_NOTIFICATION = "zoom_gesture_notification";
+    const char* ZOOM_GESTURE_TIMESTAMP = "accessibility_zoom_gesture_timestamp";
     const char* ANCO_ACCESSIBILITY_STATE = "anco_accessibility_state";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
@@ -3222,6 +3224,19 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
         if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
             Singleton<ExtendManagerServiceProxy>::GetInstance().OnScreenMagnificationStateChanged();
         }
+        ZoomGestureNotification::DestroyTimers();
+        ZoomGestureNotification::CancelNotification();
+    } else {
+        ZoomGestureNotification::PublishZoomGestureReminder();
+        int64_t timeStamp = config->GetDbHandle()->GetLongValue(ZOOM_GESTURE_TIMESTAMP, 0);
+        if (timeStamp == 0) {
+            timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
+            config->GetDbHandle()->PutLongValue(ZOOM_GESTURE_TIMESTAMP, timeStamp);
+        }
+        if (timeStamp > 0) {
+            ZoomGestureNotification::DestroyTimers();
+            ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp));
+        }
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
 }
@@ -4286,10 +4301,15 @@ void AccessibleAbilityManagerService::RegisterNotificationState()
         HILOG_INFO("on ignore_repeat_notification changed");
         IgnoreRepeatClickNotification::DestroyTimers();
     };
+    AccessibilitySettingObserver::UpdateFunc zoomGesturefunc = [ = ](const std::string &state) {
+        HILOG_INFO("on zoom_gesture_notification changed");
+        ZoomGestureNotification::DestroyTimers();
+    };
     if (accountData->GetConfig() && accountData->GetConfig()->GetDbHandle()) {
         accountData->GetConfig()->GetDbHandle()->RegisterObserver(IGNORE_REPEAT_CLICK_NOTIFICATION, ignoreRepeatfunc);
         accountData->GetConfig()->GetDbHandle()->RegisterObserver(
             TRANSITION_ANIMATIONS_NOTIFICATION, transitionAnimationsfunc);
+        accountData->GetConfig()->GetDbHandle()->RegisterObserver(ZOOM_GESTURE_NOTIFICATION, zoomGesturefunc);
     }
 }
 

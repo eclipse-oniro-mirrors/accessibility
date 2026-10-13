@@ -26,6 +26,8 @@ namespace {
     const std::string IGNORE_REPEAT_CLICK_NOTIFICATION = "ignore_repeat_click_notification";
     const std::string TRANSITION_ANIMATIONS_NOTIFICATION = "transition_animations_notification";
     const std::string ANIMATION_OFF_KEY = "animation_off";
+    const std::string ZOOM_GESTURE_NOTIFICATION = "zoom_gesture_notification";
+    const std::string SCREEN_MAGNIFICATION_KEY = "accessibility_display_magnification_enabled";
 }  // namespace
 
 static void CheckAndLoad()
@@ -132,6 +134,58 @@ bool TransitionAnimationsNotification::IsSendTransitionAnimationsNotification()
     }
     return animationOffState && notificationState;
 }
-}  // namespace Accessibility
-}  // namespace OHOS
+
+int32_t ZoomGestureNotification::PublishZoomGestureReminder()
+{
+    if (!IsSendZoomGestureNotification()) {
+        return 0;
+    }
+    CheckAndLoad();
+    return Singleton<ExtendManagerServiceProxy>::GetInstance().PublishZoomGestureReminder();
+}
+
+void ZoomGestureNotification::CancelNotification()
+{
+    CheckAndLoad();
+    return Singleton<ExtendManagerServiceProxy>::GetInstance().ZoomGestureCancelNotification();
+}
+
+int32_t ZoomGestureNotification::RegisterTimers(uint64_t beginTime)
+{
+    if (!IsSendZoomGestureNotification()) {
+        return 0;
+    }
+    CheckAndLoad();
+    return Singleton<ExtendManagerServiceProxy>::GetInstance().ZoomGestureRegisterTimers(beginTime);
+}
+
+void ZoomGestureNotification::DestroyTimers()
+{
+    return Singleton<ExtendManagerServiceProxy>::GetInstance().ZoomGestureDestroyTimers();
+}
+
+int64_t ZoomGestureNotification::GetWallTimeMs()
+{
+    CheckAndLoad();
+    return Singleton<ExtendManagerServiceProxy>::GetInstance().GetWallTimeMs();
+}
+
+bool ZoomGestureNotification::IsSendZoomGestureNotification()
+{
+    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
+    if (!accountData) {
+        return false;
+    }
+    bool notificationState = true;
+    bool screenMagnificationState = false;
+    if (accountData->GetConfig() && accountData->GetConfig()->GetDbHandle()) {
+        notificationState =
+            accountData->GetConfig()->GetDbHandle()->GetBoolValue(ZOOM_GESTURE_NOTIFICATION, true);
+        screenMagnificationState =
+            accountData->GetConfig()->GetDbHandle()->GetBoolValue(SCREEN_MAGNIFICATION_KEY, false);
+    }
+    return screenMagnificationState && notificationState;
+}
+} // namespace Accessibility
+} // namespace OHOS
 // LCOV_EXCL_STOP

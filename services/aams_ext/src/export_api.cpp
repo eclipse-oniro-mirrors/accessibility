@@ -128,6 +128,22 @@ API_EXPORT void TransitionAnimationsDestroyTimers()
 {
     return OHOS::Accessibility::TransitionAnimationsNotification::DestroyTimers();
 }
+API_EXPORT int32_t PublishZoomGestureReminder()
+{
+    return OHOS::Accessibility::ZoomGestureNotification::PublishZoomGestureReminder();
+}
+API_EXPORT void ZoomGestureCancelNotification()
+{
+    return OHOS::Accessibility::ZoomGestureNotification::CancelNotification();
+}
+API_EXPORT int32_t ZoomGestureRegisterTimers(uint64_t beginTime)
+{
+    return OHOS::Accessibility::ZoomGestureNotification::RegisterTimers(beginTime);
+}
+API_EXPORT void ZoomGestureDestroyTimers()
+{
+    return OHOS::Accessibility::ZoomGestureNotification::DestroyTimers();
+}
 API_EXPORT void UpdateInputFilter(uint32_t state)
 {
     serviceManagerInstance.UpdateInputFilter(state);

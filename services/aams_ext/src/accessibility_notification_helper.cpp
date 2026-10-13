@@ -56,6 +56,7 @@ const std::string SETTING_ABILITY_NAME = "com.ohos.settings.MainAbility";
 const std::string SERVICE_EXTENSION_ABILITY_NAME = "IgnoreRepeatClickExtService";
 const std::string ACCESSIBILITY_SCREEN_TOUCH_URI = "accessibility_touchscreen_entry";
 const std::string ACCESSIBILITY_TRANSITION_ANIMATIONS_URI = "accessibility_transition_animations_entry";
+const std::string ACCESSIBILITY_ZOOM_GESTURE_URI = "accessibility_zoom_gesture_entry";
 const std::string HAP_PATH = "/system/app/com.ohos.settings/Settings.hap";
 const std::string ICON_NAME = "ic_accessibility_notify";
 const std::string IGNORE_REPEAT_CLICK_NOTIFICATION = "ignore_repeat_click_notification";
@@ -70,9 +71,12 @@ const std::string INGORE_REPEAT_CLICK_KEY = "ignore_repeat_click_switch";
 const std::string TRANSITION_ANIMATIONS_NOTIFICATION_TITLE = "off_transition_animations_notification_title";
 const std::string TRANSITION_ANIMATIONS_NOTIFICATION_CONTENT = "off_transition_animations_notification_summary";
 const std::string TRANSITION_ANIMATIONS_ENABLE = "off_transition_animations_notification_confirm";
+const std::string ZOOM_GESTURE_NOTIFICATION_TITLE = "zoom_gesture_notification_title";
+const std::string ZOOM_GESTURE_NOTIFICATION_CONTENT = "zoom_gesture_notification_content";
 constexpr int ACCESSIBILITY_SA_UID = 1103;
 constexpr int ACCESSIBILITY_NOTIFICATION_UID = 1103801;
 constexpr int ACCESSIBILITY_TRANSITION_ANIMATIONS_NOTIFICATION_UID = 110380101;
+constexpr int ACCESSIBILITY_ZOOM_GESTURE_NOTIFICATION_UID = 110380102;
 constexpr uint32_t NOTIFICATION_FLAG = 1 << 9;
 constexpr float ICON_SIZE = 0.3;
 
@@ -87,8 +91,15 @@ std::map<std::string, std::string> transitionAnimationsNotificationMap_ = {
     {IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT_BUTTON_CANCEL, ""},
     {TRANSITION_ANIMATIONS_ENABLE, ""}};
 
+std::map<std::string, std::string> zoomGestureNotificationMap_ = {
+    {ZOOM_GESTURE_NOTIFICATION_TITLE, ""},
+    {ZOOM_GESTURE_NOTIFICATION_CONTENT, ""},
+    {IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT_BUTTON_CANCEL, ""},
+    {IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT_BUTTON_DISABLE, ""}};
+
 std::vector<uint64_t> timersVec;
 std::vector<uint64_t> transitionAnimationsTimersVec;
+std::vector<uint64_t> zoomGestureTimersVec;
 }  // namespace
 
 static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetWantAgent()
@@ -216,6 +227,13 @@ static void GetReource()
         resourceManager->GetStringByName(iter.first.c_str(), outValue);
         HILOG_ERROR("transitionAnimations outValue = %{public}s", outValue.c_str());
         transitionAnimationsNotificationMap_[iter.first] = outValue;
+    }
+
+    for (auto &iter : zoomGestureNotificationMap_) {
+        std::string outValue;
+        resourceManager->GetStringByName(iter.first.c_str(), outValue);
+        HILOG_ERROR("zoomGesture outValue = %{public}s", outValue.c_str());
+        zoomGestureNotificationMap_[iter.first] = outValue;
     }
 }
 
@@ -497,6 +515,176 @@ uint64_t TransitionAnimationsNotification::CalculateTimeToMidnight(uint64_t nowT
         return 0;
     }
  
+    utcTime->tm_hour = 0;
+    utcTime->tm_min = 0;
+    utcTime->tm_sec = 0;
+    utcTime->tm_mday += 1;
+    time_t midnight_seconds = mktime(utcTime);
+    if (midnight_seconds < 0) {
+        return 0;
+    }
+    uint64_t midnight_millis = (uint64_t)midnight_seconds * 1000;
+    if (midnight_millis > nowTime) {
+        uint64_t millisecondsToMidnight = midnight_millis - nowTime;
+        return millisecondsToMidnight;
+    } else {
+        return 0;
+    }
+}
+
+static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetDisableZoomGestureSwitchWantAgent()
+{
+    std::shared_ptr<OHOS::AAFwk::Want> want = std::make_shared<OHOS::AAFwk::Want>();
+    want->SetElementName(SETTING_BUNDLE_NAME, SERVICE_EXTENSION_ABILITY_NAME);
+    want->SetAction("disableZoomGestureSwitch");
+    std::vector<std::shared_ptr<OHOS::AAFwk::Want>> wants;
+    wants.push_back(want);
+    std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
+    flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
+    OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
+        flags,
+        wants,
+        nullptr);
+    return OHOS::AbilityRuntime::WantAgent::WantAgentHelper::GetWantAgent(wantAgentInfo);
+}
+
+static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetZoomGestureNotificationButtonWantAgent()
+{
+    std::shared_ptr<OHOS::AAFwk::Want> want = std::make_shared<OHOS::AAFwk::Want>();
+    want->SetAction("disableZoomGestureNotification");
+    want->SetElementName(SETTING_BUNDLE_NAME, SERVICE_EXTENSION_ABILITY_NAME);
+
+    std::vector<std::shared_ptr<OHOS::AAFwk::Want>> wants;
+    wants.push_back(want);
+    std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
+    flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
+    OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
+        flags,
+        wants,
+        nullptr);
+    return OHOS::AbilityRuntime::WantAgent::WantAgentHelper::GetWantAgent(wantAgentInfo);
+}
+
+static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetSettingsZoomGestureWantAgent()
+{
+    std::shared_ptr<OHOS::AAFwk::Want> want = std::make_shared<OHOS::AAFwk::Want>();
+    want->SetElementName(SETTING_BUNDLE_NAME, SETTING_ABILITY_NAME);
+    want->SetUri(ACCESSIBILITY_ZOOM_GESTURE_URI);
+    std::vector<std::shared_ptr<OHOS::AAFwk::Want>> wants;
+    wants.push_back(want);
+    std::vector<OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags> flags;
+    flags.push_back(OHOS::AbilityRuntime::WantAgent::WantAgentConstant::Flags::UPDATE_PRESENT_FLAG);
+    OHOS::AbilityRuntime::WantAgent::WantAgentInfo wantAgentInfo(REQUEST_CODE,
+        AbilityRuntime::WantAgent::WantAgentConstant::OperationType::START_SERVICE,
+        flags,
+        wants,
+        nullptr);
+    return OHOS::AbilityRuntime::WantAgent::WantAgentHelper::GetWantAgent(wantAgentInfo);
+}
+
+int32_t ZoomGestureNotification::PublishZoomGestureReminder()
+{
+    GetReource();
+    if (!CheckResource(zoomGestureNotificationMap_)) {
+        return -1;
+    }
+    Notification::NotificationRequest request;
+
+    std::shared_ptr<Notification::NotificationActionButton> cancelButton =
+        Notification::NotificationActionButton::Create(nullptr,
+            zoomGestureNotificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT_BUTTON_CANCEL],
+            GetZoomGestureNotificationButtonWantAgent());
+    request.AddActionButton(cancelButton);
+
+    std::shared_ptr<Notification::NotificationActionButton> disableButton =
+        Notification::NotificationActionButton::Create(
+            nullptr, zoomGestureNotificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT_BUTTON_DISABLE],
+            GetDisableZoomGestureSwitchWantAgent());
+    request.AddActionButton(disableButton);
+
+    std::shared_ptr<Notification::NotificationLongTextContent> content =
+        std::make_shared<Notification::NotificationLongTextContent>();
+    content->SetTitle(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_TITLE]);
+    content->SetLongText(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_CONTENT]);
+    std::shared_ptr<Notification::NotificationContent> notificationContent =
+        std::make_shared<Notification::NotificationContent>(content);
+    request.SetContent(notificationContent);
+    request.SetCreatorUid(ACCESSIBILITY_SA_UID);
+    request.SetCreatorPid(getpid());
+    int32_t userId = 100;
+    AccountSA::OsAccountManager::GetOsAccountLocalIdFromUid(ACCESSIBILITY_SA_UID, userId);
+
+    request.SetCreatorUserId(userId);
+    request.SetCreatorBundleName("");
+    request.SetSlotType(OHOS::Notification::NotificationConstant::SlotType::SERVICE_REMINDER);
+    request.SetInProgress(true);
+    request.SetDistributed(true);
+    request.SetNotificationControlFlags(NOTIFICATION_FLAG);
+    request.SetNotificationId(ACCESSIBILITY_ZOOM_GESTURE_NOTIFICATION_UID);
+
+    auto icon = GetIcon();
+    if (icon) {
+        request.SetLittleIcon(icon);
+    }
+
+    request.SetWantAgent(GetSettingsZoomGestureWantAgent());
+
+    ErrCode ret = Notification::NotificationHelper::PublishNotification(request);
+    HILOG_ERROR("PublishZoomGestureReminder ret = %{public}d", ret);
+    return 0;
+}
+
+void ZoomGestureNotification::CancelNotification()
+{
+    Notification::NotificationHelper::CancelNotification(ACCESSIBILITY_ZOOM_GESTURE_NOTIFICATION_UID);
+}
+
+int32_t ZoomGestureNotification::RegisterTimers(uint64_t beginTime)
+{
+    uint64_t millisecondsToMidnight = CalculateTimeToMidnight(beginTime);
+    for (const auto &interval : NOTIFICATION_DATE) {
+        uint64_t intervalMs = millisecondsToMidnight + TWELVE_CLOCK + interval + beginTime;
+        std::shared_ptr<TimerInfo> timer = std::make_shared<TimerInfo>();
+        timer->SetCallbackInfo(TimerCallback);
+        timer->SetDisposable(true);
+        timer->SetType(
+            static_cast<uint32_t>(timer->TIMER_TYPE_EXACT) | static_cast<uint32_t>(timer->TIMER_TYPE_WAKEUP));
+        uint64_t timerId = MiscServices::TimeServiceClient::GetInstance()->CreateTimer(timer);
+        if (!timerId) {
+            HILOG_ERROR("createTimerFailed");
+            continue;
+        }
+        HILOG_INFO("timeId = %{public}" PRId64 "", timerId);
+        MiscServices::TimeServiceClient::GetInstance()->StartTimer(timerId, intervalMs);
+        zoomGestureTimersVec.emplace_back(timerId);
+    }
+    return 0;
+}
+
+void ZoomGestureNotification::DestroyTimers()
+{
+    for (const auto &timerId : zoomGestureTimersVec) {
+        MiscServices::TimeServiceClient::GetInstance()->DestroyTimer(timerId);
+    }
+    zoomGestureTimersVec.clear();
+}
+
+void ZoomGestureNotification::TimerCallback()
+{
+    ZoomGestureNotification::PublishZoomGestureReminder();
+    HILOG_ERROR("ZoomGestureNotification::TimerCallback");
+}
+
+uint64_t ZoomGestureNotification::CalculateTimeToMidnight(uint64_t nowTime)
+{
+    time_t nowSec = static_cast<int64_t>(nowTime / 1000);
+    struct tm *utcTime = gmtime((const time_t *)&nowSec);
+    if (!utcTime) {
+        return 0;
+    }
+
     utcTime->tm_hour = 0;
     utcTime->tm_min = 0;
     utcTime->tm_sec = 0;

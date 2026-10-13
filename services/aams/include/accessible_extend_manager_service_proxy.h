@@ -47,6 +47,10 @@ enum class ExtMethod : int32_t {
     TRANSITION_ANIMATIONS_CANCEL_NOTIFICATION,
     TRANSITION_ANIMATIONS_REGISTER_TIMERS,
     TRANSITION_ANIMATIONS_DESTROY_TIMERS,
+    PUBLISH_ZOOM_GESTURE_REMINDER,
+    ZOOM_GESTURE_CANCEL_NOTIFICATION,
+    ZOOM_GESTURE_REGISTER_TIMERS,
+    ZOOM_GESTURE_DESTROY_TIMERS,
     ADD_KEY_EVENT,
     DISCOUNT_BRIGHTNESS,
     UNREGISTER_DISPLAY_LISTENER,
@@ -86,6 +90,10 @@ public:
     void TransitionAnimationsCancelNotification();
     int32_t TransitionAnimationsRegisterTimers(uint64_t beginTime);
     void TransitionAnimationsDestroyTimers();
+    int32_t PublishZoomGestureReminder();
+    void ZoomGestureCancelNotification();
+    int32_t ZoomGestureRegisterTimers(uint64_t beginTime);
+    void ZoomGestureDestroyTimers();
     void OnScreenMagnificationTriggerMethodChanged(int32_t screenMagnificationTriggerMethod);
     void OnScreenMagnificationTypeChanged(uint32_t screenMagnificationType);
     void OnScreenMagnificationStateChanged();

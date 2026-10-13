@@ -154,6 +154,7 @@ private:
     void InitCapability();
     void InitPrivacySpaceConfig();
     void InitAnimationOffConfig();
+    void InitZoomGestureConfig();
     void HandleIgnoreRepeatClickState();
     void HandleIgnoreRepeatClickCache();
     void HandleDaltonizationColorCache();
