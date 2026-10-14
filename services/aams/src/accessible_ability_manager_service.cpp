@@ -3227,7 +3227,7 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
         ZoomGestureNotification::DestroyTimers();
         ZoomGestureNotification::CancelNotification();
     } else {
-        ZoomGestureNotification::PublishZoomGestureReminder(false);
+        ZoomGestureNotification::PublishZoomGestureReminder();
         int64_t timeStamp = config->GetDbHandle()->GetLongValue(ZOOM_GESTURE_TIMESTAMP, 0);
         if (timeStamp == 0) {
             timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
