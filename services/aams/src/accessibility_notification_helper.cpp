@@ -135,9 +135,9 @@ bool TransitionAnimationsNotification::IsSendTransitionAnimationsNotification()
     return animationOffState && notificationState;
 }
 
-int32_t ZoomGestureNotification::PublishZoomGestureReminder()
+int32_t ZoomGestureNotification::PublishZoomGestureReminder(bool needCheck)
 {
-    if (!IsSendZoomGestureNotification()) {
+    if (needCheck && !IsSendZoomGestureNotification()) {
         return 0;
     }
     CheckAndLoad();
@@ -150,9 +150,9 @@ void ZoomGestureNotification::CancelNotification()
     return Singleton<ExtendManagerServiceProxy>::GetInstance().ZoomGestureCancelNotification();
 }
 
-int32_t ZoomGestureNotification::RegisterTimers(uint64_t beginTime)
+int32_t ZoomGestureNotification::RegisterTimers(uint64_t beginTime, bool needCheck)
 {
-    if (!IsSendZoomGestureNotification()) {
+    if (needCheck && !IsSendZoomGestureNotification()) {
         return 0;
     }
     CheckAndLoad();
@@ -162,12 +162,6 @@ int32_t ZoomGestureNotification::RegisterTimers(uint64_t beginTime)
 void ZoomGestureNotification::DestroyTimers()
 {
     return Singleton<ExtendManagerServiceProxy>::GetInstance().ZoomGestureDestroyTimers();
-}
-
-int64_t ZoomGestureNotification::GetWallTimeMs()
-{
-    CheckAndLoad();
-    return Singleton<ExtendManagerServiceProxy>::GetInstance().GetWallTimeMs();
 }
 
 bool ZoomGestureNotification::IsSendZoomGestureNotification()

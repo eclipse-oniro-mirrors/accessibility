@@ -106,6 +106,7 @@ namespace {
     const char* TRANSITION_ANIMATIONS_TIMESTAMP = "accessibility_transition_animations_timestamp";
     const char* ZOOM_GESTURE_TIMESTAMP = "accessibility_zoom_gesture_timestamp";
     const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
+    const char* ZOOM_GESTURE_NOTIFICATION = "zoom_gesture_notification";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -1230,17 +1231,23 @@ void AccessibilitySettingsConfig::InitAnimationOffConfig()
 void AccessibilitySettingsConfig::InitZoomGestureConfig()
 {
     if (isScreenMagnificationState_.load()) {
-        ZoomGestureNotification::PublishZoomGestureReminder();
+        int32_t currentAccountId = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountId();
+        bool notificationState = datashare_->GetBoolValue(ZOOM_GESTURE_NOTIFICATION, true);
+        if (accountId_ == currentAccountId && notificationState) {
+            ZoomGestureNotification::PublishZoomGestureReminder(false);
+        }
         int64_t timeStamp = datashare_->GetLongValue(ZOOM_GESTURE_TIMESTAMP, 0);
         if (timeStamp == 0) {
             timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
             datashare_->PutLongValue(ZOOM_GESTURE_TIMESTAMP, timeStamp);
         }
-        if (timeStamp > 0) {
-            ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp));
+        if (timeStamp > 0 && accountId_ == currentAccountId && notificationState) {
+            ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp), false);
         }
         if (g_zoomGestureOnceFlag) {
-            ZoomGestureNotification::PublishZoomGestureReminder();
+            if (accountId_ == currentAccountId && notificationState) {
+                ZoomGestureNotification::PublishZoomGestureReminder(false);
+            }
         } else {
             g_zoomGestureOnceFlag = true;
         }

@@ -3227,7 +3227,7 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
         ZoomGestureNotification::DestroyTimers();
         ZoomGestureNotification::CancelNotification();
     } else {
-        ZoomGestureNotification::PublishZoomGestureReminder();
+        ZoomGestureNotification::PublishZoomGestureReminder(false);
         int64_t timeStamp = config->GetDbHandle()->GetLongValue(ZOOM_GESTURE_TIMESTAMP, 0);
         if (timeStamp == 0) {
             timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
@@ -3235,7 +3235,7 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
         }
         if (timeStamp > 0) {
             ZoomGestureNotification::DestroyTimers();
-            ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp));
+            ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp), false);
         }
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();

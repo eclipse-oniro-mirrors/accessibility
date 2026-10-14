@@ -44,11 +44,10 @@ private:
 
 class ZoomGestureNotification {
 public:
-    static int32_t PublishZoomGestureReminder();
+    static int32_t PublishZoomGestureReminder(bool needCheck = true);
     static void CancelNotification();
-    static int32_t RegisterTimers(uint64_t beginTime);
+    static int32_t RegisterTimers(uint64_t beginTime, bool needCheck = true);
     static void DestroyTimers();
-    static int64_t GetWallTimeMs();
 private:
     static bool IsSendZoomGestureNotification();
 };
