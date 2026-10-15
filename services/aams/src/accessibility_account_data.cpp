@@ -211,6 +211,9 @@ void AccessibilityAccountData::OnAccountSwitched()
     if (config_->GetAnimationOffState()) {
         TransitionAnimationsNotification::CancelNotification();
     }
+    if (config_->GetScreenMagnificationState()) {
+        ZoomGestureNotification::CancelNotification();
+    }
     if (config_->GetDbHandle()) {
         config_->GetDbHandle()->ClearObservers();
     }

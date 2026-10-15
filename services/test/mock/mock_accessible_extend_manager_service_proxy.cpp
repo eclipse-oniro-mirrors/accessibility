@@ -211,6 +211,27 @@ void ExtendManagerServiceProxy::TransitionAnimationsDestroyTimers()
     return;
 }
 
+int32_t ExtendManagerServiceProxy::PublishZoomGestureReminder()
+{
+    return 0;
+}
+
+void ExtendManagerServiceProxy::ZoomGestureCancelNotification()
+{
+    return;
+}
+
+int32_t ExtendManagerServiceProxy::ZoomGestureRegisterTimers(uint64_t beginTime)
+{
+    (void)beginTime;
+    return 0;
+}
+
+void ExtendManagerServiceProxy::ZoomGestureDestroyTimers()
+{
+    return;
+}
+
 void ExtendManagerServiceProxy::OnScreenMagnificationTypeChanged(uint32_t screenMagnificationType)
 {
     (void)screenMagnificationType;

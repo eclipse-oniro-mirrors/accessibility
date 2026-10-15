@@ -41,6 +41,16 @@ public:
 private:
     static bool IsSendTransitionAnimationsNotification();
 };
+
+class ZoomGestureNotification {
+public:
+    static int32_t PublishZoomGestureReminder(bool needCheck = true);
+    static void CancelNotification();
+    static int32_t RegisterTimers(uint64_t beginTime, bool needCheck = true);
+    static void DestroyTimers();
+private:
+    static bool IsSendZoomGestureNotification();
+};
 } // namespace Accessibility
 } // namespace OHOS
  

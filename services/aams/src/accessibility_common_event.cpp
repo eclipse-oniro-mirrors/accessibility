@@ -226,6 +226,7 @@ void AccessibilityCommonEvent::HandlePowerOnEvent(const EventFwk::CommonEventDat
 {
     IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder();
     TransitionAnimationsNotification::PublishTransitionAnimationsReminder();
+    ZoomGestureNotification::PublishZoomGestureReminder();
     HILOG_ERROR("HandlePowerOnEvent");
 }
 
