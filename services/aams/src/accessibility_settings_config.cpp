@@ -90,6 +90,7 @@ namespace {
     const char* FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
     const char* FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
     const char* FLASH_REMINDER_MODE = "accessibility_flash_reminder_mode";
+    const char* FLASH_REMINDER_MODE_USED = "accessibility_flash_reminder_mode_used";
     const char* FLASH_REMINDER_UNLOCK = "accessibility_flash_reminder_unlock";
     const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
@@ -1340,6 +1341,23 @@ void AccessibilitySettingsConfig::HandleDaltonizationColorCache()
     return;
 }
 
+void AccessibilitySettingsConfig::HandleFlashReminderState()
+{
+#ifdef  ACCESSIBILITY_FEATURE_PRODUCT_PHONE
+    bool flashModeUsed = false;
+    flashModeUsed = datashare_->GetBoolValue(FLASH_REMINDER_MODE_USED, false);
+    if (flashModeUsed) {
+        datashare_->GetIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
+    } else {
+        datashare_->PutIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
+    }
+    datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
+    datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
+    datashare_->GetStringValue(FLASH_REMINDER_UNLOCK, "0");
+    flashReminderSwitch_.store(datashare_->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false));
+#endif
+}
+
 void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG();
@@ -1386,13 +1404,7 @@ void AccessibilitySettingsConfig::InitSetting()
     SetClickResponseTime(clickResponseTime_.load());
     ignoreRepeatClickTime_.store(static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0)));
     SetIgnoreRepeatClickTime(ignoreRepeatClickTime_.load());
-#ifdef  ACCESSIBILITY_FEATURE_PRODUCT_PHONE
-    datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
-    datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
-    datashare_->GetIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
-    datashare_->GetStringValue(FLASH_REMINDER_UNLOCK, "0");
-    flashReminderSwitch_.store(datashare_->GetBoolValue(FLASH_REMINDER_SWITCH_KEY, false));
-#endif
+    HandleFlashReminderState();
     datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
     datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
     HandleIgnoreRepeatClickState();

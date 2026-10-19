@@ -158,6 +158,7 @@ private:
     void HandleIgnoreRepeatClickState();
     void HandleIgnoreRepeatClickCache();
     void HandleDaltonizationColorCache();
+    void HandleFlashReminderState();
     RetError SetConfigState(const std::string& key, bool value);
 
     void CloneOnDeviceCapability();
