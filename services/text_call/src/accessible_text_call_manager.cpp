@@ -125,8 +125,7 @@ bool AccessibleTextCallManager::ConnectAICallService()
         IPCSkeleton::SetCallingIdentity(identity);
         oss << "AI call service connect failed: serviceConn_ is nullptr;";
         int32_t ret = HiSysEventWrite(
-            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
-            "UNAVAILABLE",
+            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY, "UNAVAILABLE",
             OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
             "MSG", oss.str());
         if (ret != 0) {
@@ -144,8 +143,7 @@ bool AccessibleTextCallManager::ConnectAICallService()
         serviceConn_ = nullptr;
         oss << "AI call service connect failed: ConnectServiceExtensionAbility ret: " << ret << ";";
         int32_t hisyseventRet = HiSysEventWrite(
-            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
-            "UNAVAILABLE",
+            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY, "UNAVAILABLE",
             OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
             "MSG", oss.str());
         if (hisyseventRet != 0) {
@@ -156,8 +154,7 @@ bool AccessibleTextCallManager::ConnectAICallService()
     serviceState_ = ServiceState::CONNECTING;
     oss << "AI call service connect success;";
     int32_t hisyseventRet = HiSysEventWrite(
-        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
-        "STARTING_FUNCTION",
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY, "STARTING_FUNCTION",
         OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
         "MSG", oss.str());
     if (hisyseventRet != 0) {
