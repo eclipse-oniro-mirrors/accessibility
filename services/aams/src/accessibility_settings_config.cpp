@@ -1350,6 +1350,7 @@ void AccessibilitySettingsConfig::HandleFlashReminderState()
         datashare_->GetIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
     } else {
         datashare_->PutIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
+        datashare_->PutBoolValue(FLASH_REMINDER_MODE_USED, true);
     }
     datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
     datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
