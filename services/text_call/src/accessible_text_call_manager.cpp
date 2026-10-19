@@ -120,9 +120,9 @@ bool AccessibleTextCallManager::ConnectAICallService()
     }
     std::string identity = IPCSkeleton::ResetCallingIdentity();
     serviceConn_ = new (std::nothrow) AICallServiceConnection();
+    std::ostringstream oss;
     if (!serviceConn_) {
         IPCSkeleton::SetCallingIdentity(identity);
-        std::ostringstream oss;
         oss << "AI call service connect failed: serviceConn_ is nullptr;";
         int32_t ret = HiSysEventWrite(
             OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
@@ -142,7 +142,6 @@ bool AccessibleTextCallManager::ConnectAICallService()
     if (ret != ERR_OK) {
         HILOG_ERROR("ConnectServiceExtensionAbility failed, ret=%{public}d", ret);
         serviceConn_ = nullptr;
-        std::ostringstream oss;
         oss << "AI call service connect failed: ConnectServiceExtensionAbility ret: " << ret << ";";
         int32_t hisyseventRet = HiSysEventWrite(
             OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
@@ -155,7 +154,6 @@ bool AccessibleTextCallManager::ConnectAICallService()
         return false;
     }
     serviceState_ = ServiceState::CONNECTING;
-    std::ostringstream oss;
     oss << "AI call service connect success;";
     int32_t hisyseventRet = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
