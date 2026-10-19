@@ -206,12 +206,15 @@ void AccessibilityAccountData::OnAccountSwitched()
         return;
     }
     if (config_->GetIgnoreRepeatClickState()) {
+        IgnoreRepeatClickNotification::DestroyTimers();
         IgnoreRepeatClickNotification::CancelNotification();
     }
     if (config_->GetAnimationOffState()) {
+        TransitionAnimationsNotification::DestroyTimers();
         TransitionAnimationsNotification::CancelNotification();
     }
     if (config_->GetScreenMagnificationState()) {
+        ZoomGestureNotification::DestroyTimers();
         ZoomGestureNotification::CancelNotification();
     }
     if (config_->GetDbHandle()) {

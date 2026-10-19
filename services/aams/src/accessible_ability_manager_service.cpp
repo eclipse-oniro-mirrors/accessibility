@@ -3235,7 +3235,7 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
         }
         if (timeStamp > 0) {
             ZoomGestureNotification::DestroyTimers();
-            ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp), false);
+            ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp));
         }
     }
     Singleton<AccessibleAbilityManagerService>::GetInstance().UpdateInputFilter();
