@@ -24,7 +24,7 @@ namespace OHOS {
 namespace Accessibility {
 
 namespace {
-    const std::string_view AI_CALL_SERVICE_BUNDLE_NAME = "com.huawei.hmos.callaiservice";
+    const std::string_view AI_CALL_SERVICE_BUNDLE_NAME = "com.ohos.callaiservice";
     const std::string_view AI_CALL_SERVICE_ABILITY_NAME = "CallAIServiceExtensionAbility";
     constexpr int32_t DEFAULT_VALUE_MINUS_ONE = -1;
     constexpr uint32_t REQUEST_ID_SET_CALL_STATE = 3001;
