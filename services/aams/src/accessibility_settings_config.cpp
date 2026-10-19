@@ -135,7 +135,6 @@ namespace {
     constexpr int32_t INVALID_TRIGGER_METHOD = -1;
     bool g_ignoreRepeatClickOnceFlag = false;
     bool g_transitionAnimationsOnceFlag = false;
-    bool g_zoomGestureOnceFlag = false;
 
     constexpr int PC_ENABLE_CAPABILITY_LIST[] = {
         CLONE_CAPABILITY_INVERT_COLOR,
@@ -1243,13 +1242,6 @@ void AccessibilitySettingsConfig::InitZoomGestureConfig()
         }
         if (timeStamp > 0 && accountId_ == currentAccountId && notificationState) {
             ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp), false);
-        }
-        if (g_zoomGestureOnceFlag) {
-            if (accountId_ == currentAccountId && notificationState) {
-                ZoomGestureNotification::PublishZoomGestureReminder(false);
-            }
-        } else {
-            g_zoomGestureOnceFlag = true;
         }
     }
 }

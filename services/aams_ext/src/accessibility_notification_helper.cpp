@@ -643,9 +643,14 @@ void ZoomGestureNotification::CancelNotification()
 
 int32_t ZoomGestureNotification::RegisterTimers(uint64_t beginTime)
 {
+    int64_t currentTime = MiscServices::TimeServiceClient::GetInstance()->GetWallTimeMs();
     uint64_t millisecondsToMidnight = CalculateTimeToMidnight(beginTime);
     for (const auto &interval : NOTIFICATION_DATE) {
         uint64_t intervalMs = millisecondsToMidnight + TWELVE_CLOCK + interval + beginTime;
+        if (currentTime > 0 && intervalMs <= static_cast<uint64_t>(currentTime)) {
+            HILOG_INFO("trigger time already passed, skip timer");
+            continue;
+        }
         std::shared_ptr<TimerInfo> timer = std::make_shared<TimerInfo>();
         timer->SetCallbackInfo(TimerCallback);
         timer->SetDisposable(true);
