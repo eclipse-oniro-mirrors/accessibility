@@ -38,6 +38,17 @@ int32_t CallServiceListener::OnCallDetailsChange(const Telephony::CallAttributeI
     if (info.callType != Telephony::CallType::TYPE_VOIP) {
         return ERR_OK;
     }
+    std::ostringstream oss;
+    oss << "text call details change: callType: " << static_cast<int32_t>(info.callType)
+        << ", callState: " << static_cast<int32_t>(info.callState) << "；"；
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "UNAVAILABLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "MSG", oss.str());
+    if (ret != 0) {
+        HILOG_ERROR("Write TEXT_CALL_DETAILS_CHANGE HiSysEvent error, ret:%{public}d", ret);
+    }
     OHOS::Singleton<OHOS::Accessibility::AccessibleTextCallManager>::GetInstance().SendRequest(info.callState);
     return ERR_OK;
 }
