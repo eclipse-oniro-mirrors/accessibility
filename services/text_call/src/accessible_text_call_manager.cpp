@@ -17,13 +17,14 @@
 
 #include "extension_manager_client.h"
 #include "hilog_wrapper.h"
+#include "hisysevent.h"
 #include "ipc_skeleton.h"
 
 namespace OHOS {
 namespace Accessibility {
 
 namespace {
-    const std::string_view AI_CALL_SERVICE_BUNDLE_NAME = "com.ohos.callaiservice";
+    const std::string_view AI_CALL_SERVICE_BUNDLE_NAME = "com.huawei.hmos.callaiservice";
     const std::string_view AI_CALL_SERVICE_ABILITY_NAME = "CallAIServiceExtensionAbility";
     constexpr int32_t DEFAULT_VALUE_MINUS_ONE = -1;
     constexpr uint32_t REQUEST_ID_SET_CALL_STATE = 3001;
@@ -40,11 +41,11 @@ int32_t CallServiceListener::OnCallDetailsChange(const Telephony::CallAttributeI
     }
     std::ostringstream oss;
     oss << "text call details change: callType: " << static_cast<int32_t>(info.callType)
-        << ", callState: " << static_cast<int32_t>(info.callState) << "；"；
+        << ", callState: " << static_cast<int32_t>(info.callState) << ";";
     int32_t ret = HiSysEventWrite(
         OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
-        "UNAVAILABLE",
-        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "STARTING_FUNCTION",
+        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
         "MSG", oss.str());
     if (ret != 0) {
         HILOG_ERROR("Write TEXT_CALL_DETAILS_CHANGE HiSysEvent error, ret:%{public}d", ret);
@@ -121,6 +122,16 @@ bool AccessibleTextCallManager::ConnectAICallService()
     serviceConn_ = new (std::nothrow) AICallServiceConnection();
     if (!serviceConn_) {
         IPCSkeleton::SetCallingIdentity(identity);
+        std::ostringstream oss;
+        oss << "AI call service connect failed: serviceConn_ is nullptr;";
+        int32_t ret = HiSysEventWrite(
+            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+            "UNAVAILABLE",
+            OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+            "MSG", oss.str());
+        if (ret != 0) {
+            HILOG_ERROR("Write AI_CALL_SERVICE_CONNECT HiSysEvent error, ret:%{public}d", ret);
+        }
         return false;
     }
     AAFwk::Want want;
@@ -131,9 +142,29 @@ bool AccessibleTextCallManager::ConnectAICallService()
     if (ret != ERR_OK) {
         HILOG_ERROR("ConnectServiceExtensionAbility failed, ret=%{public}d", ret);
         serviceConn_ = nullptr;
+        std::ostringstream oss;
+        oss << "AI call service connect failed: ConnectServiceExtensionAbility ret: " << ret << ";";
+        int32_t hisyseventRet = HiSysEventWrite(
+            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+            "UNAVAILABLE",
+            OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+            "MSG", oss.str());
+        if (hisyseventRet != 0) {
+            HILOG_ERROR("Write AI_CALL_SERVICE_CONNECT HiSysEvent error, ret:%{public}d", hisyseventRet);
+        }
         return false;
     }
     serviceState_ = ServiceState::CONNECTING;
+    std::ostringstream oss;
+    oss << "AI call service connect success;";
+    int32_t hisyseventRet = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "STARTING_FUNCTION",
+        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
+        "MSG", oss.str());
+    if (hisyseventRet != 0) {
+        HILOG_ERROR("Write AI_CALL_SERVICE_CONNECT HiSysEvent error, ret:%{public}d", hisyseventRet);
+    }
     return true;
 }
 
@@ -232,7 +263,27 @@ sptr<IRemoteObject> AICallServiceConnection::GetRemoteObject()
     std::unique_lock<std::mutex> lock(mutex_);
     if (!cv_.wait_for(lock, std::chrono::milliseconds(TIMEOUT_1000MS), [this]() { return remoteObject_ != nullptr; })) {
         HILOG_ERROR("wait for remote object timeout");
+        std::ostringstream oss;
+        oss << "get remote object timeout;";
+        int32_t ret = HiSysEventWrite(
+            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+            "UNAVAILABLE",
+            OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+            "MSG", oss.str());
+        if (ret != 0) {
+            HILOG_ERROR("Write GET_REMOTE_OBJECT HiSysEvent error, ret:%{public}d", ret);
+        }
         return nullptr;
+    }
+    std::ostringstream oss;
+    oss << "get remote object success;";
+    int32_t ret = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "STARTING_FUNCTION",
+        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
+        "MSG", oss.str());
+    if (ret != 0) {
+        HILOG_ERROR("Write GET_REMOTE_OBJECT HiSysEvent error, ret:%{public}d", ret);
     }
     return remoteObject_;
 }
