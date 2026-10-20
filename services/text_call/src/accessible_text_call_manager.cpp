@@ -17,7 +17,7 @@
 
 #include "extension_manager_client.h"
 #include "hilog_wrapper.h"
-#include "hisysevent.h"
+#include <hisysevent.h>
 #include "ipc_skeleton.h"
 
 namespace OHOS {
@@ -269,16 +269,6 @@ sptr<IRemoteObject> AICallServiceConnection::GetRemoteObject()
             HILOG_ERROR("Write GET_REMOTE_OBJECT HiSysEvent error, ret:%{public}d", ret);
         }
         return nullptr;
-    }
-    std::ostringstream oss;
-    oss << "get remote object success;";
-    int32_t ret = HiSysEventWrite(
-        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
-        "STARTING_FUNCTION",
-        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
-        "MSG", oss.str());
-    if (ret != 0) {
-        HILOG_ERROR("Write GET_REMOTE_OBJECT HiSysEvent error, ret:%{public}d", ret);
     }
     return remoteObject_;
 }
