@@ -321,7 +321,8 @@ EventType ANIUtils::ConvertStringToEventInfoTypes(const std::string &type)
         {"scrolling", EventType::TYPE_VIEW_SCROLLING_EVENT},
         {"pageActive", EventType::TYPE_PAGE_ACTIVE},
         {"notificationUpdate", EventType::TYPE_NOTIFICATION_UPDATE_EVENT},
-        {"focusInvisible", EventType::TYPE_FOCUS_INVISIBLE}};
+        {"focusInvisible", EventType::TYPE_FOCUS_INVISIBLE},
+        {"pageStatePreUpdate", EventType::TYPE_PAGE_STATE_PRE_UPDATE}};
 
     if (eventInfoTypesTable.find(type) == eventInfoTypesTable.end()) {
         HILOG_WARN("invalid key[%{public}s]", type.c_str());

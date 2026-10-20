@@ -392,7 +392,8 @@ AccessibilityEventType ConvertStringToAccessibilityEventType(const std::string &
         {"pageActive", AccessibilityEventType::TYPE_PAGE_ACTIVE},
         {"notificationUpdate", AccessibilityEventType::TYPE_NOTIFICATION_UPDATE_EVENT},
         {"oneFingerDoubleTap", AccessibilityEventType::TYPE_ONE_FINGER_DOUBLE_TAP},
-        {"focusInvisible", AccessibilityEventType::TYPE_FOCUS_INVISIBLE}};
+        {"focusInvisible", AccessibilityEventType::TYPE_FOCUS_INVISIBLE},
+        {"pageStatePreUpdate", AccessibilityEventType::TYPE_PAGE_STATE_PRE_UPDATE}};
     if (eventTypeTable.find(eventType) == eventTypeTable.end()) {
         return AccessibilityEventType::TYPE_ERROR;
     }
@@ -508,7 +509,8 @@ const std::string ConvertAccessibilityEventTypeToString(EventType type)
         {EventType::TYPE_VIEW_SCROLLING_EVENT, "scrolling"},
         {EventType::TYPE_PAGE_ACTIVE, "pageActive"},
         {EventType::TYPE_NOTIFICATION_UPDATE_EVENT, "notificationUpdate"},
-        {EventType::TYPE_FOCUS_INVISIBLE, "focusInvisible"}};
+        {EventType::TYPE_FOCUS_INVISIBLE, "focusInvisible"},
+        {EventType::TYPE_PAGE_STATE_PRE_UPDATE, "pageStatePreUpdate"}};
 
     if (a11yEvtTypeTable.find(type) == a11yEvtTypeTable.end()) {
         return "";

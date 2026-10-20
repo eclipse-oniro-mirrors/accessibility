@@ -61,7 +61,7 @@ declare namespace accessibility {
     'click' | 'longClick' | 'focus' | 'select' | 'hoverEnter' | 'hoverExit' |
     'textUpdate' | 'textSelectionUpdate' | 'scroll' | 'requestFocusForAccessibility' | 'announceForAccessibility' |
     'requestFocusForAccessibilityNotInterrupt' | 'announceForAccessibilityNotInterrupt' |
-    'pageActive' | 'notificationUpdate' | 'focusInvisible';
+    'pageActive' | 'notificationUpdate' | 'focusInvisible' | 'pageStatePreUpdate';
 
   /**
    * The change type of the windowsChange event.
