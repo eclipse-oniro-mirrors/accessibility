@@ -132,6 +132,7 @@ bool AccessibleTextCallManager::ConnectAICallService()
         if (hisyseventRet != 0) {
             HILOG_ERROR("Write AI_CALL_SERVICE_CONNECT HiSysEvent error, ret:%{public}d", hisyseventRet);
         }
+        return false;
     }
     AAFwk::Want want;
     want.SetElementName(std::string(AI_CALL_SERVICE_BUNDLE_NAME), std::string(AI_CALL_SERVICE_ABILITY_NAME));
