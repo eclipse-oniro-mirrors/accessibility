@@ -120,18 +120,18 @@ bool AccessibleTextCallManager::ConnectAICallService()
     }
     std::string identity = IPCSkeleton::ResetCallingIdentity();
     serviceConn_ = new (std::nothrow) AICallServiceConnection();
-    std::ostringstream oss;
     if (!serviceConn_) {
         IPCSkeleton::SetCallingIdentity(identity);
-        oss << "AI call service connect failed: serviceConn_ is nullptr;";
-        int32_t ret = HiSysEventWrite(
-            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY, "UNAVAILABLE",
+        std::ostringstream oss;
+        oss << "AI call service connect failed: ConnectServiceExtensionAbility ret: " << ret << ";";
+        int32_t hisyseventRet = HiSysEventWrite(
+            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+            "UNAVAILABLE",
             OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
             "MSG", oss.str());
-        if (ret != 0) {
-            HILOG_ERROR("Write AI_CALL_SERVICE_CONNECT HiSysEvent error, ret:%{public}d", ret);
+        if (hisyseventRet != 0) {
+            HILOG_ERROR("Write AI_CALL_SERVICE_CONNECT HiSysEvent error, ret:%{public}d", hisyseventRet);
         }
-        return false;
     }
     AAFwk::Want want;
     want.SetElementName(std::string(AI_CALL_SERVICE_BUNDLE_NAME), std::string(AI_CALL_SERVICE_ABILITY_NAME));
@@ -141,25 +141,9 @@ bool AccessibleTextCallManager::ConnectAICallService()
     if (ret != ERR_OK) {
         HILOG_ERROR("ConnectServiceExtensionAbility failed, ret=%{public}d", ret);
         serviceConn_ = nullptr;
-        oss << "AI call service connect failed: ConnectServiceExtensionAbility ret: " << ret << ";";
-        int32_t hisyseventRet = HiSysEventWrite(
-            OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY, "UNAVAILABLE",
-            OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
-            "MSG", oss.str());
-        if (hisyseventRet != 0) {
-            HILOG_ERROR("Write AI_CALL_SERVICE_CONNECT HiSysEvent error, ret:%{public}d", hisyseventRet);
-        }
         return false;
     }
     serviceState_ = ServiceState::CONNECTING;
-    oss << "AI call service connect success;";
-    int32_t hisyseventRet = HiSysEventWrite(
-        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY, "STARTING_FUNCTION",
-        OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR,
-        "MSG", oss.str());
-    if (hisyseventRet != 0) {
-        HILOG_ERROR("Write AI_CALL_SERVICE_CONNECT HiSysEvent error, ret:%{public}d", hisyseventRet);
-    }
     return true;
 }
 
@@ -217,6 +201,16 @@ bool AccessibleTextCallManager::SendRequest(Telephony::TelCallState callState)
 
     int ret = remote->SendRequest(REQUEST_ID_SET_CALL_STATE, data, reply, option);
     HILOG_INFO("sendMessageRequest ret=%{public}d", ret);
+    std::ostringstream oss;
+    oss << "AI call service send request failed: " << ret << ";";
+    int32_t hisyseventRet = HiSysEventWrite(
+        OHOS::HiviewDFX::HiSysEvent::Domain::ACCESSIBILITY,
+        "UNAVAILABLE",
+        OHOS::HiviewDFX::HiSysEvent::EventType::FAULT,
+        "MSG", oss.str());
+    if (hisyseventRet != 0) {
+        HILOG_ERROR("Write SendRequest HiSysEvent error, ret:%{public}d", hisyseventRet);
+    }
     return ret == ERR_OK;
 }
 #endif // OHOS_BUILD_TEXT_CALL
