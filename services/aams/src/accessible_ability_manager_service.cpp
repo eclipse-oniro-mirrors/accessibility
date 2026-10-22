@@ -3224,15 +3224,13 @@ void AccessibleAbilityManagerService::OnScreenMagnificationStateChanged()
         if (Singleton<ExtendManagerServiceProxy>::GetInstance().CheckExtProxyStatus()) {
             Singleton<ExtendManagerServiceProxy>::GetInstance().OnScreenMagnificationStateChanged();
         }
+        config->GetDbHandle()->PutLongValue(ZOOM_GESTURE_TIMESTAMP, 0);
         ZoomGestureNotification::DestroyTimers();
         ZoomGestureNotification::CancelNotification();
     } else {
         ZoomGestureNotification::PublishZoomGestureReminder();
-        int64_t timeStamp = config->GetDbHandle()->GetLongValue(ZOOM_GESTURE_TIMESTAMP, 0);
-        if (timeStamp == 0) {
-            timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
-            config->GetDbHandle()->PutLongValue(ZOOM_GESTURE_TIMESTAMP, timeStamp);
-        }
+        int64_t timeStamp = IgnoreRepeatClickNotification::GetWallTimeMs();
+        config->GetDbHandle()->PutLongValue(ZOOM_GESTURE_TIMESTAMP, timeStamp);
         if (timeStamp > 0) {
             ZoomGestureNotification::DestroyTimers();
             ZoomGestureNotification::RegisterTimers(static_cast<uint64_t>(timeStamp));
