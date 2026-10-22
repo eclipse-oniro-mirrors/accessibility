@@ -145,6 +145,9 @@ void AccessibilityWindowManager::DeregisterWindowListener()
     if (windowListener_) {
         OHOS::Rosen::WindowManager::GetInstance(accountId_).UnregisterWindowUpdateListener(windowListener_);
         windowListener_ = nullptr;
+        if (eventHandler_) {
+            eventHandler_->RemoveTask("TASK_ON_WINDOW_UPDATE");
+        }
         eventHandler_ = nullptr;
     }
 }
@@ -161,7 +164,12 @@ void AccessibilityWindowManager::OnWindowUpdate(const std::vector<sptr<Rosen::Ac
         HILOG_ERROR("window info is err");
         return;
     }
-    eventHandler_->PostTask([=]() {
+    auto accountData = accountData_;
+    eventHandler_->PostTask([this, accountData, infos, type]() {
+        if (!accountData.GetRefPtr()) {
+            HILOG_ERROR("accountData is destroyed, skip window update");
+            return;
+        }
         switch (type) {
             case Rosen::WindowUpdateType::WINDOW_UPDATE_ADDED: // 1
                 WindowUpdateAdded(infos);
