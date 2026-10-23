@@ -121,7 +121,7 @@ namespace {
         "accessibilityNextFocusId", "accessibilityPreviousFocusId", "accessibilityScrollable", "isEssential",
         "childrenTreeId", "belongTreeId", "accessibilityStateDescription", "customActions", "sourceType"};
     const std::vector<std::string> WINDOW_INFO_ATTRIBUTE_NAMES = {"isActive", "screenRect", "layer", "type",
-        "rootElement", "isFocused", "windowId", "mainWindowId", "windowScaleX", "windowScaleY"};
+        "rootElement", "isFocused", "windowId", "mainWindowId", "windowScaleX", "windowScaleY", "bundleName"};
 
     using AttributeNamesFunc = void (*)(NAccessibilityElementData *callbackInfo, napi_value &value);
     std::map<std::string, AttributeNamesFunc> elementInfoCompleteMap = {
@@ -212,6 +212,7 @@ namespace {
         {"hotArea", &NAccessibilityElement::GetWindowInfoHotArea},
         {"windowScaleX", &NAccessibilityElement::GetWindowInfoScaleX},
         {"windowScaleY", &NAccessibilityElement::GetWindowInfoScaleY},
+        {"bundleName", &NAccessibilityElement::GetWindowInfobundleName},
     };
 
     napi_property_descriptor descForAccessibilityElement[] = {
@@ -1965,6 +1966,10 @@ void NAccessibilityElement::GetWindowInfoAllAttribute(NAccessibilityElementData 
     napi_value windowScaleY = nullptr;
     GetWindowInfoScaleY(callbackInfo, windowScaleY);
     NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "windowScaleY", windowScaleY));
+
+    napi_value bundleName = nullptr;
+    GetWindowInfobundleName(callbackInfo, bundleName);
+    NAPI_CALL_RETURN_VOID(env, napi_set_named_property(env, value, "bundleName", bundleName));
 }
 
 bool NAccessibilityElement::CheckWindowInfoParameter(NAccessibilityElementData *callbackInfo, napi_value &value)
@@ -2105,6 +2110,15 @@ void NAccessibilityElement::GetWindowInfoScaleY(NAccessibilityElementData *callb
     }
     NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_double(callbackInfo->env_,
         callbackInfo->accessibilityElement_.windowInfo_->GetScaleY(), &value));
+}
+
+void NAccessibilityElement::GetWindowInfobundleName(NAccessibilityElementData *callbackInfo, napi_value &value)
+{
+    if (!CheckWindowInfoParameter(callbackInfo, value)) {
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(callbackInfo->env_, napi_create_string_utf8(callbackInfo->env_,
+        callbackInfo->accessibilityElement_.windowInfo_->GetBundleName().c_str(), NAPI_AUTO_LENGTH, &value));
 }
 
 napi_value NAccessibilityElement::ActionNames(napi_env env, napi_callback_info info)
