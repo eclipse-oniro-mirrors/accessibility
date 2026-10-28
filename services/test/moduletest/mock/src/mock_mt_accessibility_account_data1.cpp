@@ -1959,7 +1959,8 @@ const std::vector<sptr<IAccessibleAbilityManagerConfigObserver>> MockAccessibili
     return configCallbacks_;
 }
 
-void MockAccessibilityAccountData::SetConfigCallbacks(std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
+void MockAccessibilityAccountData::SetConfigCallbacks(
+    std::vector<sptr<IAccessibleAbilityManagerConfigObserver>>& observer)
 {
     HILOG_DEBUG("SetConfigCallbacks start");
     configCallbacks_ = observer;
