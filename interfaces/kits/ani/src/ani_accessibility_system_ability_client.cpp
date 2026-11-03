@@ -1078,7 +1078,7 @@ static void SetRectToANI(ani_env *env, ani_object result,
     OHOS::Accessibility::Rect rect = elementInfo.GetRectInScreen();
     ani_class rectCls = nullptr;
     ani_status status = env->FindClass(
-        Builder::BuildClass("@ohos.accessibility.accessibility.UIRectImpl")
+        Builder::BuildClass("@ohos.accessibility.UIRectImpl")
         .Descriptor().c_str(), &rectCls);
     if (rectCls == nullptr) {
         HILOG_ERROR("FindClass UIRectImpl failed, status=%{public}d", static_cast<int32_t>(status));
@@ -1097,7 +1097,7 @@ static void SetRectToANI(ani_env *env, ani_object result,
     env->Object_SetFieldByName_Int(rectObj, "height", height);
     env->Object_SetFieldByName_Ref(result, "rect", rectObj);
 }
- 
+
 static void SetChildrenIdsToANI(ani_env *env, ani_object result,
     const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
 {
@@ -1116,7 +1116,7 @@ static void SetChildrenIdsToANI(ani_env *env, ani_object result,
     }
     env->Object_SetFieldByName_Ref(result, "childrenIds", childrenArr);
 }
- 
+
 static void SetCustomActionsToANI(ani_env *env, ani_object result,
     const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
 {
@@ -1132,7 +1132,7 @@ static void SetCustomActionsToANI(ani_env *env, ani_object result,
     }
     env->Object_SetFieldByName_Ref(result, "customActions", actionArr);
 }
- 
+
 static void ConvertUIElementInfoToANIPart1(ani_env *env, ani_object result,
     const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
 {
@@ -1164,7 +1164,7 @@ static void ConvertUIElementInfoToANIPart1(ani_env *env, ani_object result,
     env->Object_SetFieldByName_Ref(result, "longClickable", longClickable);
     env->Object_SetFieldByName_Int(result, "pageId", static_cast<ani_int>(elementInfo.GetPageId()));
 }
- 
+
 static void ConvertUIElementInfoToANIPart2(ani_env *env, ani_object result,
     const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
 {
@@ -1205,7 +1205,7 @@ static void ConvertUIElementInfoToANIPart2(ani_env *env, ani_object result,
     env->Object_SetFieldByName_Ref(result, "accessibilityLevel", accessibilityLevel);
     SetRectToANI(env, result, elementInfo);
 }
- 
+
 static void ConvertUIElementInfoToANIPart3(ani_env *env, ani_object result,
     const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
 {
@@ -1226,7 +1226,7 @@ static void ConvertUIElementInfoToANIPart3(ani_env *env, ani_object result,
         static_cast<ani_boolean>(elementInfo.HasAccessibilityFocus()));
     env->Object_SetFieldByName_Ref(result, "accessibilityFocused", accessibilityFocused);
 }
- 
+
 static void ConvertUIElementInfoToANI(ani_env *env, ani_object result,
     const OHOS::Accessibility::AccessibilityElementInfo &elementInfo)
 {
@@ -1234,7 +1234,7 @@ static void ConvertUIElementInfoToANI(ani_env *env, ani_object result,
     ConvertUIElementInfoToANIPart2(env, result, elementInfo);
     ConvertUIElementInfoToANIPart3(env, result, elementInfo);
 }
- 
+
 ani_object ANIAccessibilityClient::GetFocusedUIAccessibilityElementSync(ani_env *env)
 {
     HILOG_INFO("GetFocusedUIAccessibilityElementSync enter");
@@ -1256,7 +1256,7 @@ ani_object ANIAccessibilityClient::GetFocusedUIAccessibilityElementSync(ani_env 
         static_cast<long long>(elementInfo.GetAccessibilityId()));
     ani_class cls = nullptr;
     ani_status status = ANI_ERROR;
-    if ((status = env->FindClass(Builder::BuildClass("@ohos.accessibility.accessibility.UIAccessibilityElementImpl")
+    if ((status = env->FindClass(Builder::BuildClass("@ohos.accessibility.UIAccessibilityElementImpl"))
         .Descriptor().c_str(), &cls)) != ANI_OK || cls == nullptr) {
         HILOG_ERROR("FindClass UIAccessibilityElementImpl failed, status=%{public}d", static_cast<int32_t>(status));
         return nullptr;
@@ -1280,13 +1280,13 @@ ani_object ANIAccessibilityClient::GetFocusedUIAccessibilityElementSync(ani_env 
         static_cast<long long>(elementInfo.GetAccessibilityId()));
     return result;
 }
- 
+
 void ANIAccessibilityClient::OnFocusedUIAccessibilityElementChangedSync(ani_env *env, ani_object observer)
 {
     HILOG_INFO("OnFocusedUIAccessibilityElementChangedSync");
     focusChangeListeners_->SubscribeObserver(env, observer);
 }
- 
+
 void ANIAccessibilityClient::OffFocusedUIAccessibilityElementChangedSync(ani_env *env, ani_object observer)
 {
     HILOG_INFO("OffFocusedUIAccessibilityElementChangedSync");
@@ -1301,17 +1301,17 @@ void ANIAccessibilityClient::OffFocusedUIAccessibilityElementChangedSync(ani_env
         focusChangeListeners_->UnsubscribeObservers();
     }
 }
- 
+
 void ANIAccessibilityClient::SubscribeFocusChangeListenerToFramework()
 {
     focusChangeListeners_->SubscribeToFramework();
 }
- 
+
 void ANIAccessibilityClient::UnsubscribeFocusChangeListenerFromFramework()
 {
     focusChangeListeners_->UnsubscribeFromFramework();
 }
- 
+
 void FocusChangeListenerImpl::SubscribeToFramework()
 {
     HILOG_INFO("FocusChangeListenerImpl SubscribeToFramework");
@@ -1320,7 +1320,7 @@ void FocusChangeListenerImpl::SubscribeToFramework()
         asaClient->SubscribeFocusChangeObserver(shared_from_this());
     }
 }
- 
+
 void FocusChangeListenerImpl::UnsubscribeFromFramework()
 {
     HILOG_INFO("FocusChangeListenerImpl UnsubscribeFromFramework");
@@ -1329,7 +1329,7 @@ void FocusChangeListenerImpl::UnsubscribeFromFramework()
         asaClient->UnsubscribeFocusChangeObserver(shared_from_this());
     }
 }
- 
+
 void FocusChangeListenerImpl::OnFocusChanged(
     const OHOS::Accessibility::AccessibilityElementInfo &focusedElement,
     const OHOS::Accessibility::AccessibilityElementInfo &unfocusedElement)
@@ -1337,7 +1337,7 @@ void FocusChangeListenerImpl::OnFocusChanged(
     HILOG_INFO("FocusChangeListenerImpl::OnFocusChanged");
     NotifyObservers(focusedElement, unfocusedElement);
 }
- 
+
 void FocusChangeListenerImpl::SubscribeObserver(ani_env *env, ani_object observer)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -1354,7 +1354,7 @@ void FocusChangeListenerImpl::SubscribeObserver(ani_env *env, ani_object observe
     }
     observers_.emplace_back(std::make_shared<FocusChangeCallbackListener>(env, ref));
 }
- 
+
 void FocusChangeListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -1366,7 +1366,7 @@ void FocusChangeListenerImpl::UnsubscribeObserver(ani_env *env, ani_object obser
         }
     }
 }
- 
+
 void FocusChangeListenerImpl::UnsubscribeObservers()
 {
     std::lock_guard<ffrt::mutex> lock(mutex_);
@@ -1375,7 +1375,7 @@ void FocusChangeListenerImpl::UnsubscribeObservers()
     }
     observers_.clear();
 }
- 
+
 static ani_object CreateChangeInfoObject(ani_env *env)
 {
     ani_class infoCls = nullptr;
@@ -1400,7 +1400,7 @@ static ani_object CreateChangeInfoObject(ani_env *env)
     }
     return obj;
 }
- 
+
 void FocusChangeListenerImpl::NotifyObservers(
     const OHOS::Accessibility::AccessibilityElementInfo &focusedElement,
     const OHOS::Accessibility::AccessibilityElementInfo &unfocusedElement)
@@ -1428,7 +1428,7 @@ void FocusChangeListenerImpl::NotifyObservers(
         }
     }
 }
- 
+
 void FocusChangeListenerImpl::InvokeObserverCallback(
     std::shared_ptr<ANIFocusChangeCallbackInfo> callbackInfo, bool hasUnfocused)
 {
@@ -1443,7 +1443,7 @@ void FocusChangeListenerImpl::InvokeObserverCallback(
     }
     ani_class elementCls = nullptr;
     ani_status elemStatus = tmpEnv->FindClass(
-        Builder::BuildClass("@ohos.accessibility.accessibility.UIAccessibilityElementImpl")
+        Builder::BuildClass("@ohos.accessibility.UIAccessibilityElementImpl")
         .Descriptor().c_str(), &elementCls);
     if (elementCls == nullptr) {
         tmpEnv->DestroyLocalScope();
@@ -1482,7 +1482,7 @@ void FocusChangeListenerImpl::InvokeObserverCallback(
     tmpEnv->FunctionalObject_Call(fnObj, 1, args.data(), &result);
     tmpEnv->DestroyLocalScope();
 }
- 
+
 void FocusChangeListenerImpl::DeleteObserverReference(ani_env *env,
     std::shared_ptr<FocusChangeCallbackListener> observer)
 {
