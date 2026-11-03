@@ -122,7 +122,7 @@ static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetWantAgent(
 static std::shared_ptr<OHOS::AbilityRuntime::WantAgent::WantAgent> GetCanceluttonWantAgent()
 {
     std::shared_ptr<OHOS::AAFwk::Want> want = std::make_shared<OHOS::AAFwk::Want>();
-    want->SetAction("disableNotificaiton");
+    want->SetAction("disableNotification");
     want->SetElementName(SETTING_BUNDLE_NAME, SERVICE_EXTENSION_ABILITY_NAME);
 
     std::vector<std::shared_ptr<OHOS::AAFwk::Want>> wants;
@@ -272,6 +272,8 @@ int32_t IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder()
     std::shared_ptr<Notification::NotificationLongTextContent> content =
         std::make_shared<Notification::NotificationLongTextContent>();
     content->SetTitle(notificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_TITLE]);
+    content->SetExpandedTitle(notificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_TITLE]);
+    content->SetText(notificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT]);
     content->SetLongText(notificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT]);
     std::shared_ptr<Notification::NotificationContent> notificationContent =
         std::make_shared<Notification::NotificationContent>(content);
@@ -437,6 +439,8 @@ int32_t TransitionAnimationsNotification::PublishTransitionAnimationsReminder()
     std::shared_ptr<Notification::NotificationLongTextContent> content =
         std::make_shared<Notification::NotificationLongTextContent>();
     content->SetTitle(transitionAnimationsNotificationMap_[TRANSITION_ANIMATIONS_NOTIFICATION_TITLE]);
+    content->SetExpandedTitle(transitionAnimationsNotificationMap_[TRANSITION_ANIMATIONS_NOTIFICATION_TITLE]);
+    content->SetText(transitionAnimationsNotificationMap_[TRANSITION_ANIMATIONS_NOTIFICATION_CONTENT]);
     content->SetLongText(transitionAnimationsNotificationMap_[TRANSITION_ANIMATIONS_NOTIFICATION_CONTENT]);
     std::shared_ptr<Notification::NotificationContent> notificationContent =
         std::make_shared<Notification::NotificationContent>(content);
@@ -607,6 +611,8 @@ int32_t ZoomGestureNotification::PublishZoomGestureReminder()
     std::shared_ptr<Notification::NotificationLongTextContent> content =
         std::make_shared<Notification::NotificationLongTextContent>();
     content->SetTitle(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_TITLE]);
+    content->SetExpandedTitle(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_TITLE]);
+    content->SetText(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_CONTENT]);
     content->SetLongText(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_CONTENT]);
     std::shared_ptr<Notification::NotificationContent> notificationContent =
         std::make_shared<Notification::NotificationContent>(content);
