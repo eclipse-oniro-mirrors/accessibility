@@ -364,7 +364,7 @@ Accessibility::RetError AccessibilityConfig::GetSeniorModeStateForApp(const std:
     HILOG_INFO();
     if (appIndex < 0) {
         HILOG_ERROR("appIndex < 0");
-        return Accessibility::RET_ERR_INVALID_PARAM;
+        return Accessibility::RET_ERR_INVILID_APPINDEX;
     }
     CHECK_IMPL_PTR(Accessibility::RET_ERR_NULLPTR)
     return pImpl_->GetSeniorModeStateForApp(bundleName, appIndex, state);

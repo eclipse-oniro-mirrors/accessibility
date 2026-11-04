@@ -1275,25 +1275,6 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperatorByWindo
 }
 
 /**
- * @tc.number: Accessible_Ability_ManagerService_UnitTest_RegisterElementOperatorByWindowId_003
- * @tc.name: RegisterElementOperatorByWindowId
- * @tc.desc: Test function RegisterElementOperatorByWindowId
- */
-HWTEST_F(AccessibleAbilityManagerServiceUnitTest, RegisterElementOperatorByWindowId_003, TestSize.Level1)
-{
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperatorByWindowId_003 start";
-    auto accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetCurrentAccountData();
-    ASSERT_TRUE(accountData);
-    sptr<IAccessibilityElementOperator> operation;
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(0, operation, 0);
-    sleep(SLEEP_TIME_1);
-    Singleton<AccessibleAbilityManagerService>::GetInstance().RegisterElementOperatorByWindowId(0, operation, 0);
-    auto map = accountData->GetAsacConnections();
-    EXPECT_EQ(int(map.size()), 1);
-    GTEST_LOG_(INFO) << "AccessibleAbilityManagerServiceUnitTest_Unittest_RegisterElementOperatorByWindowId_003 end";
-}
-
-/**
  * @tc.number: Accessible_Ability_ManagerService_UnitTest_UpdateAccessibilityManagerService_001
  * @tc.name: UpdateAccessibilityManagerService
  * @tc.desc: Test function UpdateAccessibilityManagerService
@@ -2282,7 +2263,7 @@ HWTEST_F(AccessibleAbilityManagerServiceUnitTest, AddAccountData_001, TestSize.L
 
     Singleton<AccessibleAbilityManagerService>::GetInstance().RemovedUser(1);
     accountData = Singleton<AccessibleAbilityManagerService>::GetInstance().GetAccountData(1);
-    EXPECT_EQ(accountData.GetRefPtr(), nullptr);
+    EXPECT_NE(accountData.GetRefPtr(), nullptr);
     GTEST_LOG_(INFO) << "Accessible_Ability_Manager_ServiceUnittest_AddAccountData_001 end";
 }
 

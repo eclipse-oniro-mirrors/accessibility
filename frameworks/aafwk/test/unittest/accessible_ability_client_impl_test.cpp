@@ -1012,7 +1012,7 @@ HWTEST_F(AccessibleAbilityClientImplTest, GetRootBatch_001, TestSize.Level1)
     Connect();
     std::vector<AccessibilityElementInfo> info;
     instance_->SetCacheMode(0);
-    EXPECT_EQ(instance_->GetRootBatch(info), RET_ERR_TIME_OUT);
+    EXPECT_EQ(instance_->GetRootBatch(info), RET_ERR_INVALID_ELEMENT_INFO_FROM_ACE);
     GTEST_LOG_(INFO) << "GetRootBatch_001 end";
 }
 

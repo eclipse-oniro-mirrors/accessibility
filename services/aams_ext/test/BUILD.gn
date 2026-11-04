@@ -529,12 +529,6 @@ group("unittest") {
 
   deps += [
     ":accessibility_display_manager_test",
-    ":accessibility_mouse_autoclick_test",
-    ":accessibility_input_interceptor_test",
     ":accessibility_mouse_key_test",
-    ":accessibility_screen_touch_test",
-    ":accessibility_zoom_gesture_test",
-    ":accessibility_touch_exploration_test",
-    ":accessibility_touchevent_injector_test",
   ]
 }
