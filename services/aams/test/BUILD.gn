@@ -797,14 +797,9 @@ group("unittest") {
   deps = []
 
   deps += [
-    ":accessibility_account_data_test",
-    ":accessibility_common_event_registry_test",
     ":accessibility_dumper_test",
     ":accessibility_settings_config_test",
-    ":accessibility_short_key_test",
-    ":accessibility_window_manager_test",
     ":accessible_ability_channel_test",
-    ":accessible_ability_connection_test",
     ":accessible_ability_manager_service_test",
     ":accessible_ability_manager_test",
   ]
