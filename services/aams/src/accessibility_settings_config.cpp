@@ -89,9 +89,8 @@ namespace {
     const char* ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const char* FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
     const char* FLASH_REMINDER_ENABLED = "accessibility_reminder_function_enabled";
-    const char* FLASH_REMINDER_MODE = "accessibility_flash_reminder_mode";
-    const char* FLASH_REMINDER_MODE_USED = "accessibility_flash_reminder_mode_used";
-    const char* FLASH_REMINDER_UNLOCK = "accessibility_flash_reminder_unlock";
+    const char* FLASH_REMINDER_MODE = "accessibility_flash_reminder_mode_new";
+    const char* FLASH_REMINDER_UNLOCK = "accessibility_flash_reminder_unlock_new";
     const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const char* IGNORE_REPEAT_CLICK_TIMESTAMP = "accessibility_ignore_repeat_click_timestamp";
@@ -1336,13 +1335,7 @@ void AccessibilitySettingsConfig::HandleDaltonizationColorCache()
 void AccessibilitySettingsConfig::HandleFlashReminderState()
 {
 #ifdef  ACCESSIBILITY_FEATURE_PRODUCT_PHONE
-    bool flashModeUsed = false;
-    flashModeUsed = datashare_->GetBoolValue(FLASH_REMINDER_MODE_USED, false);
-    if (flashModeUsed) {
-        datashare_->GetIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
-    } else {
-        datashare_->PutIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
-    }
+    datashare_->GetIntValue(FLASH_REMINDER_MODE, FlashReminderMode::FLASHLIGHT);
     datashare_->GetStringValue(FLASH_REMINDER_SWITCH_KEY, "0");
     datashare_->GetStringValue(FLASH_REMINDER_ENABLED, "DEFAULT");
     datashare_->GetStringValue(FLASH_REMINDER_UNLOCK, "0");

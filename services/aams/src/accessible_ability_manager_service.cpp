@@ -92,9 +92,9 @@ namespace {
     const char* VOICE_RECOGNITION_KEY = "accessibility_sound_recognition_switch";
     const char* VOICE_RECOGNITION_TYPES = "accessibility_sound_recognition_enabled";
     const char* FLASH_REMINDER_SWITCH_KEY = "accessibility_flash_reminder_switch";
-    const char* FLASH_REMINDER_MODE_KEY = "accessibility_flash_reminder_mode";
+    const char* FLASH_REMINDER_MODE_KEY = "accessibility_flash_reminder_mode_new";
     const char* FLASH_REMINDER_ENABLED_KEY = "accessibility_reminder_function_enabled";
-    const char* FLASH_REMINDER_UNLOCK_KEY = "accessibility_flash_reminder_unlock";
+    const char* FLASH_REMINDER_UNLOCK_KEY = "accessibility_flash_reminder_unlock_new";
 #ifdef ACCESSIBILITY_WATCH_FEATURE
     const char* DELAY_UNLOAD_TASK = "TASK_UNLOAD_ACCESSIBILITY_SA";
     constexpr int32_t UNLOAD_TASK_INTERNAL = 3 * 60 * 1000; // ms
