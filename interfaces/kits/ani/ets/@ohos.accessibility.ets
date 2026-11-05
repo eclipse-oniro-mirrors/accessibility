@@ -423,6 +423,15 @@ namespace accessibility {
         });
     }
 
+    export interface CaptionsManager {
+        enabled: boolean;
+        style: CaptionsStyle;
+        onEnableChange(callback: Callback<boolean>): void;
+        onStyleChange(callback: Callback<CaptionsStyle>): void;
+        offEnableChange(callback?: Callback<boolean>): void;
+        offStyleChange(callback?: Callback<CaptionsStyle>): void;
+    }
+
     export class CaptionsManagerImpl implements CaptionsManager {
         native getEnabled(): boolean;
         native getStyle(): CaptionsStyle;

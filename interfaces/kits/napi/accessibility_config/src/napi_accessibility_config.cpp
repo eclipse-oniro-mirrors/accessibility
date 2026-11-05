@@ -1287,7 +1287,7 @@ void EnableAbilityListsObserver::OnEnableAbilityListsStateChanged()
 void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string& name)
 {
     HILOG_DEBUG();
-    std::shared_ptr<AccessibilityCallbackInfo> callbackInfo =	90fe14c7|c30035724	-
+    std::shared_ptr<AccessibilityCallbackInfo> callbackInfo =
         std::make_shared<AccessibilityCallbackInfo>();
     if (callbackInfo == nullptr) {
         HILOG_ERROR("callbackInfo is nullptr");
@@ -1296,7 +1296,6 @@ void EnableAbilityCallbackObserver::OnEnableAbilityRemoteDied(const std::string&
 
     callbackInfo->env_ = env_;
     callbackInfo->ref_ = notifyCallback_;
-
 
     auto task = [callbackInfo] () {
         napi_env env = callbackInfo->env_;

@@ -1256,7 +1256,7 @@ ani_object ANIAccessibilityClient::GetFocusedUIAccessibilityElementSync(ani_env 
         static_cast<long long>(elementInfo.GetAccessibilityId()));
     ani_class cls = nullptr;
     ani_status status = ANI_ERROR;
-    if ((status = env->FindClass(Builder::BuildClass("@ohos.accessibility.UIAccessibilityElementImpl"))
+    if ((status = env->FindClass(Builder::BuildClass("@ohos.accessibility.UIAccessibilityElementImpl")
         .Descriptor().c_str(), &cls)) != ANI_OK || cls == nullptr) {
         HILOG_ERROR("FindClass UIAccessibilityElementImpl failed, status=%{public}d", static_cast<int32_t>(status));
         return nullptr;
