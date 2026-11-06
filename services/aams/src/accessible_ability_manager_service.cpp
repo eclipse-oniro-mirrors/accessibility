@@ -111,7 +111,6 @@ namespace {
     const char* ZOOM_GESTURE_NOTIFICATION = "zoom_gesture_notification";
     const char* ZOOM_GESTURE_TIMESTAMP = "accessibility_zoom_gesture_timestamp";
     const char* ANCO_ACCESSIBILITY_STATE = "anco_accessibility_state";
-    const char* IS_OVERSEA_PROPERTY = "const.cust.is_oversea";
     constexpr int32_t INVALID_SHORTCUT_STATE = 2;
     constexpr int32_t QUERY_USER_ID_RETRY_COUNT = 600;
     constexpr int32_t QUERY_USER_ID_SLEEP_TIME = 50;
