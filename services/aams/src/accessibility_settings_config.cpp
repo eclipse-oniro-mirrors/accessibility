@@ -107,6 +107,7 @@ namespace {
     const char* ZOOM_GESTURE_TIMESTAMP = "accessibility_zoom_gesture_timestamp";
     const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
     const char* ZOOM_GESTURE_NOTIFICATION = "zoom_gesture_notification";
+    const char* IS_OVERSEA_PROPERTY = "const.cust.is_oversea";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
@@ -1343,6 +1344,17 @@ void AccessibilitySettingsConfig::HandleFlashReminderState()
 #endif
 }
 
+void AccessibilitySettingsConfig::HandleVoiceRecognitionState()
+{
+    // overseas version does not participate in clone/upgrade of sound recognition
+    if (system::GetBoolParameter(IS_OVERSEA_PROPERTY, false)) {
+        HILOG_INFO("oversea is true, skip voice recognition clone");
+        return;
+    }
+    datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
+    datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
+}
+
 void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG();
@@ -1390,8 +1402,7 @@ void AccessibilitySettingsConfig::InitSetting()
     ignoreRepeatClickTime_.store(static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0)));
     SetIgnoreRepeatClickTime(ignoreRepeatClickTime_.load());
     HandleFlashReminderState();
-    datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
-    datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
+    HandleVoiceRecognitionState();
     HandleIgnoreRepeatClickState();
     seniorModeState_.store(datashare_->GetBoolValue(ELDER_CARE_ENABLED_KEY, false));
 }
