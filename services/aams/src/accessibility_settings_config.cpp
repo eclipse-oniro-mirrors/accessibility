@@ -1347,7 +1347,7 @@ void AccessibilitySettingsConfig::HandleFlashReminderState()
 void AccessibilitySettingsConfig::HandleVoiceRecognitionState()
 {
     // overseas version does not participate in clone/upgrade of sound recognition
-    if (system::GetBoolParameter(IS_OVERSEA_PROPERTY, false)) {
+    if (Utils::IsOversea()) {
         HILOG_INFO("oversea is true, skip voice recognition clone");
         return;
     }
