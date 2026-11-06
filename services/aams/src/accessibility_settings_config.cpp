@@ -107,7 +107,6 @@ namespace {
     const char* ZOOM_GESTURE_TIMESTAMP = "accessibility_zoom_gesture_timestamp";
     const char* ELDER_CARE_ENABLED_KEY = "accessibility_elder_care_switch_enabled";
     const char* ZOOM_GESTURE_NOTIFICATION = "zoom_gesture_notification";
-    const char* IS_OVERSEA_PROPERTY = "const.cust.is_oversea";
     constexpr int DOUBLE_CLICK_RESPONSE_TIME_MEDIUM = 300;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORTEST = 100;
     constexpr int DOUBLE_IGNORE_REPEAT_CLICK_TIME_SHORT = 400;
