@@ -1524,10 +1524,12 @@ uint32_t AccessibilitySettingsConfig::GetShortKeyService(std::vector<std::string
     });
     serviceFlag = highContrastText != services.end() ? (serviceFlag | STATE_HIGHCONTRAST_ENABLED) : serviceFlag;
 
-    auto captionsAssistant = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
-        return service.find(CAPTIONS_ASSISTANT_HMOS_TAG) != std::string::npos;
-    });
-    serviceFlag = captionsAssistant != services.end() ? (serviceFlag | STATE_CAPTION_ENABLED) : serviceFlag;
+    if (!Utils::IsOversea()) {
+        auto captionsAssistant = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+            return service.find(CAPTIONS_ASSISTANT_HMOS_TAG) != std::string::npos;
+        });
+        serviceFlag = captionsAssistant != services.end() ? (serviceFlag | STATE_CAPTION_ENABLED) : serviceFlag;
+    }
 
     auto screenMagnification = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
         return service.find(SCREEN_MAGNIFICATION_TAG) != std::string::npos;
@@ -1554,7 +1556,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     if (shortkeyServiceFlag & STATE_HIGHCONTRAST_ENABLED) {
         shortkeyService.push_back(HIGH_CONTRAST_TEXT_TAG);
     }
-    if (shortkeyServiceFlag & STATE_CAPTION_ENABLED) {
+    if (!Utils::IsOversea() && (shortkeyServiceFlag & STATE_CAPTION_ENABLED)) {
         shortkeyService.push_back(CAPTIONS_ASSISTANT_HMOS_TAG);
     }
     if (shortkeyServiceFlag & STATE_SCREENMAGNIFIER_ENABLED) {
