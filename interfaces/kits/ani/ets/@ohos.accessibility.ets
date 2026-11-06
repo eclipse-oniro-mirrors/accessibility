@@ -423,104 +423,6 @@ namespace accessibility {
         });
     }
 
-    interface UIRect {
-        left: int;
-        top: int;
-        width: int;
-        height: int;
-    }
- 
-    class UIRectImpl implements UIRect {
-        left: int = 0;
-        top: int = 0;
-        width: int = 0;
-        height: int = 0;
-    }
- 
-    export interface UIAccessibilityElement {
-        accessibilityFocused?: boolean;
-        checkable?: boolean;
-        isChecked?: boolean;
-        clickable?: boolean;
-        componentId?: long;
-        componentType?: string;
-        accessibilityDescription?: string;
-        editable?: boolean;
-        error?: string;
-        focusable?: boolean;
-        hintText?: string;
-        identifier?: string;
-        isActive?: boolean;
-        isEnabled?: boolean;
-        isFocused?: boolean;
-        isVisible?: boolean;
-        longClickable?: boolean;
-        pageId?: int;
-        scrollable?: boolean;
-        selected?: boolean;
-        text?: string;
-        textLengthLimit?: int;
-        valueMax?: double;
-        valueMin?: double;
-        valueNow?: double;
-        offset?: double;
-        accessibilityText?: string;
-        accessibilityStateDescription?: string;
-        accessibilityRole?: string;
-        accessibilityNextFocusId?: long;
-        accessibilityPreviousFocusId?: long;
-        accessibilityScrollable?: boolean;
-        accessibilityGroup?: boolean;
-        accessibilityLevel?: string;
-        rect?: UIRect;
-        accessibilityVisible?: boolean;
-        parentId?: long;
-        childrenIds?: Array<long>;
-        customActions?: Array<string>;
-    }
- 
-    class UIAccessibilityElementImpl implements UIAccessibilityElement {
-        accessibilityFocused?: boolean = false;
-        checkable?: boolean = false;
-        isChecked?: boolean = false;
-        clickable?: boolean = false;
-        componentId?: long = 0;
-        componentType?: string = "";
-        accessibilityDescription?: string = "";
-        editable?: boolean = false;
-        error?: string = "";
-        focusable?: boolean = false;
-        hintText?: string = "";
-        identifier?: string = "";
-        isActive?: boolean = true;
-        isEnabled?: boolean = true;
-        isFocused?: boolean = false;
-        isVisible?: boolean = true;
-        longClickable?: boolean = false;
-        pageId?: int = 0;
-        scrollable?: boolean = false;
-        selected?: boolean = false;
-        text?: string = "";
-        textLengthLimit?: int = 0;
-        valueMax?: double = 0;
-        valueMin?: double = 0;
-        valueNow?: double = 0;
-        offset?: double = 0;
-        accessibilityText?: string = "";
-        accessibilityStateDescription?: string = "";
-        accessibilityRole?: string = "";
-        accessibilityNextFocusId?: long = 0;
-        accessibilityPreviousFocusId?: long = 0;
-        accessibilityScrollable?: boolean = false;
-        accessibilityGroup?: boolean = true;
-        accessibilityLevel?: string = "auto";
-        rect?: UIRect = new UIRectImpl();
-        accessibilityVisible?: boolean = true;
-        parentId?: long = 0;
-        childrenIds?: Array<long> = [];
-        customActions?: Array<string> = [];
-    }
-
     export interface CaptionsManager {
         enabled: boolean;
         style: CaptionsStyle;
@@ -683,6 +585,54 @@ namespace accessibility {
             });
         });
     }
+
+    export interface UIAccessibilityFocusChangeInfo {
+        focusedElement?: UIAccessibilityElement;
+        unfocusedElement?: UIAccessibilityElement;
+    }
+
+    export class UIAccessibilityFocusChangeInfoImpl implements UIAccessibilityFocusChangeInfo {
+        focusedElement?: UIAccessibilityElement = undefined;
+        unfocusedElement?: UIAccessibilityElement = undefined;
+    }
+
+    native function getFocusedUIAccessibilityElementSync(): UIAccessibilityElement | undefined;
+
+    export function getFocusedUIAccessibilityElement(): Promise<UIAccessibilityElement | undefined> {
+        return new Promise<UIAccessibilityElement | undefined>((
+            resolve: (v: UIAccessibilityElement | undefined) => void,
+            reject: (error: BusinessError) => void): void => {
+            taskpool.execute((): UIAccessibilityElement | undefined => {
+                return getFocusedUIAccessibilityElementSync();
+            })
+            .then((ret: Any): void => {
+                if (ret === undefined || ret === null) {
+                    resolve(undefined);
+                } else {
+                    resolve(ret as UIAccessibilityElement);
+                }
+            })
+            .catch((ret: Any): void => {
+                reject(ret as BusinessError);
+            });
+        });
+    }
+
+    export native function onUIAccessibilityFocusChangedSync(
+        callback: Callback<UIAccessibilityFocusChangeInfo>): void;
+
+    export function onUIAccessibilityFocusChanged(
+        callback: Callback<UIAccessibilityFocusChangeInfo>): void {
+        onUIAccessibilityFocusChangedSync(callback);
+    }
+
+    export native function offUIAccessibilityFocusChangedSync(
+        callback?: Callback<UIAccessibilityFocusChangeInfo>): void;
+
+    export function offUIAccessibilityFocusChanged(
+        callback?: Callback<UIAccessibilityFocusChangeInfo>): void {
+        offUIAccessibilityFocusChangedSync(callback);
+    }
 }
 export default accessibility;
 
@@ -726,4 +676,102 @@ export enum AccessibilitySourceType {
   DEFAULT = 1,
   ADDED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 2,
   UPDATED_FROM_ACCESSIBILITY_VIRTUAL_NODE = 3
+}
+
+export interface UIRect {
+    left: int;
+    top: int;
+    width: int;
+    height: int;
+}
+
+export class UIRectImpl implements UIRect {
+    left: int = 0;
+    top: int = 0;
+    width: int = 0;
+    height: int = 0;
+}
+
+export interface UIAccessibilityElement {
+    accessibilityFocused?: boolean;
+    checkable?: boolean;
+    isChecked?: boolean;
+    clickable?: boolean;
+    componentId?: long;
+    componentType?: string;
+    accessibilityDescription?: string;
+    editable?: boolean;
+    error?: string;
+    focusable?: boolean;
+    hintText?: string;
+    identifier?: string;
+    isActive?: boolean;
+    isEnabled?: boolean;
+    isFocused?: boolean;
+    isVisible?: boolean;
+    longClickable?: boolean;
+    pageId?: int;
+    rect?: UIRect;
+    scrollable?: boolean;
+    selected?: boolean;
+    text?: string;
+    textLengthLimit?: int;
+    valueMax?: double;
+    valueMin?: double;
+    valueNow?: double;
+    offset?: double;
+    accessibilityText?: string;
+    accessibilityRole?: string;
+    accessibilityNextFocusId?: long;
+    accessibilityPreviousFocusId?: long;
+    accessibilityScrollable?: boolean;
+    accessibilityGroup?: boolean;
+    accessibilityLevel?: string;
+    accessibilityVisible?: boolean;
+    parentId?: long;
+    childrenIds?: Array<long>;
+    accessibilityStateDescription?: string;
+    customActions?: Array<string>;
+}
+
+export class UIAccessibilityElementImpl implements UIAccessibilityElement {
+    accessibilityFocused?: boolean = false;
+    checkable?: boolean = false;
+    isChecked?: boolean = false;
+    clickable?: boolean = false;
+    componentId?: long = 0;
+    componentType?: string = "";
+    accessibilityDescription?: string = "";
+    editable?: boolean = false;
+    error?: string = "";
+    focusable?: boolean = false;
+    hintText?: string = "";
+    identifier?: string = "";
+    isActive?: boolean = true;
+    isEnabled?: boolean = true;
+    isFocused?: boolean = false;
+    isVisible?: boolean = true;
+    longClickable?: boolean = false;
+    pageId?: int = 0;
+    rect?: UIRect = new UIRectImpl();
+    scrollable?: boolean = false;
+    selected?: boolean = false;
+    text?: string = "";
+    textLengthLimit?: int = 0;
+    valueMax?: double = 0;
+    valueMin?: double = 0;
+    valueNow?: double = 0;
+    offset?: double = 0;
+    accessibilityText?: string = "";
+    accessibilityRole?: string = "";
+    accessibilityNextFocusId?: long = 0;
+    accessibilityPreviousFocusId?: long = 0;
+    accessibilityScrollable?: boolean = false;
+    accessibilityGroup?: boolean = true;
+    accessibilityLevel?: string = "auto";
+    accessibilityVisible?: boolean = true;
+    parentId?: long = 0;
+    childrenIds?: Array<long> = [];
+    accessibilityStateDescription?: string = "";
+    customActions?: Array<string> = [];
 }
