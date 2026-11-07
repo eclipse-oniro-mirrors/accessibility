@@ -39,7 +39,7 @@ ohos_fuzztest("AccessibleAbilityManagerServiceFuzzTest") {
     "../../../../interface:accessibility_interface",
   ]
   external_deps = [
-    "access_token:libnativetoken",
+    "access_token:libnativetoken_shared",
     "access_token:libtoken_setproc",
     "cJSON:cjson_static",
     "selinux_adapter:librestorecon",
