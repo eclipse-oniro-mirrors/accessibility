@@ -1343,6 +1343,17 @@ void AccessibilitySettingsConfig::HandleFlashReminderState()
 #endif
 }
 
+void AccessibilitySettingsConfig::HandleVoiceRecognitionState()
+{
+    // overseas version does not participate in clone/upgrade of sound recognition
+    if (Utils::IsOversea()) {
+        HILOG_INFO("oversea is true, skip voice recognition clone");
+        return;
+    }
+    datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
+    datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
+}
+
 void AccessibilitySettingsConfig::InitSetting()
 {
     HILOG_DEBUG();
@@ -1390,8 +1401,7 @@ void AccessibilitySettingsConfig::InitSetting()
     ignoreRepeatClickTime_.store(static_cast<uint32_t>(datashare_->GetIntValue(IGNORE_REPEAT_CLICK_TIME, 0)));
     SetIgnoreRepeatClickTime(ignoreRepeatClickTime_.load());
     HandleFlashReminderState();
-    datashare_->GetBoolValue(VOICE_RECOGNITION_KEY, false);
-    datashare_->GetStringValue(VOICE_RECOGNITION_TYPES, "DEFAULT");
+    HandleVoiceRecognitionState();
     HandleIgnoreRepeatClickState();
     seniorModeState_.store(datashare_->GetBoolValue(ELDER_CARE_ENABLED_KEY, false));
 }
@@ -1514,10 +1524,12 @@ uint32_t AccessibilitySettingsConfig::GetShortKeyService(std::vector<std::string
     });
     serviceFlag = highContrastText != services.end() ? (serviceFlag | STATE_HIGHCONTRAST_ENABLED) : serviceFlag;
 
-    auto captionsAssistant = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
-        return service.find(CAPTIONS_ASSISTANT_HMOS_TAG) != std::string::npos;
-    });
-    serviceFlag = captionsAssistant != services.end() ? (serviceFlag | STATE_CAPTION_ENABLED) : serviceFlag;
+    if (!Utils::IsOversea()) {
+        auto captionsAssistant = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
+            return service.find(CAPTIONS_ASSISTANT_HMOS_TAG) != std::string::npos;
+        });
+        serviceFlag = captionsAssistant != services.end() ? (serviceFlag | STATE_CAPTION_ENABLED) : serviceFlag;
+    }
 
     auto screenMagnification = std::find_if(services.begin(), services.end(), [&](const std::string& service) {
         return service.find(SCREEN_MAGNIFICATION_TAG) != std::string::npos;
@@ -1544,7 +1556,7 @@ void AccessibilitySettingsConfig::CloneShortkeyService(bool isScreenReaderEnable
     if (shortkeyServiceFlag & STATE_HIGHCONTRAST_ENABLED) {
         shortkeyService.push_back(HIGH_CONTRAST_TEXT_TAG);
     }
-    if (shortkeyServiceFlag & STATE_CAPTION_ENABLED) {
+    if (!Utils::IsOversea() && (shortkeyServiceFlag & STATE_CAPTION_ENABLED)) {
         shortkeyService.push_back(CAPTIONS_ASSISTANT_HMOS_TAG);
     }
     if (shortkeyServiceFlag & STATE_SCREENMAGNIFIER_ENABLED) {

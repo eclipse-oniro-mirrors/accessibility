@@ -82,6 +82,7 @@ public:
     static bool IsWideFold();
     static bool IsBigFold();
     static bool IsSmallFold();
+    static bool IsOversea();
     static std::string FormatString(const std::string& format, const std::string& value);
     static float StringToFloat(const std::string& value, const float& defaultValue);
     static int32_t GetTreeIdBySplitElementId(const int64_t elementId);
