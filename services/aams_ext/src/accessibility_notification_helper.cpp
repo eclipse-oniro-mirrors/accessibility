@@ -273,7 +273,6 @@ int32_t IgnoreRepeatClickNotification::PublishIgnoreRepeatClickReminder()
         std::make_shared<Notification::NotificationLongTextContent>();
     content->SetTitle(notificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_TITLE]);
     content->SetExpandedTitle(notificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_TITLE]);
-    content->SetText(notificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT]);
     content->SetLongText(notificationMap_[IGNORE_REPEAT_CLICK_NOTIFICATION_CONTENT]);
     std::shared_ptr<Notification::NotificationContent> notificationContent =
         std::make_shared<Notification::NotificationContent>(content);
@@ -440,7 +439,6 @@ int32_t TransitionAnimationsNotification::PublishTransitionAnimationsReminder()
         std::make_shared<Notification::NotificationLongTextContent>();
     content->SetTitle(transitionAnimationsNotificationMap_[TRANSITION_ANIMATIONS_NOTIFICATION_TITLE]);
     content->SetExpandedTitle(transitionAnimationsNotificationMap_[TRANSITION_ANIMATIONS_NOTIFICATION_TITLE]);
-    content->SetText(transitionAnimationsNotificationMap_[TRANSITION_ANIMATIONS_NOTIFICATION_CONTENT]);
     content->SetLongText(transitionAnimationsNotificationMap_[TRANSITION_ANIMATIONS_NOTIFICATION_CONTENT]);
     std::shared_ptr<Notification::NotificationContent> notificationContent =
         std::make_shared<Notification::NotificationContent>(content);
@@ -612,7 +610,6 @@ int32_t ZoomGestureNotification::PublishZoomGestureReminder()
         std::make_shared<Notification::NotificationLongTextContent>();
     content->SetTitle(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_TITLE]);
     content->SetExpandedTitle(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_TITLE]);
-    content->SetText(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_CONTENT]);
     content->SetLongText(zoomGestureNotificationMap_[ZOOM_GESTURE_NOTIFICATION_CONTENT]);
     std::shared_ptr<Notification::NotificationContent> notificationContent =
         std::make_shared<Notification::NotificationContent>(content);
