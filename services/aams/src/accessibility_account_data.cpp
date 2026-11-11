@@ -182,6 +182,9 @@ uint32_t AccessibilityAccountData::GetAccessibilityState()
     if (config_->GetSeniorModeState()) {
         state |= STATE_ELDER_CARE_ENABLED;
     }
+    if (config_->GetSelectReaderState()) {
+        state |= STATE_SELECT_READER_ENABLED;
+    }
     HILOG_INFO("GetAccessibilityState [%{public}u]", state);
     return state;
 }

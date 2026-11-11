@@ -367,6 +367,9 @@ void AccessibilitySystemAbilityClientImpl::Init()
     if (stateType & STATE_ELDER_CARE_ENABLED) {
         stateHandler_.SetState(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED, true);
     }
+    if (stateType & STATE_SELECT_READER_ENABLED) {
+        stateHandler_.SetState(AccessibilityStateEventType::EVENT_SELECT_READER_STATE_CHANGED, true);
+    }
 }
 
 void AccessibilitySystemAbilityClientImpl::ResetService(const wptr<IRemoteObject> &remote)
@@ -949,6 +952,9 @@ void AccessibilitySystemAbilityClientImpl::OnAccessibleAbilityManagerStateChange
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_ELDER_CARE_ENABLED,
         !!(stateType & STATE_ELDER_CARE_ENABLED));
+
+    NotifyStateChanged(AccessibilityStateEventType::EVENT_SELECT_READER_STATE_CHANGED,
+        !!(stateType & STATE_SELECT_READER_ENABLED));
 
     NotifyStateChanged(AccessibilityStateEventType::EVENT_SELF_SENIOR_MODE_STATE_CHANGE,
         !!(stateType & STATE_SELF_SENIOR_MODE_STATE_ENABLED));
