@@ -25,6 +25,7 @@ namespace {
     const std::string SCREEN_READER_BUNDLE_NAME = "com.ohos.hmos.screenreader";
     const std::string SCREEN_READER_KEY = "accessibility_screenreader_enabled";
     const std::string SCREEN_READER_ABILITY_NAME = "com.ohos.hmos.screenreader/AccessibilityExtAbility";
+    const std::string SELECT_READER_ABILITY_NAME = "com.ohos.hmos.selectreader/AccessibilityExtAbility";
 }
 AccessibleAbilityManager::~AccessibleAbilityManager()
 {
@@ -194,6 +195,9 @@ void AccessibleAbilityManager::AddEnabledAbility(const std::string &name)
     if (name == SCREEN_READER_ABILITY_NAME && accountData) {
         accountData->SetScreenReaderState(SCREEN_READER_KEY, "1");
     }
+    if (name == SELECT_READER_ABILITY_NAME && accountData) {
+        accountData->SetSelectReaderState(true);
+    }
     UpdateEnableAbilityListsState();
     HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
 }
@@ -208,6 +212,9 @@ RetError AccessibleAbilityManager::RemoveEnabledAbility(const std::string &name)
             enabledAbilities_.erase(it);
             if (name == SCREEN_READER_ABILITY_NAME && accountData) {
                 accountData->SetScreenReaderState(SCREEN_READER_KEY, "0");
+            }
+            if (name == SELECT_READER_ABILITY_NAME && accountData) {
+                accountData->SetSelectReaderState(false);
             }
             UpdateEnableAbilityListsState();
             HILOG_DEBUG("EnabledAbility size %{public}zu", enabledAbilities_.size());
