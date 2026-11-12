@@ -20,6 +20,7 @@
 #include "magnification_menu_manager.h"
 #include "magnification_window.h"
 #include "extend_service_manager.h"
+#include "accessibility_input_interceptor.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -275,6 +276,11 @@ void MagnificationManager::RefreshWindowParam(RotationType type)
 
 void MagnificationManager::FollowFocuseElement(int32_t centerX, int32_t centerY)
 {
+    auto interceptor = AccessibilityInputInterceptor::GetInstance();
+    if (interceptor && interceptor->IsTouchFingerDown()) {
+        HILOG_INFO("Finger is down, skip FollowFocuseElement");
+        return;
+    }
     currentMode_ = Singleton<ExtendServiceManager>::GetInstance().getMagnificationModeCallback();
     HILOG_INFO("currentMode_ is %{public}d", currentMode_);
     if (windowMagnificationManager_ == nullptr) {

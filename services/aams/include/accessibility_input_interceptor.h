@@ -33,6 +33,7 @@
 #include "accessibility_keyevent_filter.h"
 #include "accessibility_gesture_inject_path.h"
 #include "accessibility_screen_touch.h"
+#include "accessibility_touch_exploration.h"
 
 namespace OHOS {
 namespace Accessibility {
@@ -115,6 +116,9 @@ public:
         return availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION;
     }
 
+    // Check whether finger is down during touch exploration.
+    bool IsTouchFingerDown();
+
 private:
     AccessibilityInputInterceptor();
     static sptr<AccessibilityInputInterceptor> instance_;
@@ -149,6 +153,7 @@ private:
     sptr<KeyEventFilter> keyEventFilter_ = nullptr;
     int32_t screenShotUid_ = INVALID_UID;
     sptr<AccessibilityScreenTouch> screenTouch_ = nullptr;
+    sptr<TouchExploration> touchExploration_ = nullptr;
 };
 } // namespace Accessibility
 } // namespace OHOS
