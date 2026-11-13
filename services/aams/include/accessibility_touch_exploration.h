@@ -21,6 +21,7 @@
 #include <vector>
 #include <map>
 #include <functional>
+#include <atomic>
 #include "accessibility_element_info.h"
 #include "accessibility_event_transmission.h"
 #include "accessibility_def.h"
@@ -259,14 +260,15 @@ public:
     /* Set current state */
     inline void SetCurrentState(TouchExplorationState state)
     {
-        HILOG_INFO("currentState is changed from %{public}d to %{public}d.", currentState_, state);
-        currentState_ = state;
+        HILOG_INFO("currentState is changed from %{public}d to %{public}d.",
+            static_cast<int32_t>(currentState_.load(std::memory_order_relaxed)), state);
+        currentState_.store(state, std::memory_order_release);
     }
 
     /* Get current state */
     inline TouchExplorationState GetCurrentState()
     {
-        return currentState_;
+        return currentState_.load(std::memory_order_acquire);
     }
 
 private:
@@ -385,7 +387,7 @@ private:
     using HandleEventFunc = std::function<void(MMI::PointerEvent &)>;
     std::map<TouchExplorationState, std::map<int32_t, HandleEventFunc>> handleEventFuncMap_ {};
 
-    TouchExplorationState currentState_ = TouchExplorationState::TOUCH_INIT;
+    std::atomic<TouchExplorationState> currentState_ = TouchExplorationState::TOUCH_INIT;
     std::atomic<uint64_t> currentDisplayId_ = 0;
     std::list<MMI::PointerEvent> receivedPointerEvents_ {};
 

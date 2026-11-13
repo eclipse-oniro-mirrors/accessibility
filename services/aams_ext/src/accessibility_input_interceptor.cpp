@@ -213,19 +213,19 @@ void AccessibilityInputInterceptor::CreatePointerEventTransmitters()
         Singleton<ExtendServiceManager>::GetInstance().SetTouchEventInjector(touchEventInjector);
     }
 
-    if ((availableFunctions_& FEATURE_SCREEN_MAGNIFICATION)) {
+    if ((availableFunctions_ & FEATURE_SCREEN_MAGNIFICATION)) {
         CreateMagnificationGesture(header, current);
     } else {
         ClearMagnificationGesture();
     }
-    if (availableFunctions_& FEATURE_TOUCH_EXPLORATION) {
-        sptr<TouchExploration> touchExploration = new(std::nothrow) TouchExploration();
-        if (!touchExploration) {
+    if (availableFunctions_ & FEATURE_TOUCH_EXPLORATION) {
+        touchExploration_ = new(std::nothrow) TouchExploration();
+        if (!touchExploration_) {
             HILOG_ERROR("touchExploration is null");
             return;
         }
-        touchExploration->StartUp();
-        SetNextEventTransmitter(header, current, touchExploration);
+        touchExploration_->StartUp();
+        SetNextEventTransmitter(header, current, touchExploration_);
     }
     if ((availableFunctions_ & FEATURE_SCREEN_TOUCH) && ((availableFunctions_ & FEATURE_TOUCH_EXPLORATION) == 0)) {
         screenTouch_ = new(std::nothrow) AccessibilityScreenTouch();
@@ -412,12 +412,23 @@ void AccessibilityInputInterceptor::DestroyTransmitters()
         Singleton<ExtendServiceManager>::GetInstance().SetTouchEventInjector(nullptr);
         pointerEventTransmitters_= nullptr;
         zoomGesture_ = nullptr;
+        touchExploration_ = nullptr;
     }
     if (keyEventTransmitters_ != nullptr) {
         keyEventTransmitters_->DestroyEvents();
         keyEventFilter_ = nullptr;
         keyEventTransmitters_ = nullptr;
     }
+}
+
+bool AccessibilityInputInterceptor::IsTouchFingerDown()
+{
+    std::lock_guard<ffrt::mutex> lock(mutex_);
+    if (!touchExploration_) {
+        return false;
+    }
+    TouchExplorationState state = touchExploration_->GetCurrentState();
+    return state != TouchExplorationState::TOUCH_INIT;
 }
 
 void AccessibilityInputInterceptor::GetScreenShotUID()
