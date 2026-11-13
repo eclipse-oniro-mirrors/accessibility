@@ -58,8 +58,6 @@ constexpr uint32_t START_ANGLE_LANDSCAPE_INVERTED = 0;
 
 constexpr uint32_t NUMBER_10 = 10;
 
-constexpr float TOUCH_SLOP = 8.0f;
-
 const int32_t ROTATE_POLICY = OHOS::system::GetIntParameter("const.window.device.rotate_policy", 0);
 const std::string FOLDABLE = OHOS::system::GetParameter("const.window.foldabledevice.rotate_policy", "");
 constexpr uint64_t FOLD_SCREEN_ID = 5;
