@@ -2813,6 +2813,24 @@ bool AccessibleAbilityManagerService::EnableShortKeyTargetAbility(const std::str
     }
 }
 
+bool AccessibleAbilityManagerService::IsCaptionAssistantAvailable()
+{
+    if (Utils::IsOversea()) {
+        HILOG_INFO("oversea version, captions assistant is unavailable");
+        return false;
+    }
+    AppExecFwk::BundleInfo bundleInfo;
+    ErrCode ret = Singleton<AccessibilityResourceBundleManager>::GetInstance().GetBundleInfoV9(
+        CAPTION_BUNDLE_NAME,
+        static_cast<int32_t>(AppExecFwk::GetBundleInfoFlag::GET_BUNDLE_INFO_DEFAULT),
+        bundleInfo, GetCurrentAccountId());
+    if (ret != ERR_OK) {
+        HILOG_INFO("bundle %{public}s is not installed", CAPTION_BUNDLE_NAME);
+        return false;
+    }
+    return true;
+}
+
 void AccessibleAbilityManagerService::OnShortKeyProcess()
 {
     HILOG_DEBUG();
@@ -2848,6 +2866,13 @@ void AccessibleAbilityManagerService::OnShortKeyProcess()
     }
 
     std::vector<std::string> shortkeyMultiTarget = accountData->GetConfig()->GetShortkeyMultiTarget();
+    if (!shortkeyMultiTarget.empty() && !IsCaptionAssistantAvailable()) {
+        // Overseas version or vassistant not installed: remove CAPTIONS_ASSISTANT from the local
+        shortkeyMultiTarget.erase(std::remove(shortkeyMultiTarget.begin(), shortkeyMultiTarget.end(),
+            CAPTION_SHORTKEY_NAME), shortkeyMultiTarget.end());
+        HILOG_DEBUG("after filtering captions assistant, shortkey multi target size is %{public}zu",
+            shortkeyMultiTarget.size());
+    }
     if (shortkeyMultiTarget.size() == 0) {
         EnableShortKeyTargetAbility();
     } else if (shortkeyMultiTarget.size() == 1) {
