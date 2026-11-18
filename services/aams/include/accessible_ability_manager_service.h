@@ -181,6 +181,7 @@ public:
     bool EnableShortKeyTargetAbility(const std::string &name = "");
     bool EnableCaptionsAbility(sptr<AccessibilityAccountData> accountData);
     bool DisableShortKeyTargetAbility();
+    bool IsCaptionAssistantAvailable();
     void OnShortKeyProcess();
     void UpdateShortKeyRegister();
     ErrCode InnerGetRootParentId(int32_t windowId, int32_t treeId, int64_t &parentId);
