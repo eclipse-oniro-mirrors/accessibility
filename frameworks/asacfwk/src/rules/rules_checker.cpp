@@ -29,7 +29,7 @@ ReadableRulesNode::~ReadableRulesNode() = default;
 bool ReadableRulesChecker::CheckInit(const std::string& readableRules)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    isChecked_ = true;
+    isChecked_.store(true, std::memory_order_release);
     if (!IsInited()) {
         Init(readableRules);
     }
@@ -43,7 +43,7 @@ bool ReadableRulesChecker::CheckInit(const std::string& readableRules)
 
 void ReadableRulesChecker::Init(const std::string& rules)
 {
-    isInited_ = false;
+    isInited_.store(false, std::memory_order_relaxed);
 
     nlohmann::json jsonRoot = nlohmann::json::parse(rules, nullptr, false);
     if (jsonRoot.is_null() || jsonRoot.is_discarded() || !jsonRoot.is_object()) {
@@ -62,7 +62,9 @@ void ReadableRulesChecker::Init(const std::string& rules)
         return;
     }
 
-    isInited_ = true;
+    // Release store: an acquire load of isInited_ observing true is guaranteed to see
+    // the fully parsed rules_, rulesDefines_ and customProps_.
+    isInited_.store(true, std::memory_order_release);
 }
 
 bool ReadableRulesChecker::ParseRules(const nlohmann::json& jsonRoot)
@@ -89,6 +91,10 @@ bool ReadableRulesChecker::ParseRules(const nlohmann::json& jsonRoot)
 bool ReadableRulesChecker::IsReadable(const std::shared_ptr<ReadableRulesNode>& node)
 {
     CHECK_NULL_RETURN(node, false);
+    // rules_ is rebuilt by ParseRules (called from CheckInit under mutex_) with
+    // resize(), which can reallocate the vector. Iterating without the mutex races
+    // with the rebuild and can dereference freed nodes.
+    std::lock_guard<std::mutex> lock(mutex_);
     for (const auto& rule : rules_) {
         CheckResult ret = rule.IsReadable(node);
         HILOG_INFO("rule:%{public}s, isReadable:%{public}d, handleResult:%{public}d",

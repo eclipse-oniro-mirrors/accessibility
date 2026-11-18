@@ -26,7 +26,7 @@
 namespace OHOS {
 namespace AccessibilityConfig {
 namespace {
-    const std::string SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
+    constexpr const char* SYSTEM_PARAMETER_AAMS_NAME = "accessibility.config.ready";
     constexpr int32_t CONFIG_PARAMETER_VALUE_SIZE = 10;
     constexpr int32_t CONNECT_POLL_INTERVAL = 200; // ms
     constexpr int32_t CONNECT_POLL_COUNT = 5;
@@ -111,7 +111,7 @@ AccessibilityConfig::Impl::~Impl()
     
     HILOG_INFO("AccessibilityConfig destroy");
     if (isParameterWatcherRegistered.load()) {
-        RemoveParameterWatcher(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+        RemoveParameterWatcher(SYSTEM_PARAMETER_AAMS_NAME, &OnParameterChanged, this);
     }
 }
 
@@ -147,7 +147,7 @@ void AccessibilityConfig::Impl::OnParameterChanged(const char *key, const char *
 bool AccessibilityConfig::Impl::ConnectToService()
 {
     char value[CONFIG_PARAMETER_VALUE_SIZE] = "default";
-    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), "false", value, CONFIG_PARAMETER_VALUE_SIZE);
+    int retSysParam = GetParameter(SYSTEM_PARAMETER_AAMS_NAME, "false", value, CONFIG_PARAMETER_VALUE_SIZE);
     if (retSysParam >= 0 && !std::strcmp(value, "true")) {
         std::unique_lock<ffrt::shared_mutex> wLock(rwLock_);
         if (isInitialized_.load()) {
@@ -169,7 +169,7 @@ bool AccessibilityConfig::Impl::ConnectToService()
         return true;
     }
     HILOG_DEBUG("Start watching accessibility service.");
-    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME.c_str(), &OnParameterChanged, this);
+    retSysParam = WatchParameter(SYSTEM_PARAMETER_AAMS_NAME, &OnParameterChanged, this);
     if (retSysParam) {
         HILOG_WARN("Watch parameter failed, error = %{public}d", retSysParam);
     }

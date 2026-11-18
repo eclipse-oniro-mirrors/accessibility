@@ -19,6 +19,8 @@
 #include <set>
 #include <string>
 #include <mutex>
+#include <atomic>
+#include <vector>
 
 #include "rules_defines.h"
 #include "custom_props.h"
@@ -64,8 +66,11 @@ public:
     bool CheckInit(const std::string& readableRules);
     static const CustomProps& GetCustomProps();
     static const RulesDefines& GetRulesDefines();
-    bool IsInited() { return isInited_; }
-    bool IsCheckedRules() { return isChecked_; }
+    // The flags are atomic: an acquire load that observes isInited_ == true is ordered
+    // after the release store in Init(), so rules_ and the parsed tables are stable
+    // once IsInited() returns true.
+    bool IsInited() { return isInited_.load(std::memory_order_acquire); }
+    bool IsCheckedRules() { return isChecked_.load(std::memory_order_acquire); }
 private:
     bool ParseRules(const nlohmann::json& jsonRoot);
 
@@ -74,8 +79,8 @@ private:
     RulesDefines rulesDefines_;
     CustomProps customProps_;
     std::vector<ReadableRule> rules_;
-    bool isInited_ = false;
-    bool isChecked_ = false;
+    std::atomic<bool> isInited_ = false;
+    std::atomic<bool> isChecked_ = false;
 };
 
 } // namespace OHOS::Accessibility

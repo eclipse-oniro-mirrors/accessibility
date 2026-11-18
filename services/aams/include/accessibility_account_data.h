@@ -219,15 +219,15 @@ public:
 
     /**
      * @brief Get enable accessibility list.
-     * @return Store map of enable accessibility abilities.
+     * @return Store vector of enable accessibility abilities.
      */
-    const std::vector<std::string> &GetEnabledAbilities();
+    std::vector<std::string> GetEnabledAbilities();
 
     /**
      * @brief Get install accessibility list.
      * @return Store vector of install accessibility abilities.
      */
-    const std::vector<AccessibilityAbilityInfo> &GetInstalledAbilities() const;
+    std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() const;
 
     /**
      * @brief Update user enabled accessibility capabilities.

@@ -20,6 +20,8 @@
 #include <memory>
 #include <mutex>
 #include <bitset>
+#include <atomic>
+#include <vector>
 
 #include "accessibility_window_connection.h"
 #include "iaccessibility_element_operator.h"
@@ -46,6 +48,9 @@ public:
         const int32_t windowId, const sptr<AccessibilityWindowConnection>& interactionConnection);
 
     void RemoveAccessibilityWindowConnection(const int32_t windowId);
+
+    void RemoveAccessibilityWindowConnection(const int32_t windowId,
+        const sptr<AccessibilityWindowConnection> &connection);
 
     sptr<AccessibilityWindowConnection> GetAccessibilityWindowConnection(const int32_t windowId);
 

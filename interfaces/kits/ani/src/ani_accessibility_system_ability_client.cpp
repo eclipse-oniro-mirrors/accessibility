@@ -53,6 +53,33 @@ std::shared_ptr<StateListenerImpl> ANIAccessibilityClient::seniorModeStateForApp
 std::shared_ptr<FocusChangeListenerImpl> ANIAccessibilityClient::focusChangeListeners_ =
     std::make_shared<FocusChangeListenerImpl>();
 
+static void DeleteObserverReference(ani_env *env, ani_ref fnRef)
+{
+    if (env == nullptr) {
+        return;
+    }
+    std::shared_ptr<ANIStateCallbackInfo> callbackInfo = std::make_shared<ANIStateCallbackInfo>();
+    if (callbackInfo == nullptr) {
+        HILOG_ERROR("failed to create callbackInfo");
+        return;
+    }
+    callbackInfo->env_ = env;
+    callbackInfo->fnRef_ = fnRef;
+    // Delete the global reference from the main thread event loop instead of doing it
+    // synchronously here: NotifyETS tasks that were already posted for this reference
+    // run first (the event queue is FIFO), so FunctionalObject_Call can never be called
+    // on an already deleted ani_ref. This also keeps GlobalReference_Delete out of the
+    // observers_ critical section.
+    auto task = [callbackInfo]() {
+        HILOG_INFO("delete observer reference");
+        ani_env *tmpEnv = callbackInfo->env_;
+        tmpEnv->GlobalReference_Delete(callbackInfo->fnRef_);
+    };
+    if (!ANIUtils::SendEventToMainThread(task)) {
+        HILOG_ERROR("failed to send delete reference event");
+    }
+}
+
 void StateListenerImpl::SubscribeToFramework()
 {
     HILOG_INFO("StateListenerImpl SubscribeFromFramework");
@@ -129,94 +156,150 @@ void AccessibilityCaptionsObserverImpl::OnConfigChanged(const OHOS::Accessibilit
 
 void StateListenerImpl::SubscribeObserver(ani_env *env, ani_object observer, bool isBoolObserver)
 {
-    std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
-    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
-        if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
-            env->GlobalReference_Delete(fnRef);
+    bool isExist = false;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+            if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
+                isExist = true;
+                break;
+            }
+        }
+        if (isExist) {
             HILOG_WARN("SubscribeObserver Observer exist");
-            return;
+        } else {
+            std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, fnRef, isBoolObserver);
+            observers_.emplace_back(stateListener);
+            HILOG_INFO("observer size:%{public}zu", observers_.size());
         }
     }
-
-    std::shared_ptr<StateListener> stateListener = std::make_shared<StateListener>(env, fnRef, isBoolObserver);
-    observers_.emplace_back(stateListener);
-    HILOG_INFO("observer size:%{public}zu", observers_.size());
+    if (isExist) {
+        // Drop the temporary reference outside the critical section.
+        env->GlobalReference_Delete(fnRef);
+    }
 }
 
 void StateListenerImpl::UnsubscribeObserver(ani_env *env, ani_object observer)
 {
-    std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
-    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
-        if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
-            observers_.erase(iter);
-            break;
+    std::shared_ptr<StateListener> removedObserver = nullptr;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+            if (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_)) {
+                removedObserver = *iter;
+                observers_.erase(iter);
+                break;
+            }
         }
     }
+    // Drop the temporary reference outside the critical section.
     env->GlobalReference_Delete(fnRef);
-    HILOG_WARN("UnsubscribeObserver Observer not exist");
+    if (removedObserver != nullptr) {
+        DeleteObserverReference(removedObserver->env_, removedObserver->fnRef_);
+    } else {
+        HILOG_WARN("UnsubscribeObserver Observer not exist");
+    }
 }
 
 void StateListenerImpl::UnsubscribeObservers()
 {
     HILOG_INFO();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
-        (*iter)->env_->GlobalReference_Delete((*iter)->fnRef_);
+    std::vector<std::shared_ptr<StateListener>> observersToRemove;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        observersToRemove = observers_;
+        observers_.clear();
     }
-    observers_.clear();
+    // The stored global references must not be deleted synchronously here: NotifyETS
+    // tasks already posted to the main thread still capture these fnRef_ handles and
+    // would call FunctionalObject_Call on freed references. DeleteObserverReference
+    // posts the deletes to the same FIFO event queue, so the pending notify tasks run
+    // to completion first.
+    for (auto &observer : observersToRemove) {
+        DeleteObserverReference(observer->env_, observer->fnRef_);
+    }
 }
 
 void AccessibilityCaptionsObserverImpl::SubscribeObserver(ani_env *env, OHOS::AccessibilityConfig::CONFIG_ID id,
     ani_object observer)
 {
-    std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
-    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
-        if (((*iter)->configId_ == id) && (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_))) {
-            env->GlobalReference_Delete(fnRef);
+    bool isExist = false;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+            if (((*iter)->configId_ == id) &&
+                (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_))) {
+                isExist = true;
+                break;
+            }
+        }
+        if (isExist) {
             HILOG_WARN("SubscribeObserver Observer exist");
-            return;
+        } else {
+            std::shared_ptr<AccessibilityCaptionsObserver> captionsObserver =
+                std::make_shared<AccessibilityCaptionsObserver>(env, fnRef, id);
+            observers_.emplace_back(captionsObserver);
+            HILOG_INFO("observer size:%{public}zu", observers_.size());
         }
     }
-
-    std::shared_ptr<AccessibilityCaptionsObserver> captionsObserver = std::make_shared<AccessibilityCaptionsObserver>(
-        env, fnRef, id);
-    observers_.emplace_back(captionsObserver);
-    HILOG_INFO("observer size:%{public}zu", observers_.size());
+    if (isExist) {
+        // Drop the temporary reference outside the critical section.
+        env->GlobalReference_Delete(fnRef);
+    }
 }
 
 void AccessibilityCaptionsObserverImpl::UnsubscribeObserver(ani_env *env, OHOS::AccessibilityConfig::CONFIG_ID id,
     ani_object observer)
 {
-    std::lock_guard<ffrt::mutex> lock(mutex_);
     ani_ref fnRef;
     env->GlobalReference_Create(observer, &fnRef);
-    for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
-        if (((*iter)->configId_ == id) && (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_))) {
-            observers_.erase(iter);
-            break;
+    std::shared_ptr<AccessibilityCaptionsObserver> removedObserver = nullptr;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto iter = observers_.begin(); iter != observers_.end(); iter++) {
+            if (((*iter)->configId_ == id) &&
+                (ANIUtils::CheckObserverEqual(env, fnRef, (*iter)->env_, (*iter)->fnRef_))) {
+                removedObserver = *iter;
+                observers_.erase(iter);
+                break;
+            }
         }
     }
+    // Drop the temporary reference outside the critical section.
     env->GlobalReference_Delete(fnRef);
-    HILOG_WARN("UnsubscribeObserver Observer not exist");
+    if (removedObserver != nullptr) {
+        DeleteObserverReference(removedObserver->env_, removedObserver->fnRef_);
+    } else {
+        HILOG_WARN("UnsubscribeObserver Observer not exist");
+    }
 }
 
 void AccessibilityCaptionsObserverImpl::UnsubscribeObservers(OHOS::AccessibilityConfig::CONFIG_ID id)
 {
     HILOG_INFO();
-    std::lock_guard<ffrt::mutex> lock(mutex_);
-    for (auto iter = observers_.begin(); iter != observers_.end();) {
-        if ((*iter)->configId_ == id) {
-            (*iter)->env_->GlobalReference_Delete((*iter)->fnRef_);
-            iter = observers_.erase(iter);
-        } else {
-            iter++;
+    std::vector<std::shared_ptr<AccessibilityCaptionsObserver>> observersToRemove;
+    {
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        for (auto iter = observers_.begin(); iter != observers_.end();) {
+            if ((*iter)->configId_ == id) {
+                observersToRemove.push_back(*iter);
+                iter = observers_.erase(iter);
+            } else {
+                iter++;
+            }
         }
+    }
+    // The stored global references must not be deleted synchronously here: notify tasks
+    // already posted to the main thread still capture these fnRef_ handles. See
+    // StateListenerImpl::UnsubscribeObservers.
+    for (auto &observer : observersToRemove) {
+        DeleteObserverReference(observer->env_, observer->fnRef_);
     }
 }
 

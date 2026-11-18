@@ -30,8 +30,8 @@
 namespace OHOS {
 namespace Accessibility {
 namespace {
-    const std::string GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
-    const std::string ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
+    constexpr const char* GRAPHIC_ANIMATION_SCALE_NAME = "persist.sys.graphic.animationscale";
+    constexpr const char* ARKUI_ANIMATION_SCALE_NAME = "persist.sys.arkui.animationscale";
     const std::string SCREEN_READER_BUNDLE_ABILITY_NAME = "com.ohos.screenreader/AccessibilityExtAbility";
     const int32_t SHORT_KEY_TIMEOUT_BEFORE_USE = 3000; // ms
     const int32_t SHORT_KEY_TIMEOUT_AFTER_USE = 1000; // ms
@@ -77,8 +77,8 @@ void MockAccessibilitySettings::OnParameterChanged(const char *key, const char *
 
 void MockAccessibilitySettings::RegisterParamWatcher()
 {
-    WatchParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
-    WatchParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), &OnParameterChanged, this);
+    WatchParameter(GRAPHIC_ANIMATION_SCALE_NAME, &OnParameterChanged, this);
+    WatchParameter(ARKUI_ANIMATION_SCALE_NAME, &OnParameterChanged, this);
 }
 
 RetError MockAccessibilitySettings::SetScreenMagnificationState(const bool state)
@@ -338,11 +338,11 @@ RetError MockAccessibilitySettings::SetAnimationOffState(const bool state)
     int setGraphicParamRes = -1;
     int setArkuiParamRes = -1;
     if (state) {
-        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "0");
-        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "0");
+        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "0");
+        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME, "0");
     } else {
-        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME.c_str(), "1");
-        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME.c_str(), "1");
+        setGraphicParamRes = SetParameter(GRAPHIC_ANIMATION_SCALE_NAME, "1");
+        setArkuiParamRes = SetParameter(ARKUI_ANIMATION_SCALE_NAME, "1");
     }
     HILOG_INFO("SetParameter results are %{public}d and %{public}d", setGraphicParamRes, setArkuiParamRes);
     return ret;

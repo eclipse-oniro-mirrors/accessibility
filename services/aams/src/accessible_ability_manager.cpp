@@ -44,6 +44,7 @@ void AccessibleAbilityManager::SetAccountData(int32_t accountId, const wptr<Acce
 void AccessibleAbilityManager::Clear()
 {
     connectedA11yAbilities_.Clear();
+    std::lock_guard<ffrt::mutex> lock(enabledAbilitiesMutex_);
     enabledAbilities_.clear();
 }
 
@@ -183,14 +184,19 @@ sptr<AccessibleAbilityConnection> AccessibleAbilityManager::GetAppStateObserverA
 void AccessibleAbilityManager::AddEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("AddEnabledAbility start.");
-    if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
-        [name](const std::string &abilityName) {
-            return abilityName == name;
-        })) {
-        HILOG_DEBUG("The ability is already enabled, and it's name is %{public}s", name.c_str());
-        return;
+    {
+        // The duplicate check and the push_back must be one critical section to keep
+        // check-then-act atomic against concurrent RemoveEnabledAbility calls.
+        std::lock_guard<ffrt::mutex> lock(enabledAbilitiesMutex_);
+        if (std::any_of(enabledAbilities_.begin(), enabledAbilities_.end(),
+            [name](const std::string &abilityName) {
+                return abilityName == name;
+            })) {
+            HILOG_DEBUG("The ability is already enabled, and it's name is %{public}s", name.c_str());
+            return;
+        }
+        enabledAbilities_.push_back(name);
     }
-    enabledAbilities_.push_back(name);
     sptr<AccessibilityAccountData> accountData = accountData_.promote();
     if (name == SCREEN_READER_ABILITY_NAME && accountData) {
         accountData->SetScreenReaderState(SCREEN_READER_KEY, "1");
@@ -198,67 +204,88 @@ void AccessibleAbilityManager::AddEnabledAbility(const std::string &name)
     if (name == SELECT_READER_ABILITY_NAME && accountData) {
         accountData->SetSelectReaderState(true);
     }
+    // Notify observers outside enabledAbilitiesMutex_: the observers are remote proxies,
+    // calling them with the mutex held may block the critical section for a long time.
     UpdateEnableAbilityListsState();
-    HILOG_DEBUG("Add EnabledAbility: %{public}zu", enabledAbilities_.size());
+    HILOG_DEBUG("Add EnabledAbility: %{public}zu", GetEnabledAbilities().size());
 }
 
 RetError AccessibleAbilityManager::RemoveEnabledAbility(const std::string &name)
 {
     HILOG_DEBUG("RemoveEnabledAbility start");
     sptr<AccessibilityAccountData> accountData = accountData_.promote();
-    for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
-        if (*it == name) {
-            HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
-            enabledAbilities_.erase(it);
-            if (name == SCREEN_READER_ABILITY_NAME && accountData) {
-                accountData->SetScreenReaderState(SCREEN_READER_KEY, "0");
+    bool found = false;
+    {
+        std::lock_guard<ffrt::mutex> lock(enabledAbilitiesMutex_);
+        for (auto it = enabledAbilities_.begin(); it != enabledAbilities_.end(); it++) {
+            if (*it == name) {
+                HILOG_DEBUG("Removed %{public}s from EnabledAbility: ", name.c_str());
+                enabledAbilities_.erase(it);
+                found = true;
+                break;
             }
-            if (name == SELECT_READER_ABILITY_NAME && accountData) {
-                accountData->SetSelectReaderState(false);
-            }
-            UpdateEnableAbilityListsState();
-            HILOG_DEBUG("EnabledAbility size %{public}zu", enabledAbilities_.size());
-            return RET_OK;
         }
     }
-    HILOG_ERROR("The ability %{public}s is not enabled.", name.c_str());
-    return RET_ERR_NOT_ENABLED;
+    if (!found) {
+        HILOG_ERROR("The ability %{public}s is not enabled.", name.c_str());
+        return RET_ERR_NOT_ENABLED;
+    }
+    if (name == SCREEN_READER_ABILITY_NAME && accountData) {
+        accountData->SetScreenReaderState(SCREEN_READER_KEY, "0");
+    }
+    if (name == SELECT_READER_ABILITY_NAME && accountData) {
+        accountData->SetSelectReaderState(false);
+    }
+    // Notify observers outside enabledAbilitiesMutex_, see AddEnabledAbility.
+    UpdateEnableAbilityListsState();
+    HILOG_DEBUG("EnabledAbility size %{public}zu", GetEnabledAbilities().size());
+    return RET_OK;
 }
 
-const std::vector<std::string> &AccessibleAbilityManager::GetEnabledAbilities() const
+std::vector<std::string> AccessibleAbilityManager::GetEnabledAbilities() const
 {
+    // Return a copy taken inside the critical section: handing out a const reference
+    // lets concurrent push_back/erase reallocate the vector under the caller's feet.
+    std::lock_guard<ffrt::mutex> lock(enabledAbilitiesMutex_);
     HILOG_DEBUG("enabledAbilities_'s size is (%{public}zu).", enabledAbilities_.size());
-    for (auto& ability : enabledAbilities_) {
-        HILOG_DEBUG("bundleName is %{public}s ", ability.c_str());
-    }
     return enabledAbilities_;
 }
 
 void AccessibleAbilityManager::AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo)
 {
     HILOG_DEBUG("abilityInfo's bundle name is %{public}s", abilityInfo.GetPackageName().c_str());
-    for (size_t i = 0; i < installedAbilities_.size(); i++) {
-        if ((installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) &&
-            installedAbilities_[i].GetName() == abilityInfo.GetName()) {
-            HILOG_DEBUG("the ability is already exist.");
-            return;
+    {
+        // The duplicate check and the push_back must be one critical section to keep
+        // check-then-act atomic against concurrent RemoveInstalledAbility calls.
+        std::lock_guard<ffrt::mutex> lock(installedAbilitiesMutex_);
+        for (size_t i = 0; i < installedAbilities_.size(); i++) {
+            if ((installedAbilities_[i].GetPackageName() == abilityInfo.GetPackageName()) &&
+                installedAbilities_[i].GetName() == abilityInfo.GetName()) {
+                HILOG_DEBUG("the ability is already exist.");
+                return;
+            }
         }
+        installedAbilities_.push_back(abilityInfo);
     }
-    installedAbilities_.push_back(abilityInfo);
+    // Notify observers outside installedAbilitiesMutex_: the observers are remote
+    // proxies, calling them with the mutex held may block the critical section.
     UpdateInstallAbilityListsState();
     HILOG_DEBUG("push back installed ability successfully and installedAbilities_'s size is %{public}zu",
-        installedAbilities_.size());
+        GetInstalledAbilities().size());
 }
 
 void AccessibleAbilityManager::RemoveInstalledAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("start.");
-    for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
-        if (it->GetPackageName() == bundleName) {
-            HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
-            it = installedAbilities_.erase(it);
-        } else {
-            ++it;
+    {
+        std::lock_guard<ffrt::mutex> lock(installedAbilitiesMutex_);
+        for (auto it = installedAbilities_.begin(); it != installedAbilities_.end();) {
+            if (it->GetPackageName() == bundleName) {
+                HILOG_DEBUG("Removed %{public}s from InstalledAbility: ", bundleName.c_str());
+                it = installedAbilities_.erase(it);
+            } else {
+                ++it;
+            }
         }
     }
     UpdateInstallAbilityListsState();
@@ -278,17 +305,22 @@ void AccessibleAbilityManager::UpdateInstallAbilityListsState()
 void AccessibleAbilityManager::ClearInstalledAbility()
 {
     HILOG_DEBUG("start.");
+    std::lock_guard<ffrt::mutex> lock(installedAbilitiesMutex_);
     installedAbilities_.clear();
 }
 
-const std::vector<AccessibilityAbilityInfo> &AccessibleAbilityManager::GetInstalledAbilities() const
+std::vector<AccessibilityAbilityInfo> AccessibleAbilityManager::GetInstalledAbilities() const
 {
     HILOG_DEBUG("GetInstalledAbilities start.");
+    // Return a copy taken inside the critical section: handing out a const reference
+    // lets concurrent push_back/erase reallocate the vector under the caller's feet.
+    std::lock_guard<ffrt::mutex> lock(installedAbilitiesMutex_);
     return installedAbilities_;
 }
 
 RetError AccessibleAbilityManager::UpdateInstalledAbility(const std::string &name, uint32_t capabilities)
 {
+    std::lock_guard<ffrt::mutex> lock(installedAbilitiesMutex_);
     for (auto iter = installedAbilities_.begin(); iter != installedAbilities_.end(); iter++) {
         if (iter->GetId() == name) {
             // Judge capabilities
@@ -314,14 +346,14 @@ void AccessibleAbilityManager::GetAbilitiesByState(
         GetDisableAbilities(abilities);
         HILOG_DEBUG("the size of disable abilities is %{public}zu", abilities.size());
     } else {
-        abilities = installedAbilities_;
+        abilities = GetInstalledAbilities();
     }
 }
 
 void AccessibleAbilityManager::GetDisableAbilities(std::vector<AccessibilityAbilityInfo> &disabledAbilities)
 {
     HILOG_DEBUG("get disable abilities");
-    disabledAbilities = installedAbilities_;
+    disabledAbilities = GetInstalledAbilities();
     connectedA11yAbilities_.GetDisableAbilities(disabledAbilities);
 }
 
@@ -416,14 +448,17 @@ void AccessibleAbilityManager::NotifyExtensionServiceDeath(const std::string& ur
 bool AccessibleAbilityManager::RemoveAbility(const std::string &bundleName)
 {
     HILOG_DEBUG("bundleName(%{public}s)", bundleName.c_str());
-    if (installedAbilities_.empty()) {
+    if (GetInstalledAbilities().empty()) {
         HILOG_DEBUG("There is no installed abilities.");
         return false;
     }
     RemoveInstalledAbility(bundleName);
 
+    // Iterate over a snapshot: RemoveEnabledAbility erases from enabledAbilities_
+    // inside the loop, which would invalidate the iterators of a direct range-for.
+    std::vector<std::string> enabledAbilities = GetEnabledAbilities();
     bool result = false;
-    for (auto& enableAbility : enabledAbilities_) {
+    for (const auto& enableAbility : enabledAbilities) {
         if (enableAbility.substr(0, enableAbility.find("/")) == bundleName) {
             RemoveEnabledAbility(enableAbility);
             RemoveConnectingAbility(enableAbility);
@@ -471,13 +506,14 @@ void AccessibleAbilityManager::ChangeAbility(const std::string &bundleName)
     if (!accountData) {
         return;
     }
-    if (installedAbilities_.empty()) {
+    std::vector<AccessibilityAbilityInfo> installedAbilities = GetInstalledAbilities();
+    if (installedAbilities.empty()) {
         HILOG_DEBUG("There is no installed abilities.");
         return;
     }
-    
+
     std::vector<std::string> autoStartAbilities;
-    for (auto &ability : installedAbilities_) {
+    for (auto &ability : installedAbilities) {
         if (ability.GetPackageName() != bundleName) {
             continue;
         }
@@ -485,16 +521,17 @@ void AccessibleAbilityManager::ChangeAbility(const std::string &bundleName)
             autoStartAbilities.push_back(ability.GetId());
         }
     }
-    
+
     RemoveInstalledAbility(bundleName);
     accountData->AddAbility(bundleName);
-    
+
+    installedAbilities = GetInstalledAbilities();
     for (auto &name : autoStartAbilities) {
-        auto iter = std::find_if(installedAbilities_.begin(), installedAbilities_.end(),
+        auto iter = std::find_if(installedAbilities.begin(), installedAbilities.end(),
             [&name](const AccessibilityAbilityInfo& info) {
                 return info.GetId() == name;
             });
-        if (iter == installedAbilities_.end()) {
+        if (iter == installedAbilities.end()) {
             accountData->SetAbilityAutoStartState(name, false);
         }
     }
@@ -504,16 +541,20 @@ void AccessibleAbilityManager::GetImportantEnabledAbilities(
     std::map<std::string, uint32_t> &importantEnabledAbilities) const
 {
     HILOG_DEBUG("GetImportantEnabledAbilities start.");
-    if (installedAbilities_.empty()) {
+    // Work on snapshots: iterating the vectors directly races with concurrent
+    // Add/Remove that may reallocate them.
+    std::vector<AccessibilityAbilityInfo> installedAbilities = GetInstalledAbilities();
+    if (installedAbilities.empty()) {
         HILOG_DEBUG("Current user has no installed Abilities.");
         return;
     }
-    if (enabledAbilities_.empty()) {
+    std::vector<std::string> enabledAbilities = GetEnabledAbilities();
+    if (enabledAbilities.empty()) {
         HILOG_DEBUG("Current user has no enabled abilities.");
         return;
     }
-    HILOG_DEBUG("installedAbilities_'s is %{public}zu.", installedAbilities_.size());
-    for (auto &installAbility : installedAbilities_) {
+    HILOG_DEBUG("installedAbilities_'s is %{public}zu.", installedAbilities.size());
+    for (auto &installAbility : installedAbilities) {
         if (!installAbility.IsImportant()) {
             HILOG_DEBUG("The ability is not important.");
             continue;
@@ -523,9 +564,9 @@ void AccessibleAbilityManager::GetImportantEnabledAbilities(
         HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
             bundleName.c_str(), abilityName.c_str());
         std::string uri = Utils::GetUri(bundleName, abilityName);
-        std::vector<std::string>::const_iterator iter = std::find(enabledAbilities_.begin(),
-            enabledAbilities_.end(), uri);
-        if (iter != enabledAbilities_.end()) {
+        std::vector<std::string>::const_iterator iter = std::find(enabledAbilities.begin(),
+            enabledAbilities.end(), uri);
+        if (iter != enabledAbilities.end()) {
             uint32_t capabilityValues = installAbility.GetCapabilityValues();
             importantEnabledAbilities.emplace(std::make_pair(uri, capabilityValues));
         }
@@ -540,22 +581,31 @@ void AccessibleAbilityManager::UpdateImportantEnabledAbilities(
         HILOG_DEBUG("There is no enabled abilities.");
         return;
     }
-    if (installedAbilities_.empty()) {
-        HILOG_DEBUG("Current user has no installedAbilities.");
-        return;
-    }
-    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
-    for (auto &installAbility : installedAbilities_) {
-        std::string bundleName = installAbility.GetPackageName();
-        std::string abilityName = installAbility.GetName();
-        HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
-            bundleName.c_str(), abilityName.c_str());
-        std::string uri = Utils::GetUri(bundleName, abilityName);
-        std::map<std::string, uint32_t>::iterator iter = importantEnabledAbilities.find(uri);
-        if (iter != importantEnabledAbilities.end()) {
-            AddEnabledAbility(uri);
-            installAbility.SetCapabilityValues(iter->second);
+    // Collect the abilities to enable and call AddEnabledAbility after the critical
+    // section: it notifies remote observers and must not run with the mutex held.
+    std::vector<std::string> abilitiesToEnable;
+    {
+        std::lock_guard<ffrt::mutex> lock(installedAbilitiesMutex_);
+        if (installedAbilities_.empty()) {
+            HILOG_DEBUG("Current user has no installedAbilities.");
+            return;
         }
+        HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
+        for (auto &installAbility : installedAbilities_) {
+            std::string bundleName = installAbility.GetPackageName();
+            std::string abilityName = installAbility.GetName();
+            HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
+                bundleName.c_str(), abilityName.c_str());
+            std::string uri = Utils::GetUri(bundleName, abilityName);
+            std::map<std::string, uint32_t>::iterator iter = importantEnabledAbilities.find(uri);
+            if (iter != importantEnabledAbilities.end()) {
+                abilitiesToEnable.push_back(uri);
+                installAbility.SetCapabilityValues(iter->second);
+            }
+        }
+    }
+    for (const auto &uri : abilitiesToEnable) {
+        AddEnabledAbility(uri);
     }
 }
 
@@ -566,20 +616,29 @@ void AccessibleAbilityManager::UpdateAutoStartEnabledAbilities()
     if (!accountData) {
         return;
     }
-    HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
-    for (auto &installAbility : installedAbilities_) {
-        std::string bundleName = installAbility.GetPackageName();
-        std::string abilityName = installAbility.GetName();
-        std::string abilityId = bundleName + "/" + abilityName;
-        if (accountData->GetAbilityAutoStartState(abilityId)) {
-            HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
-            uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
-                CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
-            uint32_t resultCapabilities = installAbility.GetStaticCapabilityValues() & capabilities;
-            installAbility.SetCapabilityValues(resultCapabilities);
-            std::string uri = Utils::GetUri(bundleName, abilityName);
-            AddEnabledAbility(uri);
+    // Collect the abilities to enable and call AddEnabledAbility after the critical
+    // section: it notifies remote observers and must not run with the mutex held.
+    std::vector<std::string> abilitiesToEnable;
+    {
+        std::lock_guard<ffrt::mutex> lock(installedAbilitiesMutex_);
+        HILOG_DEBUG("installedAbilities is %{public}zu.", installedAbilities_.size());
+        for (auto &installAbility : installedAbilities_) {
+            std::string bundleName = installAbility.GetPackageName();
+            std::string abilityName = installAbility.GetName();
+            std::string abilityId = bundleName + "/" + abilityName;
+            if (accountData->GetAbilityAutoStartState(abilityId)) {
+                HILOG_DEBUG("auto start packageName is %{public}s.", bundleName.c_str());
+                uint32_t capabilities = CAPABILITY_GESTURE | CAPABILITY_KEY_EVENT_OBSERVER | CAPABILITY_RETRIEVE |
+                    CAPABILITY_TOUCH_GUIDE | CAPABILITY_ZOOM;
+                uint32_t resultCapabilities = installAbility.GetStaticCapabilityValues() & capabilities;
+                installAbility.SetCapabilityValues(resultCapabilities);
+                std::string uri = Utils::GetUri(bundleName, abilityName);
+                abilitiesToEnable.push_back(uri);
+            }
         }
+    }
+    for (const auto &uri : abilitiesToEnable) {
+        AddEnabledAbility(uri);
     }
 }
 
@@ -601,7 +660,10 @@ void AccessibleAbilityManager::UpdateAbilities(
         int32_t, int32_t, AccessibilityAbilityInfo&)> connectionCreator)
 {
     HILOG_DEBUG("UpdateAbilities start.");
-    for (auto& installAbility : installedAbilities_) {
+    // Work on a snapshot: iterating installedAbilities_ directly races with concurrent
+    // Add/Remove that may reallocate the vector.
+    std::vector<AccessibilityAbilityInfo> installedAbilities = GetInstalledAbilities();
+    for (auto& installAbility : installedAbilities) {
         std::string uri = Utils::GetUri(installAbility.GetPackageName(), installAbility.GetName());
         HILOG_DEBUG("installAbility's packageName is %{public}s and abilityName is %{public}s",
             installAbility.GetPackageName().c_str(), installAbility.GetName().c_str());
@@ -664,7 +726,10 @@ void AccessibleAbilityManager::DisconnectAbility(
 RetError AccessibleAbilityManager::GetReadableRules(std::string &readableRules)
 {
     HILOG_INFO();
-    for (auto &installAbility : installedAbilities_) {
+    // Work on a snapshot: iterating installedAbilities_ directly races with concurrent
+    // Add/Remove that may reallocate the vector.
+    std::vector<AccessibilityAbilityInfo> installedAbilities = GetInstalledAbilities();
+    for (auto &installAbility : installedAbilities) {
         if (installAbility.GetPackageName() == SCREEN_READER_BUNDLE_NAME) {
             readableRules = installAbility.GetReadableRules();
             return RET_OK;

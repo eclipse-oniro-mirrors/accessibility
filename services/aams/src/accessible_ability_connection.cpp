@@ -498,6 +498,13 @@ void AccessibleAbilityConnection::OnAbilityDisconnectDoneSync(const AppExecFwk::
         HILOG_ERROR("abilityClient_ is nullptr");
         return;
     }
+    // Remove the death recipient registered in InitAbilityClient before disconnecting,
+    // symmetric to DisconnectAbility(). Leaving it attached lets a remote-die
+    // notification fire into connection state that has already been torn down.
+    if (deathRecipient_ == nullptr || !abilityClient_->AsObject() ||
+        !abilityClient_->AsObject()->RemoveDeathRecipient(deathRecipient_)) {
+        HILOG_ERROR("Failed to remove death recipient");
+    }
     abilityClient_->Disconnect(connectionId_);
 }
 
