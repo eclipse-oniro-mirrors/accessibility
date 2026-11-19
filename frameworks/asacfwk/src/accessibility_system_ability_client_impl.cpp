@@ -41,8 +41,11 @@ static ffrt::mutex g_Mutex;
 static std::shared_ptr<AccessibilitySystemAbilityClientImpl> g_Instance = nullptr;
 
 static bool CheckRulesCheckerIsInit(ReadableRulesChecker& rulesChecker,
-    sptr<IAccessibleAbilityManagerService>& serviceProxy)
+    sptr<IAccessibleAbilityManagerService> serviceProxy)
 {
+    // serviceProxy is passed by value on purpose: it is a local copy holding a strong
+    // reference, so a concurrent ResetService (death notification) nulling the member
+    // cannot leave a dangling reference between the check and the use below.
     if (!serviceProxy) {
         return false;
     }
@@ -1388,7 +1391,14 @@ RetError AccessibilitySystemAbilityClientImpl::IsScreenReaderRulesEnabled(bool &
 {
     auto& rulesChecker = ReadableRulesChecker::GetInstance();
     isEnabled = false;
-    isEnabled = CheckRulesCheckerIsInit(rulesChecker, serviceProxy_);
+    sptr<IAccessibleAbilityManagerService> serviceProxy;
+    {
+        // Copy the proxy under mutex_ so the check-then-use below cannot race with
+        // ResetService nulling serviceProxy_ (binder death notification thread).
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        serviceProxy = serviceProxy_;
+    }
+    isEnabled = CheckRulesCheckerIsInit(rulesChecker, serviceProxy);
     return RET_OK;
 }
 
@@ -1397,7 +1407,13 @@ RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsReadable(
 {
     auto& rulesChecker = ReadableRulesChecker::GetInstance();
     isReadable = false;
-    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
+    sptr<IAccessibleAbilityManagerService> serviceProxy;
+    {
+        // Copy the proxy under mutex_: see IsScreenReaderRulesEnabled.
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        serviceProxy = serviceProxy_;
+    }
+    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy)) {
         return RET_ERR_NOT_ENABLED;
     }
     isReadable = rulesChecker.IsReadable(node);
@@ -1408,7 +1424,13 @@ RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsSpecificType(
     const std::shared_ptr<ReadableRulesNode>& node, ReadableSpecificType specificType, bool& isHit)
 {
     auto& rulesChecker = ReadableRulesChecker::GetInstance();
-    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
+    sptr<IAccessibleAbilityManagerService> serviceProxy;
+    {
+        // Copy the proxy under mutex_: see IsScreenReaderRulesEnabled.
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        serviceProxy = serviceProxy_;
+    }
+    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy)) {
         isHit = false;
         return RET_ERR_NOT_ENABLED;
     }
@@ -1437,7 +1459,13 @@ RetError AccessibilitySystemAbilityClientImpl::CheckNodeIsFocusType(
     const std::shared_ptr<ReadableRulesNode>& node, FocusRuleType focusType, bool& isHit)
 {
     auto& rulesChecker = ReadableRulesChecker::GetInstance();
-    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy_)) {
+    sptr<IAccessibleAbilityManagerService> serviceProxy;
+    {
+        // Copy the proxy under mutex_: see IsScreenReaderRulesEnabled.
+        std::lock_guard<ffrt::mutex> lock(mutex_);
+        serviceProxy = serviceProxy_;
+    }
+    if (!CheckRulesCheckerIsInit(rulesChecker, serviceProxy)) {
         isHit = false;
         return RET_ERR_NOT_ENABLED;
     }

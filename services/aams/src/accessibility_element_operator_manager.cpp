@@ -46,11 +46,24 @@ void ElementOperatorManager::SetAccountData(int32_t accountId, const wptr<Access
  
 int32_t ElementOperatorManager::GenerateRequestId()
 {
-    int32_t requestId = requestId_.fetch_add(1, std::memory_order_relaxed);
-    if (requestId == REQUEST_ID_MAX) {
-        requestId_ = REQUEST_ID_MIN;
-        requestId = requestId_.fetch_add(1, std::memory_order_relaxed);
-    }
+    // Reset and increment must be a single atomic read-modify-write operation.
+    // A plain store here races with concurrent fetch_add: the store overwrites the
+    // increments of other threads and two callers can be handed the same request ID.
+    int32_t requestId = REQUEST_ID_MIN;
+    int32_t expected = requestId_.load(std::memory_order_relaxed);
+    int32_t desired = 0;
+    do {
+        if (expected == REQUEST_ID_MAX) {
+            // The counter reached the upper bound. Reset it and hand out REQUEST_ID_MIN,
+            // so REQUEST_ID_MAX itself is never issued.
+            desired = REQUEST_ID_MIN + 1;
+            requestId = REQUEST_ID_MIN;
+        } else {
+            desired = static_cast<int32_t>(static_cast<uint32_t>(expected) + 1);
+            requestId = expected;
+        }
+    } while (!requestId_.compare_exchange_weak(expected, desired, std::memory_order_relaxed,
+        std::memory_order_relaxed));
     return requestId;
 }
  
@@ -99,6 +112,19 @@ void ElementOperatorManager::RemoveAccessibilityWindowConnection(const int32_t w
     }
 }
 
+void ElementOperatorManager::RemoveAccessibilityWindowConnection(const int32_t windowId,
+    const sptr<AccessibilityWindowConnection> &connection)
+{
+    HILOG_INFO("windowId(%{public}d)", windowId);
+    std::lock_guard lock(asacConnectionsMutex_);
+    auto it = asacConnections_.find(windowId);
+    // Erase only if the entry still maps to the given connection, so a connection
+    // registered concurrently for the same windowId is not removed by mistake.
+    if (it != asacConnections_.end() && it->second == connection) {
+        asacConnections_.erase(it);
+    }
+}
+
 sptr<AccessibilityWindowConnection> ElementOperatorManager::GetAccessibilityWindowConnection(const int32_t windowId)
 {
     std::lock_guard lock(asacConnectionsMutex_);
@@ -117,6 +143,10 @@ sptr<AccessibilityWindowConnection> ElementOperatorManager::GetAccessibilityWind
 const std::map<int32_t, sptr<AccessibilityWindowConnection>> ElementOperatorManager::GetAsacConnections()
 {
     HILOG_DEBUG("GetAsacConnections start.");
+    // The copy construction walks the red-black tree of the map, it must be done inside
+    // the critical section, otherwise a concurrent Add/Remove/Clear can invalidate the
+    // nodes being read.
+    std::lock_guard lock(asacConnectionsMutex_);
     return asacConnections_;
 }
 
@@ -171,21 +201,30 @@ RetError ElementOperatorManager::RegisterElementOperatorByWindowId(int32_t windo
     const sptr<IAccessibilityElementOperator> &elementOperator, uint32_t tokenId, bool isBroker, uint64_t displayId)
 {
     HILOG_INFO("RegisterElementOperatorByWindowId %{public}d %{public}" PRIu64, windowId, displayId);
-    sptr<AccessibilityWindowConnection> oldConnection = GetAccessibilityWindowConnection(windowId);
-    if (!isBroker && oldConnection && oldConnection->GetRawProxy(displayId)) {
-        HILOG_WARN("no need to register again.");
-        return RET_ERR_REGISTER_EXIST;
-    }
-    sptr<AccessibilityWindowConnection> connection = oldConnection;
-    if (connection == nullptr) {
-        connection = new (std::nothrow) AccessibilityWindowConnection(windowId, accountId_);
-        AddAccessibilityWindowConnection(windowId, connection);
-    }
-    if (!connection) {
-        Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
-            A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
-        HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
-        return RET_ERR_FAILED;
+    // The check (find an existing connection) and the insert must happen in one critical
+    // section. Otherwise a concurrent Deregister or a second Register for the same windowId
+    // can interleave between them and leave asacConnections_ inconsistent.
+    sptr<AccessibilityWindowConnection> connection;
+    {
+        std::lock_guard lock(asacConnectionsMutex_);
+        auto it = asacConnections_.find(windowId);
+        if (it != asacConnections_.end()) {
+            connection = it->second;
+        }
+        if (!isBroker && connection && connection->GetRawProxy(displayId)) {
+            HILOG_WARN("no need to register again.");
+            return RET_ERR_REGISTER_EXIST;
+        }
+        if (connection == nullptr) {
+            connection = new (std::nothrow) AccessibilityWindowConnection(windowId, accountId_);
+            if (connection == nullptr) {
+                Utils::RecordUnavailableEvent(A11yUnavailableEvent::CONNECT_EVENT,
+                    A11yError::ERROR_CONNECT_TARGET_APPLICATION_FAILED);
+                HILOG_ERROR("New  AccessibilityWindowConnection failed!!");
+                return RET_ERR_FAILED;
+            }
+            asacConnections_[windowId] = connection;
+        }
     }
     if (!isBroker) {
         connection->SetProxy(displayId, elementOperator);
@@ -275,7 +314,10 @@ RetError ElementOperatorManager::DeregisterElementOperatorByWindowId(
         StopCallbackWait(windowId, treeId);
         RemoveTreeDeathRecipient(windowId, treeId, connection);
     }
-    RemoveAccessibilityWindowConnection(windowId);
+    // Only remove the entry if it still maps to the connection this function has been
+    // working on: a concurrent Register may have inserted a new connection for the same
+    // windowId after the check at the beginning of this function.
+    RemoveAccessibilityWindowConnection(windowId, connection);
     return RET_OK;
 }
 
@@ -342,13 +384,25 @@ void ElementOperatorManager::RemoveRequestId(int32_t requestId)
 void ElementOperatorManager::StopCallbackWait(int32_t windowId)
 {
     HILOG_INFO("StopCallbackWait start windowId: %{public}d", windowId);
-    if (!windowRequestIdMap_.count(windowId)) {
-        HILOG_DEBUG("windowId not exists");
-        return;
+    // Collect the tree ids inside the critical section: windowRequestIdMap_ is
+    // concurrently modified by AddRequestId/RemoveRequestId with requestIdmutex_ held.
+    std::vector<int32_t> treeIds;
+    {
+        std::lock_guard<ffrt::mutex> lock(requestIdmutex_);
+        if (!windowRequestIdMap_.count(windowId)) {
+            HILOG_DEBUG("windowId not exists");
+            return;
+        }
+        for (const auto &tree : windowRequestIdMap_[windowId]) {
+            treeIds.push_back(tree.first);
+        }
     }
-    for (auto iter = windowRequestIdMap_[windowId].begin(); iter != windowRequestIdMap_[windowId].end(); ++iter) {
-        HILOG_DEBUG("stop callback wait windowId: %{public}d, treeId: %{public}d", windowId, iter->first);
-        StopCallbackWait(windowId, iter->first);
+    // Call the 2-arg variant outside the lock, it acquires requestIdmutex_ itself.
+    // Locking here and calling it while holding the lock would self-deadlock,
+    // because ffrt::mutex is not recursive.
+    for (int32_t treeId : treeIds) {
+        HILOG_DEBUG("stop callback wait windowId: %{public}d, treeId: %{public}d", windowId, treeId);
+        StopCallbackWait(windowId, treeId);
     }
 }
  

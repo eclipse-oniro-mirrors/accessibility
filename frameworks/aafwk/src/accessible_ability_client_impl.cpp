@@ -337,6 +337,10 @@ void AccessibleAbilityClientImpl::Disconnect(const int32_t channelId)
         isConnected_ = false;
         std::unique_lock<ffrt::shared_mutex> wLock(rwChannelLock_);
         listener = listener_;
+        // Guard callbackList_ with its own mutex: it is concurrently mutated by
+        // Register/UnRegisterDisconnectCallback. The order rwChannelLock_ ->
+        // callbackListMutex_ matches the one used by Register/UnRegister.
+        std::unique_lock<ffrt::mutex> callbackLock(callbackListMutex_);
         if (callbackList_.empty()) {
             // Delete death recipient
             if (channelClient_ && channelClient_->GetRemote()) {
@@ -1719,12 +1723,17 @@ RetError AccessibleAbilityClientImpl::HoldRunningLock()
     ApiReportHelper reporter("AccessibleAbilityClientImpl.HoldRunningLock");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     std::unique_lock<ffrt::shared_mutex> wLock(rwRunningLock_);
-    if (!channelClient_) {
+    // Snapshot channelClient_ into a local shared_ptr: the writers that reset it
+    // (NotifyServiceDied / ResetAAClient / NotifyDisconnect) run under rwChannelLock_,
+    // which rwRunningLock_ does not serialize against. The local copy keeps the object
+    // alive between the null check and the call below.
+    std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
+    if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
 
-    Accessibility::RetError ret = channelClient_->HoldRunningLock();
+    Accessibility::RetError ret = channelClient->HoldRunningLock();
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1737,12 +1746,14 @@ RetError AccessibleAbilityClientImpl::UnholdRunningLock()
     ApiReportHelper reporter("AccessibleAbilityClientImpl.UnholdRunningLock");
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
     std::unique_lock<ffrt::shared_mutex> wLock(rwRunningLock_);
-    if (!channelClient_) {
+    // Snapshot channelClient_ into a local shared_ptr: see HoldRunningLock.
+    std::shared_ptr<AccessibleAbilityChannelClient> channelClient = channelClient_;
+    if (channelClient == nullptr) {
         HILOG_ERROR("The channel is invalid.");
         return RET_ERR_NO_CONNECTION;
     }
 
-    Accessibility::RetError ret = channelClient_->UnholdRunningLock();
+    Accessibility::RetError ret = channelClient->UnholdRunningLock();
 #ifdef ACCESSIBILITY_EMULATOR_DEFINED
     reporter.setResult(ret);
 #endif // ACCESSIBILITY_EMULATOR_DEFINED
@@ -1788,6 +1799,12 @@ RetError AccessibleAbilityClientImpl::RegisterDisconnectCallback(std::shared_ptr
 RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_ptr<DisconnectCallback> &callback)
 {
     HILOG_INFO();
+    // Lock order must be rwChannelLock_ -> callbackListMutex_, the same as
+    // RegisterDisconnectCallback. Acquiring callbackListMutex_ first and then
+    // rwChannelLock_ inverts the order and, with a rwChannelLock_ writer waiting
+    // (Disconnect/ResetAAClient/NotifyDisconnect) under the writer-preference of
+    // ffrt::shared_mutex, forms a three-thread deadlock cycle.
+    std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
     std::unique_lock<ffrt::mutex> lock(callbackListMutex_);
     if (!callback->IsValidRef()) {
         callbackList_.clear();
@@ -1805,7 +1822,7 @@ RetError AccessibleAbilityClientImpl::UnRegisterDisconnectCallback(std::shared_p
         }
     }
     if (callbackList_.empty()) {
-        std::shared_lock<ffrt::shared_mutex> rLock(rwChannelLock_);
+        // channelClient_ is already protected by the shared lock taken above.
         if (channelClient_ == nullptr) {
             HILOG_ERROR("the channel is invalid.");
             return RET_ERR_NO_CONNECTION;

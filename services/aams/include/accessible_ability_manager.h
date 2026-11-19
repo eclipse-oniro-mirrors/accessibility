@@ -65,12 +65,12 @@ public:
 
     void AddEnabledAbility(const std::string &name);
     RetError RemoveEnabledAbility(const std::string &name);
-    const std::vector<std::string> &GetEnabledAbilities() const;
+    std::vector<std::string> GetEnabledAbilities() const;
 
     void AddInstalledAbility(AccessibilityAbilityInfo& abilityInfo);
     void RemoveInstalledAbility(const std::string &bundleName);
     void ClearInstalledAbility();
-    const std::vector<AccessibilityAbilityInfo> &GetInstalledAbilities() const;
+    std::vector<AccessibilityAbilityInfo> GetInstalledAbilities() const;
     RetError UpdateInstalledAbility(const std::string &name, uint32_t capabilities);
 
     void GetAbilitiesByState(AbilityStateType state, std::vector<AccessibilityAbilityInfo> &abilities);
@@ -150,7 +150,9 @@ private:
     AccessibilityAbility waitDisconnectA11yAbilities_;
     AccessibilityAbility appStateObserverAbilities_;
     std::vector<AccessibilityAbilityInfo> installedAbilities_;
+    mutable ffrt::mutex installedAbilitiesMutex_; // mutex for installedAbilities_
     std::vector<std::string> enabledAbilities_;
+    mutable ffrt::mutex enabledAbilitiesMutex_; // mutex for enabledAbilities_
     std::shared_ptr<AccessibilitySettingsConfig> config_;
     std::vector<sptr<IAccessibilityEnableAbilityListsObserver>> enableAbilityListsObservers_;
     ffrt::mutex enableAbilityListObserversMutex_; // mutex for enableAbilityListsObservers_

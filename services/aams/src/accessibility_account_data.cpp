@@ -408,12 +408,12 @@ sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbi
     return accessibleAbilityManager_.GetConnectingAbility(uri);
 }
 
-const std::vector<std::string> &AccessibilityAccountData::GetEnabledAbilities()
+std::vector<std::string> AccessibilityAccountData::GetEnabledAbilities()
 {
     return accessibleAbilityManager_.GetEnabledAbilities();
 }
 
-const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstalledAbilities() const
+std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetInstalledAbilities() const
 {
     HILOG_DEBUG("GetInstalledAbilities start.");
     return accessibleAbilityManager_.GetInstalledAbilities();
@@ -1364,6 +1364,10 @@ std::vector<uint32_t> AccessibilityAccountData::UpdateNeedEvents()
 // LCOV_EXCL_START
 std::vector<uint32_t> AccessibilityAccountData::GetNeedEvents()
 {
+    // needEvents_ is rebuilt by UpdateNeedEvents with abilityNeedEventsMutex_ held by the
+    // callers (UpdateAbilityNeedEvent / RemoveNeedEvent): the copy must be taken inside
+    // the same critical section, otherwise clear/push_back can free the buffer being read.
+    std::lock_guard<ffrt::mutex> lock(abilityNeedEventsMutex_);
     return needEvents_;
 }
 

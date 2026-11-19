@@ -176,12 +176,12 @@ sptr<AccessibleAbilityConnection> AccessibilityAccountData::GetConnectingA11yAbi
     return accessibleAbilityManager_.GetConnectingAbility(uri);
 }
 
-const std::vector<std::string>& AccessibilityAccountData::GetEnabledAbilities()
+std::vector<std::string> AccessibilityAccountData::GetEnabledAbilities()
 {
     return accessibleAbilityManager_.GetEnabledAbilities();
 }
 
-const std::vector<AccessibilityAbilityInfo> &AccessibilityAccountData::GetInstalledAbilities() const
+std::vector<AccessibilityAbilityInfo> AccessibilityAccountData::GetInstalledAbilities() const
 {
     return accessibleAbilityManager_.GetInstalledAbilities();
 }
