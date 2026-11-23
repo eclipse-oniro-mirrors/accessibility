@@ -141,6 +141,34 @@ HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_004, 
     GTEST_LOG_(INFO) << "RegisterElementOperator_004 end";
 }
 
+/**
+* @tc.number: RegisterElementOperator_005
+* @tc.name: RegisterElementOperator
+* @tc.desc: The reserved slot is released when the registration IPC fails,
+*           so the same windowId can be registered again afterwards.
+*/
+HWTEST_F(AccessibilitySystemAbilityClientImplTest, RegisterElementOperator_005, TestSize.Level1)
+{
+    GTEST_LOG_(INFO) << "RegisterElementOperator_005 start";
+    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(true);
+    impl_ = std::make_shared<AccessibilitySystemAbilityClientImpl>();
+    AccessibilityCommonHelper::GetInstance().SetRemoteObjectNotNullFlag(false);
+    if (!impl_) {
+        GTEST_LOG_(INFO) << "Cann't get AccessibilitySystemAbilityClientImpl impl_";
+    } else {
+        std::shared_ptr<AccessibilityElementOperator> mockOperator
+            = std::make_shared<MockAccessibilityElementOperator>();
+        AccessibilityCommonHelper::GetInstance().SetRegisterElementOperatorResult(RET_ERR_FAILED);
+        EXPECT_EQ(RET_ERR_FAILED, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        AccessibilityCommonHelper::GetInstance().SetRegisterElementOperatorResult(RET_OK);
+        EXPECT_EQ(RET_OK, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+        EXPECT_EQ(RET_ERR_CONNECTION_EXIST, impl_->RegisterElementOperator(WINDOW_ID, mockOperator));
+    }
+    AccessibilityCommonHelper::GetInstance().SetRegisterElementOperatorResult(RET_OK);
+    impl_ = nullptr;
+    GTEST_LOG_(INFO) << "RegisterElementOperator_005 end";
+}
+
 
 /**
 * @tc.number: DeregisterElementOperator_001

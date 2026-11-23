@@ -14,6 +14,7 @@
  */
 
 #include "mock_accessible_ability_manager_service_stub.h"
+#include "accessibility_common_helper.h"
 #include "hilog_wrapper.h"
 
 namespace OHOS {
@@ -99,7 +100,8 @@ ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByWindow
 {
     (void)windowId;
     (void)elementOperator;
-    return RET_OK;
+    (void)displayId;
+    return static_cast<ErrCode>(AccessibilityCommonHelper::GetInstance().GetRegisterElementOperatorResult());
 }
 
 ErrCode MockAccessibleAbilityManagerServiceStub::RegisterElementOperatorByParameter(const RegistrationPara& parameter,

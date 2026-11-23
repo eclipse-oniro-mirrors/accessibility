@@ -437,12 +437,26 @@ RetError AccessibilitySystemAbilityClientImpl::RegisterElementOperator(
             HILOG_ERROR("Failed to create aamsInteractionOperator.");
             return RET_ERR_NULLPTR;
         }
+        // The check and the insert must be one transaction. The IPC below runs outside the
+        // lock, so reserve the slot with a null placeholder here: a concurrent Register for
+        // the same {windowId, displayId} then fails the existence check instead of silently
+        // overwriting this registration after its IPC returns.
+        elementOperators_[{windowId, displayId}] = nullptr;
     }
     RetError ret = static_cast<RetError>(
         serviceProxy->RegisterElementOperatorByWindowId(windowId, aamsInteractionOperator, displayId));
-    if (ret == RET_OK) {
+    {
         std::lock_guard<ffrt::mutex> lock(mutex_);
-        elementOperators_[{windowId, displayId}] = aamsInteractionOperator;
+        if (ret == RET_OK) {
+            elementOperators_[{windowId, displayId}] = aamsInteractionOperator;
+        } else {
+            auto iter = elementOperators_.find({windowId, displayId});
+            if (iter != elementOperators_.end() && iter->second == nullptr) {
+                // The registration failed: release the reservation so the same
+                // {windowId, displayId} can be registered again.
+                elementOperators_.erase(iter);
+            }
+        }
     }
     return ret;
 }
