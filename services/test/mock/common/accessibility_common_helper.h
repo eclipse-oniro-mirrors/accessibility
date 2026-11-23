@@ -80,9 +80,20 @@ public:
         return isRemoteObjectNotNulll_;
     }
 
+    void SetRegisterElementOperatorResult(int32_t result)
+    {
+        registerElementOperatorResult_ = result;
+    }
+
+    int32_t GetRegisterElementOperatorResult() const
+    {
+        return registerElementOperatorResult_;
+    }
+
 private:
     bool isServicePublished_ = false;
     bool isRemoteObjectNotNulll_ = false;
+    int32_t registerElementOperatorResult_ = 0; // RET_OK by default
 };
 } // namespace Accessibility
 } // namespace OHOS
